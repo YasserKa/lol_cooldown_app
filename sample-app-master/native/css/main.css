@@ -1,0 +1,329 @@
+/* General */
+html, body {
+    height: 100%;
+    min-width: 750px;
+}
+
+nav {
+    height: 50px;
+    background-color: #f8f9fa!important;
+}
+
+.hourglass-img,
+.discord-img {
+    height:40px;
+}
+
+.settings-img {
+    height:30px;
+    cursor: pointer;
+}
+
+.navbar-brand,
+.navbar-brand:hover {
+    color: cornflowerblue;
+}
+
+.container-fluid {
+    min-height: calc(100vh - 105px);
+}
+
+footer {
+    height: 55px;
+}
+
+body  {
+    background-color: #EFEFEF;
+}
+
+p {
+    margin: auto
+}
+
+footer {
+    background: aliceblue;
+    font-size: 12px;
+    color: #A0A0A0
+}
+
+/* Main Page */
+.bannerArea {
+    background-image: url(/banner.jpg);
+    margin-bottom: 20px;
+    box-shadow: inset 0px 0px 10px rgba(0, 0, 0, 0.4);
+    height: 1080px;
+    background-position-y: top;
+    background-position-x: center;
+    background-size: cover;
+    position: relative;
+}
+
+.demo {
+    font-size: small;
+}
+
+.search-form {
+    background-color: #fff;
+    position: relative;
+    flex-grow: 1;
+    min-width: 20vw;
+    margin: 0 auto;
+    min-height: 20vh;
+    position: absolute;
+    top: 25%;
+    box-shadow: inset 0px 0px 10px rgba(0, 0, 0, 0.4);
+}
+
+/* Match Page */
+img.cdr-boot,
+.buff,
+img.grip {
+    cursor: pointer;
+}
+
+#teams-details {
+    margin: auto;
+}
+.team {
+    display: flex;
+}
+
+th.blue {
+    background-color:blue;
+}
+th.red {
+    background-color:red;
+}
+
+table.champ {
+    margin: 0.5vw;
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    background-color: #F3F5F8;
+    box-shadow: 0px 0px 6px #999;
+}
+
+/* Cloud drake buff */
+.buff-container {
+    width: fit-content;
+    margin: auto;
+}
+.buff {
+    display: block;
+    margin: 20%;
+    opacity: 0.5;
+}
+
+img.ability-icon,
+img.spell-icon {
+    height: 3vh;
+    min-height: 25px;
+}
+.spell-overlay  {
+    height: 3vh;
+    width: 3vh;
+    min-height: 25px;
+    min-width: 25px;
+    position: absolute;
+    top: 0;
+    left: 0;
+    background: rgba(0, 0, 0, 0.5);
+    color: white;
+    opacity: 0;
+    cursor: pointer;
+}
+
+.spell-overlay > p {
+    margin: 0;
+    position: absolute;
+    top: 60%;
+    left: 50%;
+    -ms-transform: translate(-50%, -50%);
+    transform: translate(-50%, -50%);
+}
+
+img.rune-icon  {
+    height: 1.5vh;
+    min-height: 18px
+}
+
+img.grip {
+    height:2.5vh;
+    min-height: 20px;
+}
+img.champ-icon {
+    height: 4vh;
+    min-height: 35px;
+}
+img[alt="statmodscdrscaling"] {
+    border-radius: 90px;
+    background-color: black;
+}
+
+
+.cell.runes {
+    min-height: 8vh;
+}
+img.rune-icon {
+    float: left;
+}
+
+.cdr-boot,
+.aram-aura {
+    height: 2vh;
+    position: absolute;
+    border-radius: 50%;
+    top: -20%;
+    min-height: 19.7px;
+}
+.cdr-boot {
+    left: -20%;
+    filter: grayscale(100%);
+    z-index: 1;
+}
+.aram-aura {
+    left: 15%;
+}
+
+.cdr-boot.active {
+    filter: grayscale(0%);
+}
+
+td.spells {
+    display: flex
+}
+.spells > div {
+    position: relative;
+}
+
+.spells {
+    font-size: 0.7em;
+    float:right;
+    text-align: center;
+}
+
+td.cooldown-reduction {
+    text-align: center;
+}
+div.cooldown-reduction {
+    text-align: center;
+}
+
+.cooldown-reduction .btn-red {
+    background-color: lightsalmon;
+}
+.cooldown-reduction .btn-red.active {
+    background-color: indianred;
+}
+
+.cooldown-reduction .btn-blue {
+    background-color: powderblue;
+}
+.cooldown-reduction .btn-blue.active {
+    background-color: cornflowerblue;
+}
+
+.abilities {
+    margin: 0px;
+    /* width:100%; */
+    width:200px;
+    text-align:center;
+}
+.abilities td {
+    width:100%;
+}
+div.ability-img-container {
+    position: relative;
+    top: 0;
+    margin:auto;
+    width: fit-content;
+}
+.ability-icon {
+    position: relative;
+    top: 0;
+    left: 0;
+}
+.ability-icon.active {
+    border-left: solid blue;
+}
+.info {
+    position: absolute;
+    left: 80%;
+    height: 1.5vh;
+}
+.info-attribution {
+    height: 1.5vh;
+}
+
+.indication {
+    position: absolute;
+    top: 0%;
+    height: 100%;
+    display:none;
+}
+.indication.blue {
+    border-right: solid blue;
+}
+.indication.red {
+    border-right: solid red;
+}
+
+
+.cooldowns > p.cooldown {
+    display: inline;
+    font-size: 0.9em;
+    /* padding-right: 0.5vw; */
+}
+
+.cooldowns {
+    /* min-width: max-width; */
+    /* margin: auto; */
+    /* flex: 0 1 100%; */
+    background-color: #FFF;
+    text-align: center;
+}
+p.cooldown {
+    padding: inherit;
+    /* position: relative; */
+}
+.cooldowns p:nth-child(odd) {
+    background-color: white;
+}
+.cooldowns p:nth-child(even) {
+    background-color: gainsboro;
+}
+.cooldowns:first-child:nth-last-child(1) p {
+    width: 100%;
+}
+.cooldowns:first-child:nth-last-child(2) p {
+    width: 50%;
+}
+.cooldowns:first-child:nth-last-child(3) p {
+    width: 33.333%;
+}
+.cooldowns:first-child:nth-last-child(4) p {
+    width: 25%;
+}
+.cooldowns:first-child:nth-last-child(5) p {
+    width: 20%;
+}
+
+p small:not(:empty) {
+    font-size: 0.7em;
+    /* height: 2vh; */
+    /* position: absolute; */
+    /* border-radius: 50%; */
+    /* top: -20%; */
+    /* left: 60%; */
+    /* width:10px;height:10px */
+}
+
+
+/**********************
+ *  DISABLING BOOSTRAP  FOCUS
+ **********************/
+.focus {
+    box-shadow: none !important;
+}
