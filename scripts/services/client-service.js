@@ -1,30 +1,25 @@
-/**
- * Client state & champ select service
- */
-
 define(["../../scripts/constants/states.js",],
   function (States) {
 
-    // Listeners for client state change
-    const _onStateChangedListeners = [];
-    // Listeners for champ select change
-    const _onChampSelectChangedListeners = [];
-
-    // Features for launcher to subscribe to
+    // features for launcher to subscribe to
     const REQUIRED_LAUNCHER_FEATURES = [
       "game_flow",
       "champ_select",
     ];
 
-    // League of Legends launcher ID
+    // league of Legends launcher ID
     const LAUNCHER_ID = 10902;
 
     const REGISTER_RETRY_TIMEOUT = 2000;
+
+    // listeners for client state/champ select change
+    let _onStateChangedListener = null;
+    let _onChampSelectChangedListener = null;
+
     let _initialized = false;
 
     // Used to not trigger champSelectChangedListeners with duplicated data
     let _currentData = {};
-
 
     async function init() {
       if (_initialized)
@@ -36,15 +31,8 @@ define(["../../scripts/constants/states.js",],
 
     // Registering events for champselect & client state change
     function registerEvents() {
-      // State of the client can be None, In Champ Select, InProgress(ingame), etc...
-      // Trigger the _onStateChangedListeners using that state to change between windows & functionality
-      overwolf.games.launchers.events.onInfoUpdates.removeListener(_onStateChanged);
-      overwolf.games.launchers.events.onInfoUpdates.addListener(_onStateChanged);
-
-      // Used for champ select actions
-      // Trigger the _onChampSelectChangedListeners using the actions made
-      overwolf.games.launchers.events.onInfoUpdates.removeListener(_onChampSelectChanged);
-      overwolf.games.launchers.events.onInfoUpdates.addListener(_onChampSelectChanged);
+      overwolf.games.launchers.events.onInfoUpdates.removeListener(_onEventUpdate);
+      overwolf.games.launchers.events.onInfoUpdates.addListener(_onEventUpdate);
     }
 
     // Subscribe to features in LoL's launcher
@@ -53,27 +41,34 @@ define(["../../scripts/constants/states.js",],
         overwolf.games.launchers.events.setRequiredFeatures(
           LAUNCHER_ID,
           REQUIRED_LAUNCHER_FEATURES,
-          function (info) {
-            if (info.status == "error") {
-              window.setTimeout(async function() {
+          function (event) {
+            if (event.status == "error") {
+              window.setTimeout(async function () {
                 resolve(await setFeatures());
               }, REGISTER_RETRY_TIMEOUT);
               return;
             }
             console.log("Setting required features for client:");
-            console.log(JSON.stringify(info));
+            console.log(JSON.stringify(event));
             resolve();
           }
         );
       }));
     }
 
-    // Trigger listeners on state change for the launcher
-    function _onStateChanged(info) {
-      if (info['feature'] != 'game_flow') {
-        return;
+    function _onEventUpdate(event) {
+      if (event['feature'] === 'game_flow') {
+        // Client state change
+        _onStateChanged(event);
+      } else if (event['feature'] === 'champ_select') {
+        // champselect change
+        _onChampSelectChanged(event);
       }
-      const phase = info['info']['game_flow']['phase'];
+    }
+
+    // trigger listeners on state change for the launcher
+    function _onStateChanged(event) {
+      const phase = event['info']['game_flow']['phase'];
       let state = ''
       switch (phase) {
         case 'ChampSelect':
@@ -87,22 +82,23 @@ define(["../../scripts/constants/states.js",],
           state = States.IDLE;
           break;
       }
-      for (let listener of _onStateChangedListeners) {
-        listener(state);
+
+      if (_onStateChangedListener !== null) {
+        _onStateChangedListener(state);
       }
     }
 
-    // Get the current state of the launcher
+    // get the current state of the launcher
     async function getState() {
       await init();
 
       let isGameRunning = await _isGameRunning();
       if (isGameRunning)
         return States.IN_GAME;
-      
+
       return new Promise((resolve => {
-        overwolf.games.launchers.events.getInfo(LAUNCHER_ID, function (info) {
-          const phase = info['res']['game_flow']['phase'];
+        overwolf.games.launchers.events.getInfo(LAUNCHER_ID, function (event) {
+          const phase = event['res']['game_flow']['phase'];
           switch (phase) {
             case 'ChampSelect':
               resolve(States.IN_CHAMPSELECT);
@@ -130,13 +126,8 @@ define(["../../scripts/constants/states.js",],
       }));
     }
 
-    // Trigger listeners on champ select change
+    // trigger listeners on champ select change
     function _onChampSelectChanged(event) {
-      // only use champ_select data
-      if (event['feature'] != 'champ_select') {
-        return;
-      }
-
       let data = JSON.parse(event['info']['champ_select']['raw']);
       let teamData = {
         'myTeam': data['myTeam'],
@@ -150,8 +141,8 @@ define(["../../scripts/constants/states.js",],
 
       _currentData = teamData;
 
-      for (let listener of _onChampSelectChangedListeners) {
-        listener(data);
+      if (_onChampSelectChangedListener !== null) {
+        _onChampSelectChangedListener(data);
       }
     }
 
@@ -160,25 +151,25 @@ define(["../../scripts/constants/states.js",],
       await init();
 
       return new Promise((resolve => {
-        overwolf.games.launchers.events.getInfo(LAUNCHER_ID, function (info) {
-          resolve(JSON.parse(info['res']['champ_select']['raw']));
+        overwolf.games.launchers.events.getInfo(LAUNCHER_ID, function (event) {
+          resolve(JSON.parse(event['res']['champ_select']['raw']));
         });
       }));
     }
 
-    function addStateChangedListener(callback) {
-      _onStateChangedListeners.push(callback);
+    function updateStateChangedListener(callback) {
+      _onStateChangedListener = callback;
     }
 
-    function addChampSelectChangedListener(callback) {
-      _onChampSelectChangedListeners.push(callback);
+    function updateChampSelectChangedListener(callback) {
+      _onChampSelectChangedListener = callback;
     }
 
     return {
       init,
       getState,
       getChampSelectInfo,
-      addStateChangedListener,
-      addChampSelectChangedListener,
+      updateStateChangedListener,
+      updateChampSelectChangedListener,
     }
   });

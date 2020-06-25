@@ -1,39 +1,39 @@
 define([
   '../../windows/app/app-view.js',
+  "../../scripts/constants/states.js",
   "../../scripts/services/parser.js",
+  "../../scripts/services/gep-service.js",
+  "../../scripts/services/client-service.js",
 ], function (
   AppView,
+  States,
   Parser,
+  GepService,
+  ClientService,
   ) {
   class AppController {
 
     constructor() {
       this.appView = new AppView();
 
-      this._infoUpdateHandler = this._infoUpdateHandler.bind(this);
-      this._eventListener = this._eventListener.bind(this);
+      this._eventUpdateListener = this._eventUpdateListener.bind(this);
     }
 
-    run() {
-      // listen to events from the event bus from the main window,
-      // the callback will be run in the context of the current window
-      let mainWindow = overwolf.windows.getMainWindow();
-      mainWindow.ow_eventBus.addListener(this._eventListener);
-      console.log('ending run');
+    // add listeners to services depending on the state (in-champselect/in-game)
+    async run() {
+      const state = await ClientService.getState();
+      switch (state) {
+        case States.IN_CHAMPSELECT:
+          ClientService.updateChampSelectChangedListener(this._eventUpdateListener);
+          this._eventUpdateListener(await ClientService.getChampSelectInfo());
+          break;
+        case States.IN_GAME:
+          GepService.registerToGEP(this._eventUpdateListener);
+          break;
+      }
     }
 
-    async _updateHotkey() {
-      this.AppView.updateHotkey(hotkey);
-    }
-
-    _eventListener(data) {
-      console.log('triggering listener');
-      this._infoUpdateHandler(data);
-    }
-
-    // Logs info updates
-    _infoUpdateHandler(data) {
-      console.log(data);
+    _eventUpdateListener(data) {
       if (data.hasOwnProperty('myTeam') && data['myTeam'].length > 0) {
         let parsedData = {
           'myTeam': {
@@ -41,7 +41,7 @@ define([
             'color': data['myTeam'][0]['team'] === 1 ? 'blue' : 'red',
           }
           ,
-          'theirTeam': { 
+          'theirTeam': {
             'participants': Parser.getTeamData(data['theirTeam']),
             // theirTeam can be empty, so take the opposite of the myTeam
             'color': data['myTeam'][0]['team'] === 1 ? 'red' : 'blue',

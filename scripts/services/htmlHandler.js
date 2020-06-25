@@ -39,7 +39,6 @@ define([],
                 // Champ Abilities
                 if (participant['champion']['abilities'].length !== 0 &&
                     $(`table[partic-id="${participant['cellId']}"] .cooldowns-abilities`).length === 0) {
-                        console.log('here');
                     $(`table[partic-id="${participant['cellId']}"]`).append(_createAbilities(participant, team['color']));
                 }
 

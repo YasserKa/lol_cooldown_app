@@ -17,19 +17,21 @@ define(["../../scripts/constants/states.js",],
       if (initialized)
         return;
 
+      
       data = JSON.parse(localStorage.getItem("data"));
-      champions = data['champions'];
-      summonerSpells = data['spells'];
-      cdReducitonTypes = data['cdReductionTypes'];
-      runesReforged = data['runes'];
-      patchVersion = data['version'];
-
       // TODO:
       // 1- Update if the version is outdated
       // 2- make a call just to check the version
       if (data === null) {
         updateData();
       }
+
+      champions = data['champions'];
+      summonerSpells = data['spells'];
+      cdReducitonTypes = data['cdReductionTypes'];
+      runesReforged = data['runes'];
+      patchVersion = data['version'];
+
 
       initialized = true;
     }
@@ -69,7 +71,6 @@ define(["../../scripts/constants/states.js",],
         // if (participantData['championId'] === 0) {
         //   participantData['championId'] = 1;
         // }
-        console.log(participantData['championId']);
         if (participantData['championId'] === 0) {
           champData =  {
             'abilities': [],

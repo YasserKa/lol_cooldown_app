@@ -1,66 +1,43 @@
 define([
-  "../../scripts/constants/window-names.js",
   "../../scripts/constants/states.js",
+  "../../scripts/constants/window-names.js",
   "../../scripts/services/client-service.js",
   "../../scripts/services/windows-service.js",
-  "../../scripts/services/gep-service.js",
-  "../../scripts/services/event-bus.js",
 ], function (
-  WindowNames,
   States,
+  WindowNames,
   ClientService,
   WindowsService,
-  GepService,
-  EventBus,
 ) {
   class BackgroundController {
     static async run() {
-      window.ow_eventBus = EventBus;
-
+      // open the appropriate window depending on the state
       await this._initialize();
-
-      ClientService.addStateChangedListener(this._onStateChanged);
-      ClientService.addChampSelectChangedListener(this._triggerBus);
+      // close/open windows upon state change
+      ClientService.updateStateChangedListener(this._onStateChanged);
     }
 
-    static _onStateChanged(state) {
-      this._updateWindows(state);
-    }
-
-    /**
-     * Open the relevant window on app launch
-     * @private
-     */
+    // Initialize app
     static async _initialize() {
       const state = await ClientService.getState();
-      this._updateWindows(state)
+      BackgroundController._updateWindows(state)
+    }
+
+    // On client state change (idle/in-champselect/in-game)
+    static _onStateChanged(state) {
+      BackgroundController._updateWindows(state);
     }
 
     static async _updateWindows(state) {
-      const openWindows = await WindowsService.getOpenWindows();
-
       switch (state) {
         case States.IDLE:
-          // State could be already IDLE
-          if (openWindows.hasOwnProperty(WindowNames.MAIN)) {
-            return;
-          }
-          await WindowsService.restore(WindowNames.MAIN);
-          await WindowsService.close(WindowNames.APP);
+          WindowsService.openWindowOnlyIfNotOpen(WindowNames.MAIN);
           break;
         case States.IN_CHAMPSELECT:
-          await WindowsService.restore(WindowNames.APP);
-          await WindowsService.close(WindowNames.MAIN);
-
-          break;
         case States.IN_GAME:
-          GepService.registerToGEP(this._triggerBus);
+          WindowsService.openWindowOnlyIfNotOpen(WindowNames.APP);
           break;
       }
-    }
-
-    static _triggerBus(data) {
-      window.ow_eventBus.trigger(data);
     }
   }
 

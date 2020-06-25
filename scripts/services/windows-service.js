@@ -1,4 +1,8 @@
-define([ ], function () {
+define([
+  "../../scripts/constants/window-names.js",
+], function (
+  WindowNames,
+) {
 
   /**
    * obtain a window object by a name as declared in the manifest
@@ -110,18 +114,39 @@ define([ ], function () {
             reject(result);
           }
         })
-      } catch (e){
+      } catch (e) {
         reject(e);
       }
     });
   }
-  
+
+  // open window if not open & close other windows besides background
+  async function openWindowOnlyIfNotOpen(windowName) {
+    const openWindows = await getOpenWindows();
+
+    // close windows besides background && the one needed (if opened)
+    for (let openWindowName of Object.keys(openWindows)) {
+      if (openWindowName === WindowNames.BACKGROUND ||
+        openWindowName === windowName) {
+        continue;
+      }
+
+      await close(openWindowName);
+    }
+
+    // if it doesn't exist open it
+    if (!openWindows.hasOwnProperty(windowName)) {
+      await restore(windowName);
+    }
+  }
+
   return {
     restore,
     minimize,
     obtainWindow,
     getOpenWindows,
     close,
-    getWindowState
+    getWindowState,
+    openWindowOnlyIfNotOpen,
   }
 });
