@@ -28,11 +28,6 @@ define(["../SampleAppView.js", "../../scripts/services/htmlHandler.js"],
        * , yourTeam:...}
        */
       updateInGame(data) {
-        if (!data['info'].hasOwnProperty('live_client_data')) {
-          return;
-        }
-
-        data = data['info']['live_client_data'];
         // let player = '';
         let eventsInGame = '';
         let allPlayers = '';
@@ -46,10 +41,22 @@ define(["../SampleAppView.js", "../../scripts/services/htmlHandler.js"],
           allPlayers = data['all_players'];
         }
 
-        // events array of  
-        // EventName "DragonKill"
-        // KillerName "Summoner X"
-        // DragonType "Air"
+        ///// 
+// Assisters: []
+// EventID: 3
+// EventName: "ChampionKill"
+// EventTime: 582.3441162109375
+// KillerName: "Clumsy Gamer"
+// VictimName: "Trundle Bot"
+        ///// 
+// Assisters: []
+// DragonType: "Air"
+// EventID: 6
+// EventName: "DragonKill"
+// EventTime: 770.9714965820312
+// KillerName: "Clumsy Gamer"
+// Stolen: "False"
+//////
         if (allPlayers !== '') {
           console.log(JSON.parse(allPlayers));
         }
@@ -61,43 +68,6 @@ define(["../SampleAppView.js", "../../scripts/services/htmlHandler.js"],
         }
         // this._logLine(this._infoLog, string);
       }
-
-      // Add a line to a log
-      _logLine(log, string, isHighlight) {
-        const line = document.createElement("p");
-        // Check if scroll is near bottom
-        const autoScrollOn =
-          log.scrollTop + log.offsetHeight > log.scrollHeight - 10;
-
-        if (isHighlight) {
-          line.className = "highlight";
-        }
-
-        line.textContent = string;
-
-        log.appendChild(line);
-
-        if (autoScrollOn) {
-          log.scrollTop = log.scrollHeight;
-        }
-      }
-
-      _updateParticipant() {
-
-      }
-
-      _createParticipant(data) {
-        console.log(data);
-        // 'assignedPosition',
-        // 'cellId',
-        // 'championId',
-        // 'championPickIntent',
-        // 'spell1Id',
-        // 'spell2Id',
-        // 'team',
-
-      }
-
     }
 
     return AppView;
