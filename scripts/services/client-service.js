@@ -14,6 +14,7 @@ define(["../../scripts/constants/states.js",],
 
     // listeners for client state/champ select change
     let _onStateChangedListener = null;
+    let _onStateChangedForAppListener = null;
     let _onChampSelectChangedListener = null;
 
     let _initialized = false;
@@ -85,6 +86,9 @@ define(["../../scripts/constants/states.js",],
 
       if (_onStateChangedListener !== null) {
         _onStateChangedListener(state);
+      }
+      if (_onStateChangedForAppListener !== null) {
+        _onStateChangedForAppListener(state);
       }
     }
 
@@ -161,6 +165,10 @@ define(["../../scripts/constants/states.js",],
       _onStateChangedListener = callback;
     }
 
+    function updateStateChangedForAppListener(callback) {
+      _onStateChangedForAppListener = callback;
+    }
+
     function updateChampSelectChangedListener(callback) {
       _onChampSelectChangedListener = callback;
     }
@@ -170,6 +178,7 @@ define(["../../scripts/constants/states.js",],
       getState,
       getChampSelectInfo,
       updateStateChangedListener,
+      updateStateChangedForAppListener,
       updateChampSelectChangedListener,
     }
   });

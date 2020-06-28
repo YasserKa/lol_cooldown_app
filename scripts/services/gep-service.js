@@ -31,6 +31,17 @@ define([
     const REGISTER_RETRY_TIMEOUT = 10000;
     const NUMBER_OF_RETRIES = 5;
 
+    // Get the current state of the launcher
+    function getInGameInfo() {
+      // await init();
+
+      return new Promise((resolve => {
+        overwolf.games.events.getInfo(function (event) {
+          resolve(event['res']['live_client_data']);
+        });
+      }));
+    }
+
     function registerToGEP(listener) {
       let retries = 0;
       overwolf.games.events.setRequiredFeatures(REQUIRED_FEATURES, function (response) {
@@ -54,6 +65,7 @@ define([
     }
 
     return {
-      registerToGEP
+      registerToGEP,
+      getInGameInfo
     }
   });
