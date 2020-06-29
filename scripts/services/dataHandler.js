@@ -74,7 +74,7 @@ define([],
     function getCdReductionType(abilityName) {
       _init();
       // Loop through the list of abilities
-      for (let [type, abilities] of Object.entries(_cdReducitonTypes)) {
+      for (let [type, abilities] of Object.entries(_cdReductionTypes)) {
         if (abilities.includes(abilityName)) {
           return type;
         }
@@ -84,7 +84,8 @@ define([],
 
     function getCdDescription(champId, abilityKey) {
       _init();
-      let effects = _champsDetails['abilities'][abilityKey][0]['effects'];
+      let champsDetails = getChampionById(champId);
+      let effects = champsDetails['abilities'][abilityKey][0]['effects'];
       for (let effect of effects) {
         if (effect['description'].includes('cooldown')) {
           return effect['description'];
