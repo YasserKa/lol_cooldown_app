@@ -1,163 +1,3 @@
-class Chart {
-
-    constructor() {
-
-        this.svg = d3.select("#chart");
-        let margin = {top: 35, left: 35, bottom: 20, right: 10},
-            width = +this.svg.attr("width") - margin.left - margin.right,
-            height = +this.svg.attr("height") - margin.top - margin.bottom;
-
-        this.x = d3.scaleBand()
-            .range([margin.left, width - margin.right])
-            .padding(0.2)
-
-        this.y = d3.scaleLinear()
-            .rangeRound([height - margin.bottom, margin.top])
-
-        this.xAxis = this.svg.append("g")
-            .attr("transform", `translate(0,${height - margin.bottom})`)
-            .attr("class", "x-axis")
-
-        this.yAxis = this.svg.append("g")
-            .attr("transform", `translate(${margin.left},0)`)
-            .attr("class", "y-axis")
-
-    };
-
-    update () {
-        let data = [];
-
-        let transitionSpeed = 750;
-        let keys = ["rank1", "rank2", "rank3"];
-        let particEls = [...document.querySelectorAll("table[partic-id]")];
-
-
-        for (let key of Object.keys(participants)) {
-            let partic = participants[key];
-
-            let particPosInTable = particEls.findIndex(particEl => {
-                return particEl.getAttribute('partic-id') == partic.id;
-            });
-            if (!partic.onGraph) {
-                continue;
-            }
-            let icon = partic.getChampionIcon();
-            let ultCD = partic.getUltimateCds();
-            let partId = partic.getId();
-            let index = particPosInTable;
-            let teamColor = partic.getTeamColor();
-
-            let champ = {
-                'index': index,
-                'color': teamColor,
-                'partId': partId,
-                'rank1': ultCD[2],
-                'rank2':ultCD[1] - ultCD[2],
-                'rank3':ultCD[0] - ultCD[1],
-                'icon': icon,
-            };
-            data.push(champ);
-        }
-
-
-        data.forEach(d => d.total = d3.sum(keys, k => +d[k]));
-
-        this.y.domain([0, d3.max(data, d => d3.sum(keys, k => +d[k]))]).nice();
-        this.yAxis.transition().duration(transitionSpeed).call(d3.axisLeft(this.y).ticks(null, "s"))
-
-        // Sort by index(roles)
-        data.sort((a, b) => a.index - b.index)
-
-        // X-axis
-        this.x.domain(data.map(d => d.partId));
-        this.xAxis.call(d3.axisBottom(this.x).tickSizeOuter(0))
-        this.xAxis.selectAll("text,line").attr("display", "none");
-
-        // Adding images to ticks that don't contain images
-        let image = this.svg.selectAll('.x-axis').selectAll(function() {
-            let children = [...this.getElementsByTagName('g')];
-            let result = children.filter(a => [...a.getElementsByTagName('image')].length === 0)
-            return result;
-        })
-
-        image.append('image')
-            .merge(image)
-            .transition().duration(transitionSpeed)
-            .attr("x", -24)
-            .attr('height', 48)
-            .attr('width', 48)
-            .attr("xlink:href", d => {
-                let partic = data.find(partic => partic.partId === d);
-                return partic['icon'];
-            });
-        let group = this.svg.selectAll("g.layer")
-            .data(d3.stack().keys(keys)(data), d => d.key)
-
-        // Groups
-        group.exit().remove()
-
-        group.enter().append("g")
-            .classed("layer", true)
-            .attr("fill-opacity", 0.5);
-
-        // Bars
-        let bars = this.svg.selectAll("g.layer").selectAll("rect").data(d => d);
-
-        bars.exit().remove();
-
-        let redColors = ['lightsalmon', 'salmon', 'indianred'],
-            blueColors = ['powderblue', 'lightskyblue', 'cornflowerblue'];
-
-        bars.enter().append("rect")
-            .merge(bars)
-            .attr("width", this.x.bandwidth())
-            .attr("x", d => this.x(d.data.partId))
-            .attr("y", d => this.y(d[1]))
-            .attr("height", d => this.y(d[0]) - this.y(d[1]))
-            .attr("fill", d => {
-                let colors = d.data.color === 'red' ? redColors : blueColors;
-                if (d[0] === 0) {
-                    return colors[0];
-                } else if (d[0] === d.data.rank1) {
-                    return colors[1];
-                } else {
-                    return colors[2]; }
-            })
-
-        // Text
-        let text = this.svg.selectAll("g.layer").selectAll(".text")
-            .data(d => d);
-
-        text.exit().remove()
-
-        text.enter().append("text")
-            .merge(text)
-            .attr("class", "text")
-            .attr("text-anchor", "middle")
-            .attr("fill", "black")
-            .attr("font-size", d => {
-                let rectHeight = this.y(d[0]) - this.y(d[1]);
-                // 10 is least
-                // 50 is most
-                // return rectHeight > 20 ? '100%' : (rectHeight*4)+'%';
-                if (rectHeight > 45)  {
-                    return '100%';
-                } else if (rectHeight > 28)  {
-                    return '80%';
-                } else if (rectHeight > 5)  {
-                    return '70%';
-                } else {
-                    return '0%';
-                }
-
-            })
-            .attr("x", d => this.x(d.data.partId) + this.x.bandwidth() / 2)
-            .attr("y", d => this.y(d[1]) - (this.y(d[1]) - this.y(d[0])) / 2 + 5)
-            .text(d => getParsedCooldown(d[1]))
-
-    }
-}
-
 class Participant {
     constructor(participantInfo, teamColor) {
         this.teamColor = teamColor;
@@ -267,16 +107,12 @@ class Participant {
 }
 
 let participants = {};
-let chartInstance = null;
 let redCloudStacks = 0;
 let blueCloudStacks = 0;
 
 $(document).ready(function() {
     let redTeamParticipants = {};
     let blueTeamParticipants = {};
-
-    chartInstance = new Chart();
-    Object.freeze(chartInstance);
 
     // Initialize the teams
     const blueTeam = teams.find(team => team.color === 'blue');
@@ -422,14 +258,12 @@ $(document).ready(function() {
 });
 
 function updateAllParticipantsUI() {
-    chartInstance.update();
     for (let key of Object.keys(participants)) {
         updateParticipantTable(key);
     };
 }
 
 function updateParticipantUI(particId) {
-    chartInstance.update();
     updateParticipantTable(particId);
 }
 
