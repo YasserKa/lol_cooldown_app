@@ -44,29 +44,6 @@ define([
     });
   }
 
-
-  /**
-   * minimize a window by name
-   * @param name
-   * @returns {Promise<any>}
-   */
-  function minimize(name) {
-    return new Promise(async (resolve, reject) => {
-      try {
-        await obtainWindow(name);
-        overwolf.windows.minimize(name, (result) => {
-          if (result.status === 'success') {
-            resolve();
-          } else {
-            reject(result);
-          }
-        });
-      } catch (e) {
-        reject(e)
-      }
-    });
-  }
-
   /**
    * Returns a map (window name, object) of all open windows.
    * @returns {Promise<any>}
@@ -84,27 +61,10 @@ define([
   }
 
   /**
-   * Close a window
-   * @param windowName
-   * @returns {Promise<any>}
-   */
-  function close(windowName) {
-    return new Promise(async (resolve, reject) => {
-      try {
-        overwolf.windows.close(windowName, () => {
-          resolve();
-        });
-      } catch (e) {
-        reject(e);
-      }
-    });
-  }
-
-  /**
    * get state of the window
    * @returns {Promise<*>}
    */
-  async function getWindowState(name) {
+  function getWindowState(name) {
     return new Promise(async (resolve, reject) => {
       try {
         overwolf.windows.getWindowState(name, (state) => {
@@ -131,7 +91,7 @@ define([
         continue;
       }
 
-      await close(openWindowName);
+      await _close(openWindowName);
     }
 
     // if it doesn't exist open it
@@ -140,12 +100,90 @@ define([
     }
   }
 
+  /**
+   * minimize current window
+   * @returns {Promise<any>}
+   */
+  async function minimizeCurrentWindow() {
+    const currentWindowName = await _getCurrentWindowName();
+    await _minimize(currentWindowName);
+  }
+
+  /**
+   * close current window
+   * @returns {Promise<any>}
+   */
+  async function closeCurrentWindow() {
+    const currentWindowName = await _getCurrentWindowName();
+    await _close(currentWindowName);
+  }
+
+  /**
+   * minimize a window by name
+   * @param name
+   * @returns {Promise<any>}
+   */
+  function _minimize(name) {
+    return new Promise(async (resolve, reject) => {
+      try {
+        await obtainWindow(name);
+        overwolf.windows.minimize(name, (result) => {
+          if (result.status === 'success') {
+            resolve();
+          } else {
+            reject(result);
+          }
+        });
+      } catch (e) {
+        reject(e)
+      }
+    });
+  }
+
+  /**
+   * Close a window
+   * @param windowName
+   * @returns {Promise<any>}
+   */
+  function _close(windowName) {
+    return new Promise(async (resolve, reject) => {
+      try {
+        overwolf.windows.close(windowName, () => {
+          resolve();
+        });
+      } catch (e) {
+        reject(e);
+      }
+    });
+  }
+
+
+  /**
+   * get current window name
+   * @returns {Promise<any>}
+   */
+  function _getCurrentWindowName() {
+    return new Promise(async (resolve, reject) => {
+      try {
+        overwolf.windows.getCurrentWindow((result) => {
+          if (result.status === 'success') {
+            resolve(result['window']['name']);
+          } else {
+            reject(result);
+          }
+        });
+      } catch (e) {
+        reject(e)
+      }
+    });
+  }
+
   return {
     restore,
-    minimize,
+    minimizeCurrentWindow,
+    closeCurrentWindow,
     obtainWindow,
     getOpenWindows,
-    close,
     getWindowState,
     openWindowOnlyIfNotOpen,
   }
