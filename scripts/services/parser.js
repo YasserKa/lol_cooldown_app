@@ -54,6 +54,75 @@ define([
     };
 
     /** 
+     * array of champions
+     * data {
+     * 'position',
+     * 'level'
+     * 'items'
+     *    'itemID'
+     *    'displayName'
+     * 'championName',
+     * 'summonerSpells
+     *     'summonerSpellOne'
+     *        'displayName'
+     *     'summonerSpellTwo'
+     *        'displayName'
+     * 'runes'
+     *    'keystone'
+     *    'primaryRuneTree'
+     *       'displayName'
+     *       'id'
+     *    'secondaryRuneTree'
+     *      '
+     * 'team' "ORDER" blue or "CHAOS" red
+     * }
+     */
+    const DEFAULT_CHAMP_DATA = {
+      'abilities': [],
+      'name': 'no-champ',
+      'icon': '../../img/howling_abyss.png',
+    };
+
+    function parseInGameParticipantsData(participantsData) {
+      let blueTeam = [];
+      let redTeam = [];
+      for (let participant of participantsData) {
+
+        let champion = dataHandler.getChampionByName(participant['championName']);
+        let champData = _parseChampionData(champion);
+
+        let spell1 = dataHandler.getSpellByName(participant['summonerSpells']['summonerSpellOne']['displayName']);
+        let spell2 = dataHandler.getSpellByName(participant['summonerSpells']['summonerSpellTwo']['displayName']);
+
+        let spellsData = [
+          _parseSpellData(spell1),
+          _parseSpellData(spell2),
+        ];
+
+        let parsedData = {
+          'position': participant['position'],
+          'level': participant['level'],
+          'items': 'TODO',
+          'perks': 'TODO',
+          'spells': spellsData,
+          'champion': champData,
+        };
+
+        if (participant['team'])
+          if (participant['team'] === "ORDER") {
+            blueTeam.push(parsedData);
+          } else if (participant['team'] === "CHAOS") {
+            redTeam.push(parsedData);
+          }
+
+      }
+      return {
+        'blueTeam': blueTeam,
+        'redTeam': redTeam,
+      }
+    }
+
+    /** 
      * data {
      * 'assignedPosition',
      * 'cellId',
@@ -64,128 +133,141 @@ define([
      * 'team',
      * }
      */
-    function getTeamData(team) {
-
-      let teamResult = [];
-      for (let participantData of team) {
-        // No champ has been picked yet
-        let champData = {};
-        // if (participantData['championId'] === 0) {
-        //   participantData['championId'] = 1;
+    function parseInChampSelectData(data) {
+        // let parsedData = {
+        //   'mydataTeam': {
+        //     'participants': Parser.getTeamData(data['myTeam']),
+        //     'color': data['myTeam'][0]['team'] === 1 ? 'blue' : 'red',
+        //   }
+        //   ,
+        //   'theirTeam': {
+        //     'participants': Parser.getTeamData(data['theirTeam']),
+        //     // theirTeam can be empty, so take the opposite of the myTeam
+        //     'color': data['myTeam'][0]['team'] === 1 ? 'red' : 'blue',
+        //   }
         // }
-        if (participantData['championId'] === 0) {
-          champData =  {
-            'abilities': [],
-            'name': 'no-champ',
-            'icon': '../../img/howling_abyss.png',
-          };
-        } else {
-          champData = _getChampionInfo(participantData['championId']);
-          // Update the abilities by noting if abilities reduce the CD
-            for (let [key, ability] of Object.entries(champData['abilities'])) {
+      let participantsData = data['myTeam'].concat(data['theirTeam']);
 
-              let abilityCdRedType = dataHandler.getCdReductionType(ability['name']);
-              champData['abilities'][key]['cooldownReduceType'] = abilityCdRedType;
-              // Getting the abilitiy's cooldown description
-              if (abilityCdRedType != '') {
-                let description = dataHandler.getCdDescription(participantData['championId'], key);
-                let array = description.split('cooldown');
-                let newDescription = array.join('<b>cooldown</b>');
-                champData['abilities'][key]['description'] = newDescription;
-              }
-            }
-          }
+      let blueTeam = [];
+      let redTeam = [];
 
-          let spellsData = [
-            _getSpellInfo(participantData['spell1Id']),
-            _getSpellInfo(participantData['spell2Id'])
-          ];
+      for (let participant of participantsData) {
+        // No champ has been picked yet
+        let champData = DEFAULT_CHAMP_DATA;
 
-          // TODO: shouldn't be the parser's job
-          // Prioritize flash
-          // if (spellsData[1]['name'] == 'SummonerFlash')
-          //   [spellsData[0], spellsData[1]] = [spellsData[1], spellsData[0]];
-
-          let neededData = {
-            'cellId': participantData['cellId'],
-            'spells': spellsData,
-            'champion': champData,
-            // 'perks': participantData['cellId']
-          };
-
-          teamResult.push(neededData);
+        if (participant['championId'] !== 0) {
+          let champion = dataHandler.getChampionById(participant['championId']);
+          champData = _parseChampionData(champion);
         }
-        return teamResult;
-      }
 
-    function _getChampionInfo(id) {
+        let spell1 = dataHandler.getSpellById(participant['spell1Id']);
+        let spell2 = dataHandler.getSpellById(participant['spell2Id']);
+
+        let spellsData = [
+          _parseSpellData(spell1),
+          _parseSpellData(spell2),
+        ];
+
+        let parsedData = {
+          'cellId': participant['cellId'],
+          'spells': spellsData,
+          'champion': champData,
+          'perks': 'MAYBE TODO FOR USER',
+          'team_color': participant['team'] === 1 ? 'red' : 'blue'
+        };
+
+        if (participant['team'] === 1) {
+          redTeam.push(parsedData);
+        } else if (participant['team'] === 2) {
+          blueTeam.push(parsedData);
+        }
+      }
+      return {
+        'blueTeam': blueTeam,
+        'redTeam': redTeam,
+      }
+    }
+
+    function _parseChampionData(champion) {
 
       let patchVersion = dataHandler.getPatchVersion();
-      let champDetails = dataHandler.getChampionById(id);
-      let abilities = champDetails['abilities'];
+      let abilities = champion['abilities'];
 
-      data = {
-        'name': champDetails['name'],
-        'icon': `https://ddragon.leagueoflegends.com/cdn/${patchVersion}/img/champion/` + champDetails['ddragon-image']['full'],
+      champData = {
+        'name': champion['name'],
+        'icon': `https://ddragon.leagueoflegends.com/cdn/${patchVersion}/img/champion/` + champion['ddragon-image']['full'],
         'abilities': {
           'P': {
             'name': abilities['P'][0]['name'],
             'icon': `https://ddragon.leagueoflegends.com/cdn/${patchVersion}/img/passive/` + abilities['P'][0]['ddragon-image']['full'],
-            'cooldowns': abilities['P'][0]['cooldown'] === null ? [null] : abilities['P'][0]['cooldown']['modifiers'][0]['values'],
+            'cooldowns': abilities['P'][0]['cooldown'] === null ? ['-'] : abilities['P'][0]['cooldown']['modifiers'][0]['values'],
           },
           'Q': {
             'name': abilities['Q'][0]['name'],
             'icon': `https://ddragon.leagueoflegends.com/cdn/${patchVersion}/img/spell/` + abilities['Q'][0]['ddragon-image']['full'],
-            'cooldowns': abilities['Q'][0]['cooldown'] === null ? [null] : abilities['Q'][0]['cooldown']['modifiers'][0]['values'],
+            'cooldowns': abilities['Q'][0]['cooldown'] === null ? ['-'] : abilities['Q'][0]['cooldown']['modifiers'][0]['values'],
           },
           'W': {
             'name': abilities['W'][0]['name'],
             'icon': `https://ddragon.leagueoflegends.com/cdn/${patchVersion}/img/spell/` + abilities['W'][0]['ddragon-image']['full'],
-            'cooldowns': abilities['W'][0]['cooldown'] === null ? [null] : abilities['W'][0]['cooldown']['modifiers'][0]['values'],
+            'cooldowns': abilities['W'][0]['cooldown'] === null ? ['-'] : abilities['W'][0]['cooldown']['modifiers'][0]['values'],
           },
           'E': {
             'name': abilities['E'][0]['name'],
             'icon': `https://ddragon.leagueoflegends.com/cdn/${patchVersion}/img/spell/` + abilities['E'][0]['ddragon-image']['full'],
-            'cooldowns': abilities['E'][0]['cooldown'] === null ? [null] : abilities['E'][0]['cooldown']['modifiers'][0]['values'],
+            'cooldowns': abilities['E'][0]['cooldown'] === null ? ['-'] : abilities['E'][0]['cooldown']['modifiers'][0]['values'],
           },
           'R': {
             'name': abilities['R'][0]['name'],
             'icon': `https://ddragon.leagueoflegends.com/cdn/${patchVersion}/img/spell/` + abilities['R'][0]['ddragon-image']['full'],
-            'cooldowns': abilities['R'][0]['cooldown'] === null ? [null] : abilities['R'][0]['cooldown']['modifiers'][0]['values'],
+            'cooldowns': abilities['R'][0]['cooldown'] === null ? ['-'] : abilities['R'][0]['cooldown']['modifiers'][0]['values'],
           }
         }
       };
 
       // TODO: remove later
       // Passive Cooldown: most 5 numbers is needed
-      if (data['abilities']['P']['cooldowns'].length > 5) {
+      if (champData['abilities']['P']['cooldowns'].length > 5) {
         // Lengthy cooldown based on lvl (lvl 1-18)
-        data['abilities']['P']['cooldowns'] = [
+        champData['abilities']['P']['cooldowns'] = [
           reset(data['abilities']['P']['cooldowns']),
           end(data['abilities']['P']['cooldowns']),
         ];
       }
 
       // Deal with errors made by ddragon
-      if (EXCEPTION_DATA.hasOwnProperty(data['name'])) {
-        Object.assign(data, EXCEPTION_DATA[data['name']]);
+      if (EXCEPTION_DATA.hasOwnProperty(champData['name'])) {
+        Object.assign(champData, EXCEPTION_DATA[champData['name']]);
       }
 
-      return data;
+      // Update the abilities by noting if abilities reduce the CD
+      for (let [key, ability] of Object.entries(champData['abilities'])) {
+
+        let abilityCdRedType = dataHandler.getCdReductionType(ability['name']);
+        champData['abilities'][key]['cooldownReduceType'] = abilityCdRedType;
+        // Getting the abilitiy's cooldown description
+        if (abilityCdRedType != '') {
+          let description = dataHandler.getCdDescription(champion['id'], key);
+          let array = description.split('cooldown');
+          let newDescription = array.join('<b>cooldown</b>');
+          champData['abilities'][key]['description'] = newDescription;
+        }
+      }
+
+      return champData;
     }
 
 
-    function _getSpellInfo(id) {
-      let spell = dataHandler.getSpellById(id);
+    function _parseSpellData(spell) {
       let patchVersion = dataHandler.getPatchVersion();
       // Not known yet
-      if (typeof(spell) === 'undefined') {
-      return {
-        'cooldown': 0,
-        'image': '../../img/howling_abyss.png',
-        'name': 'dummy',
-        'description': 'dummy',
-      };
+      if (typeof (spell) === 'undefined') {
+        return {
+          'cooldown': '-',
+          'image': '../../img/howling_abyss.png',
+          'name': 'dummy',
+          'description': 'dummy',
+        };
       }
 
       return {
@@ -197,6 +279,7 @@ define([
     }
 
     return {
-      getTeamData,
+      parseInChampSelectData,
+      parseInGameParticipantsData,
     }
   });

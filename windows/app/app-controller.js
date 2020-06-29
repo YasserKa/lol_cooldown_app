@@ -41,29 +41,46 @@ define([
     }
 
     _inGameEventUpdateListener(data) {
+      // TODO: get JSON.parse(data['game_data'])['mapNumber']
       // Using it from registering the function
       if (data.hasOwnProperty('feature') && data['feature'] === 'live_client_data') {
-        this.appView.updateInGame(data['info']['live_client_data']);
-      } else {
-      // Using it at the start of initialization
-        this.appView.updateInGame(data);
+        data = data['info']['live_client_data'];
       }
+
+        if (data.hasOwnProperty('events')) {
+          let eventsInGame = JSON.parse(data['events']);
+          console.log(eventsInGame);
+        }
+
+        if (data.hasOwnProperty('all_players')) {
+          let allPlayers = JSON.parse(data['all_players']);
+          let parsedData = Parser.parseInGameParticipantsData(allPlayers);
+          this.appView.updateInGame(parsedData);
+        }
+
+        ///// 
+        // Assisters: []
+        // EventID: 3
+        // EventName: "ChampionKill"
+        // EventTime: 582.3441162109375
+        // KillerName: "Clumsy Gamer"
+        // VictimName: "Trundle Bot"
+        ///// 
+        // Assisters: []
+        // DragonType: "Air"
+        // EventID: 6
+        // EventName: "DragonKill"
+        // EventTime: 770.9714965820312
+        // KillerName: "Clumsy Gamer"
+        // Stolen: "False"
+        //////
+
+      // this.appView.updateInGame(data);
     }
 
     _inChampSelectEventUpdateListener(data) {
       if (data.hasOwnProperty('myTeam') && data['myTeam'].length > 0) {
-        let parsedData = {
-          'myTeam': {
-            'participants': Parser.getTeamData(data['myTeam']),
-            'color': data['myTeam'][0]['team'] === 1 ? 'blue' : 'red',
-          }
-          ,
-          'theirTeam': {
-            'participants': Parser.getTeamData(data['theirTeam']),
-            // theirTeam can be empty, so take the opposite of the myTeam
-            'color': data['myTeam'][0]['team'] === 1 ? 'red' : 'blue',
-          }
-        }
+        let parsedData = Parser.parseInChampSelectData(data);
         this.appView.updateInChampSelect(parsedData);
       }
     }

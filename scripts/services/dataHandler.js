@@ -65,10 +65,21 @@ define([],
       return _champions[Object.keys(_champions).find(key => _champions[key]['id'] === id)];
     }
 
+    function getChampionByName(name) {
+      _init();
+      return _champions[name];
+    }
+
     function getSpellById(id) {
       _init();
       return _summonerSpells[Object.keys(_summonerSpells).find(
         key => parseInt(_summonerSpells[key]['key']) === id)];
+    }
+
+    function getSpellByName(name) {
+      _init();
+      return _summonerSpells[Object.keys(_summonerSpells).find(
+        key => _summonerSpells[key]['name'] === name)];
     }
 
     function getCdReductionType(abilityName) {
@@ -99,7 +110,9 @@ define([],
 
     return {
       getChampionById,
+      getChampionByName,
       getSpellById,
+      getSpellByName,
       getCdReductionType,
       getCdDescription,
       getPatchVersion,
