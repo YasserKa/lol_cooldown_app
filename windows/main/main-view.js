@@ -1,6 +1,8 @@
 define([
-  '../SampleAppView.js'
-], function (SampleAppView) {
+  '../SampleAppView.js',
+], function (
+  SampleAppView
+  ) {
 
   class MainView extends SampleAppView {
     constructor() {

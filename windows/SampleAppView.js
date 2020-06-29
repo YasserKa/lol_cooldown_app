@@ -1,10 +1,8 @@
 define([
   "../scripts/services/drag-service.js", 
-  "../../scripts/constants/window-names.js",
   "../../scripts/services/windows-service.js",
   ], function(
     DragService,
-    WindowNames,
     WindowsService,
     ) {
   class SampleAppView {

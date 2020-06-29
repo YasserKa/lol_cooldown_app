@@ -66,8 +66,6 @@ define([
         }
         this.appView.updateInChampSelect(parsedData);
       }
-      if (data.hasOwnProperty('feature') && data['feature'] === 'live_client_data') {
-      }
     }
   }
 

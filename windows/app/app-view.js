@@ -5,7 +5,6 @@ define(["../SampleAppView.js", "../../scripts/services/htmlHandler.js"],
       constructor() {
         super();
 
-        this._infoLog = document.getElementById("infoLog");
         this.updateInGame = this.updateInGame.bind(this);
         this.updateInChampSelect = this.updateInChampSelect.bind(this);
       }
@@ -66,7 +65,6 @@ define(["../SampleAppView.js", "../../scripts/services/htmlHandler.js"],
         if (eventsInGame !== '') {
           console.log(JSON.parse(eventsInGame));
         }
-        // this._logLine(this._infoLog, string);
       }
     }
 

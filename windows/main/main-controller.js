@@ -1,10 +1,8 @@
 define([
   '../../windows/main/main-view.js',
-  "../../scripts/constants/window-names.js",
   "../../scripts/services/windows-service.js",
 ], function (
   MainView,
-  WindowNames,
   WindowsService,
   ) {
 

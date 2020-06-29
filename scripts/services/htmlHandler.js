@@ -1,6 +1,3 @@
-/**
- * Detect whether champ select is currently running
- */
 define([],
     function () {
 
@@ -9,7 +6,6 @@ define([],
         function update(game) {
             _initialize(game);
             _updateView(game);
-
         }
 
         function _initialize(game) {
@@ -80,7 +76,7 @@ define([],
             el += `</div>`
             return el;
         }
-        
+
         // TODO: make exception for aphelios
         function _createAbilities(participant, teamColor) {
             let el =
