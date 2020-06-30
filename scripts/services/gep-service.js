@@ -23,20 +23,21 @@ define([
       'announcer',
       'counters',
       'match_info',
-      'damage',
-      'heal',
       'live_client_data'
-      // 'gold'
     ];
     const REGISTER_RETRY_TIMEOUT = 10000;
     const NUMBER_OF_RETRIES = 5;
+    let _isRegisteredToGEP = false;
 
-    // Get the current state of the launcher
+    // get the current state of the launcher
     function getInGameInfo() {
-      // await init();
 
       return new Promise((resolve => {
-        overwolf.games.events.getInfo(function (event) {
+        overwolf.games.events.getInfo(async function (event) {
+          if (!_isRegisteredToGEP) {
+            await new Promise(r => setTimeout(r, 2000));
+            return getInGameInfo();
+          }
           resolve(event['res']['live_client_data']);
         });
       }));
@@ -45,18 +46,16 @@ define([
     function registerToGEP(listener) {
       let retries = 0;
       overwolf.games.events.setRequiredFeatures(REQUIRED_FEATURES, function (response) {
-        if (response.status === 'error') { console.log(`Failed to register to GEP, retrying in ${REGISTER_RETRY_TIMEOUT / 1000}s...`);
-
-        console.log(retries);
+        if (response.status === 'error') { 
+          console.log(`Failed to register to GEP, retrying in ${REGISTER_RETRY_TIMEOUT / 1000}s...`);
           if (retries >= NUMBER_OF_RETRIES) {
             return;
           }
           setTimeout(registerToGEP, REGISTER_RETRY_TIMEOUT, listener);
           retries++;
-
           return;
         }
-
+        _isRegisteredToGEP = true;
         console.log(`Successfully registered to GEP.`);
 
         overwolf.games.events.onInfoUpdates2.removeListener(listener);
