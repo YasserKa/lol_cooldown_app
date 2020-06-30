@@ -67,7 +67,8 @@ define([],
 
     function getChampionByName(name) {
       _init();
-      return _champions[name];
+      return _champions[Object.keys(_champions).find(
+        key => _champions[key]['name'] === name)];
     }
 
     function getSpellById(id) {
