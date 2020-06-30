@@ -71,12 +71,14 @@ define(["../../scripts/constants/states.js",],
     function _onStateChanged(event) {
       const phase = event['info']['game_flow']['phase'];
       let state = ''
+
       switch (phase) {
         case 'ChampSelect':
           state = States.IN_CHAMPSELECT;
           break;
         case 'InProgress':
         case 'GameStart':
+        case 'Reconnect':
           state = States.IN_GAME;
           break;
         default:
@@ -108,6 +110,7 @@ define(["../../scripts/constants/states.js",],
               resolve(States.IN_CHAMPSELECT);
               break;
             case 'InProgress':
+            case 'Reconnect':
               resolve(States.IN_GAME);
             default:
               resolve(States.IDLE);
