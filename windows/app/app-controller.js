@@ -17,6 +17,7 @@ define([
       this.appView = new AppView();
 
       this._inChampSelectEventUpdateListener = this._inChampSelectEventUpdateListener.bind(this);
+      this._registerEvents = this._registerEvents.bind(this);
       this._inGameEventUpdateListener = this._inGameEventUpdateListener.bind(this);
     }
 
