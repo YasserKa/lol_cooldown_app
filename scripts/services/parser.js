@@ -173,13 +173,14 @@ define([
           'spells': spellsData,
           'champion': champData,
           'perks': 'MAYBE TODO FOR USER',
-          'team_color': participant['team'] === 1 ? 'red' : 'blue'
+          'team_color': participant['team'] === 1 ? 'blue' : 'red'
         };
 
+        console.log(participant);
         if (participant['team'] === 1) {
-          redTeam.push(parsedData);
-        } else if (participant['team'] === 2) {
           blueTeam.push(parsedData);
+        } else if (participant['team'] === 2) {
+          redTeam.push(parsedData);
         }
       }
       return {
