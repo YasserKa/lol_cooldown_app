@@ -176,7 +176,6 @@ define([
           'team_color': participant['team'] === 1 ? 'blue' : 'red'
         };
 
-        console.log(participant);
         if (participant['team'] === 1) {
           blueTeam.push(parsedData);
         } else if (participant['team'] === 2) {
