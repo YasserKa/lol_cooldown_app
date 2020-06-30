@@ -10,17 +10,22 @@ define([
   WindowsService,
 ) {
   class BackgroundController {
+
     static async run() {
+      this._initialized = false
+      this._currentState = States.NONE;
+
       // open the appropriate window depending on the state
-      await this._initialize();
+      await this._init();
       // close/open windows upon state change
       ClientService.updateStateChangedListener(this._onStateChanged);
     }
 
     // Initialize app
-    static async _initialize() {
+    static async _init() {
       const state = await ClientService.getState();
       BackgroundController._updateWindows(state)
+      this._initialized = true;
     }
 
     // On client state change (idle/in-champselect/in-game)
@@ -31,13 +36,19 @@ define([
     static async _updateWindows(state) {
       switch (state) {
         case States.IDLE:
-          WindowsService.openWindowOnlyIfNotOpen(WindowNames.MAIN);
+          // open at the start or if transitioning from another state
+          if (!this._initialized || 
+            this._currentState === States.IN_CHAMPSELECT || this._currentState === States.IN_GAME
+            )  {
+            WindowsService.openWindowOnlyIfNotOpen(WindowNames.MAIN);
+          }
           break;
         case States.IN_CHAMPSELECT:
         case States.IN_GAME:
           WindowsService.openWindowOnlyIfNotOpen(WindowNames.APP);
           break;
       }
+      this._currentState = state;
     }
   }
 
