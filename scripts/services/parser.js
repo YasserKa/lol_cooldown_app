@@ -83,7 +83,40 @@ define([
       'icon': '../../img/howling_abyss.png',
     };
 
-    function parseInGameParticipantsData(participantsData) {
+        ///// 
+        // Assisters: []
+        // EventID: 3
+        // EventName: "ChampionKill"
+        // EventTime: 582.3441162109375
+        // KillerName: "Clumsy Gamer"
+        // VictimName: "Trundle Bot"
+        ///// 
+        // Assisters: []
+        // DragonType: "Air"
+        // EventID: 6
+        // EventName: "DragonKill"
+        // EventTime: 770.9714965820312
+        // KillerName: "Clumsy Gamer"
+        // Stolen: "False"
+        //////
+    function parseInGameData(data) {
+      let parsedData = {};
+
+      if (data.hasOwnProperty('all_players')) {
+        let allPlayers = JSON.parse(data['all_players']);
+        console.log(allPlayers);
+        parsedData = _parseInGameAllPlayersData(allPlayers);
+      }
+
+      if (data.hasOwnProperty('events')) {
+        let events = JSON.parse(data['events']);
+        parsedData['events'] = events;
+      }
+
+      return parsedData;
+    }
+
+    function _parseInGameAllPlayersData(participantsData) {
       let blueTeam = [];
       let redTeam = [];
       for (let participant of participantsData) {
@@ -100,12 +133,13 @@ define([
         ];
 
         let parsedData = {
+          'name': participant['summonerName'],
+          'champion': champData,
           'position': participant['position'],
           'level': participant['level'],
-          'items': 'TODO',
-          'perks': 'TODO',
           'spells': spellsData,
-          'champion': champData,
+          'perks': [],
+          'items': [],
         };
 
         if (participant['team'])
@@ -114,8 +148,8 @@ define([
           } else if (participant['team'] === "CHAOS") {
             redTeam.push(parsedData);
           }
-
       }
+
       return {
         'blueTeam': blueTeam,
         'redTeam': redTeam,
@@ -134,18 +168,6 @@ define([
      * }
      */
     function parseInChampSelectData(data) {
-        // let parsedData = {
-        //   'mydataTeam': {
-        //     'participants': Parser.getTeamData(data['myTeam']),
-        //     'color': data['myTeam'][0]['team'] === 1 ? 'blue' : 'red',
-        //   }
-        //   ,
-        //   'theirTeam': {
-        //     'participants': Parser.getTeamData(data['theirTeam']),
-        //     // theirTeam can be empty, so take the opposite of the myTeam
-        //     'color': data['myTeam'][0]['team'] === 1 ? 'red' : 'blue',
-        //   }
-        // }
       let participantsData = data['myTeam'].concat(data['theirTeam']);
 
       let blueTeam = [];
@@ -169,11 +191,13 @@ define([
         ];
 
         let parsedData = {
-          'cellId': participant['cellId'],
-          'spells': spellsData,
+          'name': participant['cellId'],
           'champion': champData,
+          'position': participant['assignedPosition'] === '' ? participant['cellId'] : participant['assignedPosition'],
+          'level': 0,
+          'spells': spellsData,
           'perks': 'MAYBE TODO FOR USER',
-          'team_color': participant['team'] === 1 ? 'blue' : 'red'
+          'items': [],
         };
 
         if (participant['team'] === 1) {
@@ -280,6 +304,6 @@ define([
 
     return {
       parseInChampSelectData,
-      parseInGameParticipantsData,
+      parseInGameData,
     }
   });

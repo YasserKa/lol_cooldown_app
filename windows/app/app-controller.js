@@ -48,35 +48,11 @@ define([
         data = data['info']['live_client_data'];
       }
 
-        if (data.hasOwnProperty('events')) {
-          let eventsInGame = JSON.parse(data['events']);
-          console.log(eventsInGame);
-        }
+      let parsedData = Parser.parseInGameData(data);
 
-        if (data.hasOwnProperty('all_players')) {
-          let allPlayers = JSON.parse(data['all_players']);
-          let parsedData = Parser.parseInGameParticipantsData(allPlayers);
-          this.appView.updateInGame(parsedData);
-        }
-
-        ///// 
-        // Assisters: []
-        // EventID: 3
-        // EventName: "ChampionKill"
-        // EventTime: 582.3441162109375
-        // KillerName: "Clumsy Gamer"
-        // VictimName: "Trundle Bot"
-        ///// 
-        // Assisters: []
-        // DragonType: "Air"
-        // EventID: 6
-        // EventName: "DragonKill"
-        // EventTime: 770.9714965820312
-        // KillerName: "Clumsy Gamer"
-        // Stolen: "False"
-        //////
-
-      // this.appView.updateInGame(data);
+      if (Object.keys(parsedData).length > 0) {
+        this.appView.updateInGame(parsedData);
+      }
     }
 
     _inChampSelectEventUpdateListener(data) {
