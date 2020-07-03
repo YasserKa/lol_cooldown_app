@@ -1,5 +1,9 @@
-define([],
-  function () {
+define([
+  "../../scripts/services/client-service.js",
+],
+  function (
+    ClientService
+    ) {
 
     let _initialized = false;
 
@@ -13,7 +17,6 @@ define([],
     function _init() {
       if (_initialized)
         return;
-
       
       _updateDataIfNeeded();
 
@@ -32,32 +35,29 @@ define([],
       // 1- Add time modified in server
       // 2- Update if data modified is outdated
       // 3- make a call just to check the version
-    async function _updateDataIfNeeded() {
+    function _updateDataIfNeeded() {
       _data = JSON.parse(localStorage.getItem("data"));
       if (_data === null) {
-        let data = await _getDataFromServer();
-        localStorage.setItem("data", data);
-        _data = JSON.parse(data);
+        _updateDataUsingServer((data) => {
+          localStorage.setItem("data", data);
+          _data = JSON.parse(data);
+        });
       }
     }
 
-    function _getDataFromServer() {
-      return new Promise(async (resolve, reject) => {
+    function _updateDataUsingServer(callback) {
         let path = 'https://www.lolcooldown.com/api/data';
         let xhr = new XMLHttpRequest();
 
         xhr.onreadystatechange = () => {
           if (xhr.readyState === XMLHttpRequest.DONE) {
             if (xhr.status === 201) {
-              resolve(xhr.response);
-            } else {
-              reject({});
+              callback(xhr.response);
             }
           }
         };
-        xhr.open("GET", path, true);
+        xhr.open("GET", path, false);
         xhr.send();
-      });
     }
 
     function getChampionById(id) {
@@ -94,6 +94,28 @@ define([],
       return '';
     }
 
+    function getRuneById(id) {
+      _init();
+      // cooldown reduction minor rune
+      if (id === 5007) {
+          return {
+              'icon': '../../img/statmodscdrscalingicon.png',
+              'key': 'statmodscdrscaling',
+              'shortDesc': '1%-10% (based on level) cooldown reduction',
+              'id': 5007,
+          };
+      }
+      for (let runeReforged of _runesReforged) {
+        for (let slot of runeReforged['slots']) {
+          for (let rune of slot['runes']) {
+            if (rune['id'] === id) {
+              return rune;
+            }
+          }
+        }
+      }
+    }
+
     function getCdDescription(champId, abilityKey) {
       _init();
       let champsDetails = getChampionById(champId);
@@ -112,6 +134,7 @@ define([],
     return {
       getChampionById,
       getChampionByName,
+      getRuneById,
       getSpellById,
       getSpellByName,
       getCdReductionType,

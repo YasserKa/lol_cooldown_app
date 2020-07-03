@@ -15,6 +15,7 @@ define([
 
     constructor() {
       this.appView = new AppView();
+      this._participantRunes = {};
 
       this._inChampSelectEventUpdateListener = this._inChampSelectEventUpdateListener.bind(this);
       this._registerEvents = this._registerEvents.bind(this);
@@ -48,11 +49,24 @@ define([
         data = data['info']['live_client_data'];
       }
 
+      // if (Object.keys(this._participantRunes).length === 0) {
+      //   _updateRunesUsingServer((participantRunes) => {
+      //     this._participantRunes = JSON.parse(participantRunes);
+      //   });
+      // }
+      this._participantRunes = {
+        'Clumsy Gamer': {
+          perkIds: [5007, 8106, 8134, 8210, 8347],
+          perkStyle: 8000,
+          perkSubStyle: 8200,
+        }
+      };
+
+      data['participantRunes'] = this._participantRunes;
+
       let parsedData = Parser.parseInGameData(data);
 
-      if (Object.keys(parsedData).length > 0) {
-        this.appView.update(parsedData);
-      }
+      this.appView.update(parsedData);
     }
 
     _inChampSelectEventUpdateListener(data) {
@@ -62,6 +76,31 @@ define([
       }
     }
   }
+
+  async function _updateRunesUsingServer(callback) {
+    let summonerInfo = await ClientService.getSummonerInfo();
+    summonerInfo['summonerName'] = '#random';
+    let summonerName = encodeURIComponent(summonerInfo['summonerName']);
+    let region = encodeURIComponent(summonerInfo['region']);
+    let path = `https://www.lolcooldown.com/api/matchrunes?summonerName=${summonerName}&region=${region}`;
+
+    let xhr = new XMLHttpRequest();
+
+    xhr.onreadystatechange = () => {
+      if (xhr.readyState === XMLHttpRequest.DONE) {
+        if (xhr.status === 200) {
+          callback(xhr.response);
+        } else {
+          callback({});
+        }
+      }
+    };
+
+    xhr.open("GET", path, false);
+    xhr.send();
+
+  }
+
 
   return AppController;
 });

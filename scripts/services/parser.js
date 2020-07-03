@@ -3,8 +3,11 @@ define([
 ],
   function (
     dataHandler
-    ) {
+  ) {
 
+    // runes for cooldown reduction
+
+    const NEEDED_RUNES = [5007, 8106, 8134, 8210, 8347];
     const EXCEPTION_DATA = {
       'Sett': {
         'abilities': {
@@ -83,22 +86,22 @@ define([
       'icon': '../../img/howling_abyss.png',
     };
 
-        ///// 
-        // Assisters: []
-        // EventID: 3
-        // EventName: "ChampionKill"
-        // EventTime: 582.3441162109375
-        // KillerName: "Clumsy Gamer"
-        // VictimName: "Trundle Bot"
-        ///// 
-        // Assisters: []
-        // DragonType: "Air"
-        // EventID: 6
-        // EventName: "DragonKill"
-        // EventTime: 770.9714965820312
-        // KillerName: "Clumsy Gamer"
-        // Stolen: "False"
-        //////
+    ///// 
+    // Assisters: []
+    // EventID: 3
+    // EventName: "ChampionKill"
+    // EventTime: 582.3441162109375
+    // KillerName: "Clumsy Gamer"
+    // VictimName: "Trundle Bot"
+    ///// 
+    // Assisters: []
+    // DragonType: "Air"
+    // EventID: 6
+    // EventName: "DragonKill"
+    // EventTime: 770.9714965820312
+    // KillerName: "Clumsy Gamer"
+    // Stolen: "False"
+    //////
     function parseInGameData(data) {
       let parsedData = {
         'redTeam': [],
@@ -108,8 +111,16 @@ define([
 
       if (data.hasOwnProperty('all_players')) {
         let allPlayers = JSON.parse(data['all_players']);
-        let allPlayersParsed = _parseInGameAllPlayersData(allPlayers);
-        Object.assign(parsedData, allPlayersParsed);
+
+        // assign runes to participants
+        if (data.hasOwnProperty('participantRunes')) {
+          for (let player in allPlayers) {
+            let summonerName = allPlayers[player]['summonerName'];
+            allPlayers[player]['runes'] = data['participantRunes'][summonerName];
+          }
+          let allPlayersParsed = _parseInGameAllPlayersData(allPlayers);
+          Object.assign(parsedData, allPlayersParsed);
+        }
       }
 
       if (data.hasOwnProperty('events')) {
@@ -119,6 +130,25 @@ define([
       }
 
       return parsedData;
+    }
+
+
+    function _parseParticipantRunes(participantRunes) {
+      let parsedParticipantRunes = {};
+      let runeIds = participantRunes['perkIds'];
+
+      let neededRuneIds = runeIds.filter(value => NEEDED_RUNES.includes(value));
+
+      for (let runeId of neededRuneIds) {
+        let rune = dataHandler.getRuneById(runeId);
+        parsedParticipantRunes[runeId] = {
+          'id': rune['id'],
+          'image': rune['id'] == 5007 ? rune['icon'] : 'https://ddragon.leagueoflegends.com/cdn/img/' + rune['icon'],
+          'name': rune['key'],
+          'description': rune['shortDesc'],
+        };
+      }
+      return parsedParticipantRunes;
     }
 
     function _parseInGameAllPlayersData(participantsData) {
@@ -143,7 +173,7 @@ define([
           'position': participant['position'],
           'level': participant['level'],
           'spells': spellsData,
-          'perks': [],
+          'runes': _parseParticipantRunes(participant['runes']),
           'items': [],
         };
 

@@ -36,6 +36,15 @@ define(["../../scripts/constants/states.js",],
       overwolf.games.launchers.events.onInfoUpdates.addListener(_onEventUpdate);
     }
 
+    async function getSummonerInfo() {
+      await init();
+      return new Promise((resolve => {
+        overwolf.games.launchers.events.getInfo(LAUNCHER_ID, function (event) {
+          resolve(event['res']['summoner_info']);
+        });
+      }));
+    }
+
     // Subscribe to features in LoL's launcher
     function setFeatures() {
       return new Promise((resolve => {
@@ -179,6 +188,7 @@ define(["../../scripts/constants/states.js",],
     return {
       init,
       getState,
+      getSummonerInfo,
       getChampSelectInfo,
       updateStateChangedListener,
       updateStateChangedForAppListener,
