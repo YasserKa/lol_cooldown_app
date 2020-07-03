@@ -100,17 +100,22 @@ define([
         // Stolen: "False"
         //////
     function parseInGameData(data) {
-      let parsedData = {};
+      let parsedData = {
+        'redTeam': [],
+        'blueTeam': [],
+        'events': [],
+      };
 
       if (data.hasOwnProperty('all_players')) {
         let allPlayers = JSON.parse(data['all_players']);
-        console.log(allPlayers);
-        parsedData = _parseInGameAllPlayersData(allPlayers);
+        let allPlayersParsed = _parseInGameAllPlayersData(allPlayers);
+        Object.assign(parsedData, allPlayersParsed);
       }
 
       if (data.hasOwnProperty('events')) {
         let events = JSON.parse(data['events']);
-        parsedData['events'] = events;
+        // let eventsParsed = events;
+        // Object.assign(parsedData, eventsParsed);
       }
 
       return parsedData;
@@ -119,8 +124,8 @@ define([
     function _parseInGameAllPlayersData(participantsData) {
       let blueTeam = [];
       let redTeam = [];
-      for (let participant of participantsData) {
 
+      for (let participant of participantsData) {
         let champion = dataHandler.getChampionByName(participant['championName']);
         let champData = _parseChampionData(champion);
 
@@ -133,7 +138,7 @@ define([
         ];
 
         let parsedData = {
-          'name': participant['summonerName'],
+          'summonerName': participant['summonerName'],
           'champion': champData,
           'position': participant['position'],
           'level': participant['level'],
@@ -191,9 +196,9 @@ define([
         ];
 
         let parsedData = {
-          'name': participant['cellId'],
+          'cellId': participant['cellId'],
           'champion': champData,
-          'position': participant['assignedPosition'] === '' ? participant['cellId'] : participant['assignedPosition'],
+          'position': participant['assignedPosition'],
           'level': 0,
           'spells': spellsData,
           'perks': 'MAYBE TODO FOR USER',
