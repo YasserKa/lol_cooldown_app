@@ -47,7 +47,6 @@
     "windows": {
       "background": {
         "file": "windows/background/background.html",
-        "background_optimization": false,
         "is_background_page": true
       },
       "main": {
