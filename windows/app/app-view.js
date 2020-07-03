@@ -1,6 +1,12 @@
-define(["../SampleAppView.js", "../../scripts/services/htmlHandler.js"],
-  function (SampleAppView,
-    HtmlHandler) {
+define([
+  "../SampleAppView.js", 
+"../../scripts/services/htmlHandler.js",
+"../../scripts/classes/Game.js",
+],
+  function (
+    SampleAppView,
+    HtmlHandler,
+    Game) {
     class AppView extends SampleAppView {
 
       _initialized = false;
@@ -8,40 +14,35 @@ define(["../SampleAppView.js", "../../scripts/services/htmlHandler.js"],
       constructor() {
         super();
 
-        this.updateInGame = this.updateInGame.bind(this);
-        this.updateInChampSelect = this.updateInChampSelect.bind(this);
+        this.update = this.update.bind(this);
       }
 
+      /**
+       * @param {:
+       *   blueTeam: [{
+       *   name,
+       *   champion,
+       *   position,
+       *   level,
+       *   spells,
+       *   perks,
+       *   items,
+       * }, ...]
+       * , redTeam:...}
+       */
       _init(data) {
-        HtmlHandler.initializeView(data);
+        this.game = new Game(data);
+        HtmlHandler.initializeView(this.game);
+
         this._initialized = true;
       }
 
-      /**
-       * updates the page using this data
-       * @param {myTeam:
-       * , yourTeam:...}
-       */
-      updateInChampSelect(data) {
+      update(data) {
         if (!this._initialized) {
           this._init(data);
         }
-        HtmlHandler.update(data);
-      }
-      // TODO: Parse data from champ select
-      // TODO: Parse data from in-game
-      // TODO: feed parsed data to html handler
-
-      /**
-       * updates the page using this data
-       * @param {myTeam:
-       * , yourTeam:...}
-       */
-      updateInGame(data) {
-        if (!this._initialized) {
-          this._init(data);
-        }
-        HtmlHandler.update(data);
+        this.game.update(data);
+        HtmlHandler.update(this.game);
       }
     }
 

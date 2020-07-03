@@ -51,14 +51,14 @@ define([
       let parsedData = Parser.parseInGameData(data);
 
       if (Object.keys(parsedData).length > 0) {
-        this.appView.updateInGame(parsedData);
+        this.appView.update(parsedData);
       }
     }
 
     _inChampSelectEventUpdateListener(data) {
       if (data.hasOwnProperty('myTeam') && data['myTeam'].length > 0) {
         let parsedData = Parser.parseInChampSelectData(data);
-        this.appView.updateInChampSelect(parsedData);
+        this.appView.update(parsedData);
       }
     }
   }
