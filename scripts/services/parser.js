@@ -1,8 +1,10 @@
 define([
   "../../scripts/services/dataHandler.js",
+  "../../scripts/services/gep-service.js",
 ],
   function (
-    dataHandler
+    dataHandler,
+    GepService,
   ) {
 
     // runes for cooldown reduction
@@ -86,6 +88,40 @@ define([
       'icon': '../../img/howling_abyss.png',
     };
 
+    function parseInGameData(data) {
+      let parsedData = {
+        'redTeam': [],
+        'blueTeam': [],
+        'events': [],
+      };
+
+      if (data.hasOwnProperty('all_players')) {
+        let allPlayers = JSON.parse(data['all_players']);
+
+        // assign runes to participants
+        if (data.hasOwnProperty('participantRunes')) {
+          for (let player in allPlayers) {
+            let summonerName = allPlayers[player]['summonerName'];
+            let runes = [];
+            if (data['participantRunes'].hasOwnProperty(summonerName)) {
+              runes = data['participantRunes'][summonerName]['perkIds'];
+            }
+            allPlayers[player]['runes'] = runes;
+          }
+          let allPlayersParsed = _parseInGameAllPlayersData(allPlayers);
+          Object.assign(parsedData, allPlayersParsed);
+        }
+      }
+
+      if (data.hasOwnProperty('events')) {
+        let events = JSON.parse(data['events'])['Events'];
+        let eventsParsed = _parseInGameEvents(events);
+        parsedData['events'] = eventsParsed;
+      }
+
+      return parsedData;
+    }
+
     ///// 
     // Assisters: []
     // EventID: 3
@@ -102,42 +138,32 @@ define([
     // KillerName: "Clumsy Gamer"
     // Stolen: "False"
     //////
-    function parseInGameData(data) {
-      let parsedData = {
-        'redTeam': [],
-        'blueTeam': [],
-        'events': [],
-      };
-
-      if (data.hasOwnProperty('all_players')) {
-        let allPlayers = JSON.parse(data['all_players']);
-
-        // assign runes to participants
-        if (data.hasOwnProperty('participantRunes')) {
-          for (let player in allPlayers) {
-            let summonerName = allPlayers[player]['summonerName'];
-            allPlayers[player]['runes'] = data['participantRunes'][summonerName];
-          }
-          let allPlayersParsed = _parseInGameAllPlayersData(allPlayers);
-          Object.assign(parsedData, allPlayersParsed);
+    function _parseInGameEvents(events) {
+      let parsedEvents = [];
+      for (event of events) {
+        if (event['EventName'] === 'ChampionKill') {
+          parsedEvents.push({
+            'EventName': 'ChampionKill',
+            'Contributors': [...event['Assisters'], event['KillerName']],
+            'VictimName': event['VictimName'],
+          });
+        }
+        if (event['EventName'] === 'DragonKill' && event['DragonType'] === 'Air') {
+          parsedEvents.push({
+            'EventName': 'DragonKill',
+            'KillerName': event['KillerName'],
+          });
         }
       }
+      return parsedEvents;
 
-      if (data.hasOwnProperty('events')) {
-        let events = JSON.parse(data['events']);
-        // let eventsParsed = events;
-        // Object.assign(parsedData, eventsParsed);
-      }
-
-      return parsedData;
     }
 
 
     function _parseParticipantRunes(participantRunes) {
       let parsedParticipantRunes = {};
-      let runeIds = participantRunes['perkIds'];
 
-      let neededRuneIds = runeIds.filter(value => NEEDED_RUNES.includes(value));
+      let neededRuneIds = participantRunes.filter(value => NEEDED_RUNES.includes(value));
 
       for (let runeId of neededRuneIds) {
         let rune = dataHandler.getRuneById(runeId);
@@ -244,6 +270,7 @@ define([
       return {
         'blueTeam': blueTeam,
         'redTeam': redTeam,
+        'events': [],
       }
     }
 

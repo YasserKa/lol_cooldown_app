@@ -19,8 +19,55 @@ define([
     }
 
     update(data) {
+      this.updateEvents(data['events']);
       this.updateTeam(data['redTeam'], this.redTeam);
       this.updateTeam(data['blueTeam'], this.blueTeam);
+    }
+
+    updateEvents(events) {
+      let dragonKillsEvents = events.filter(value => value['EventName'] === 'DragonKill');
+      if (dragonKillsEvents.length > 0) {
+        this.updateCloudStacks(dragonKillsEvents);
+      }
+
+      let championKillsEvents = events.filter(value => value['EventName'] === 'ChampionKill');
+      if (championKillsEvents.length > 0) {
+        this.updateChampionKills(championKillsEvents)
+      }
+    }
+
+    updateChampionKills(events) {
+      let participants = this.blueTeam.concat(this.redTeam);
+      for (let event of events) {
+        for (let partic of participants) {
+          if (event['Contributors'].includes(partic.getSummonerName())) {
+            partic.addUniqueKill(event['VictimName']);
+          }
+        }
+      }
+    }
+
+    updateCloudStacks(events) {
+      let redCloudStacks = 0;
+      let blueCloudStacks = 0;
+      for (let event of events) {
+        let killerName = event['KillerName'];
+
+        for (let partic of this.blueTeam) {
+          if (partic.getSummonerName() === killerName) {
+            blueCloudStacks++;
+            continue;
+          }
+        }
+        for (let partic of this.redTeam) {
+          if (partic.getSummonerName() === killerName) {
+            redCloudStacks++;
+            continue;
+          }
+        }
+      }
+      this.blueCloudStacks = blueCloudStacks;
+      this.redCloudStacks = redCloudStacks;
     }
 
     updateTeam(inputTeam, team) {

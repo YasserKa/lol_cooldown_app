@@ -43,6 +43,12 @@ define([
       this.champion = data.champion;
     }
 
+    addUniqueKill(name) {
+      if (!this.uniqueKills.includes(name)) {
+        this.uniqueKills.push(name);
+      }
+    }
+
     // using cellId (champSelect) or summonerName (in-game) for id
     getId() {
       return this.cellId === null ? this.summonerName : this.cellId;
