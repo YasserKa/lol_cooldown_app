@@ -125,6 +125,7 @@ define([
           return effect['description'];
         }
       }
+      return '';
     }
     function getPatchVersion() {
       _init();
