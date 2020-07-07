@@ -14,7 +14,7 @@ define([
       'Sett': {
         'abilities': {
           'P': {
-            'icon': '/sett/sett_p.png',
+            'icon': '../../img/sett/sett_p.png',
           }
         }
       },
@@ -28,7 +28,7 @@ define([
       'Qiyana': {
         'abilities': {
           'Q': {
-            'icon': '/qiyana/qiyana_q.png',
+            'icon': '../../img/qiyana/qiyana_q.png',
           }
         }
       },
@@ -37,22 +37,22 @@ define([
           'Q': {
             'name': 'Moonshot',
             'name1': 'OnSlaught',
-            'icon': '/aphelios/moonshot.png',
-            'icon1': '/aphelios/onslaught.png',
+            'icon': '../../img/aphelios/moonshot.png',
+            'icon1': '../../img/aphelios/onslaught.png',
             'cooldowns': [10, 9.5, 9, 8.5, 8],
             'cooldownsBurn': '10/9.5/9/8.5/8',
           },
           'W': {
             'name': 'Duskwave',
-            'icon': '/aphelios/binding_eclipse.png',
+            'icon': '../../img/aphelios/binding_eclipse.png',
             'cooldowns': [12, 11.5, 11, 10.5, 10],
             'cooldownsBurn': '12/11.5/11/10.5/10',
           },
           'E': {
             'name': 'Duskwave',
             'name1': 'Sentry',
-            'icon': '/aphelios/duskwave.png',
-            'icon1': '/aphelios/sentry.png',
+            'icon': '../../img/aphelios/duskwave.png',
+            'icon1': '../../img/aphelios/sentry.png',
             'cooldowns': [9, 8.25, 7.5, 6.75, 6],
             'cooldownsBurn': '8.25/7.5/6.75/6',
           },
@@ -245,6 +245,7 @@ define([
         // No champ has been picked yet
         let champData = DEFAULT_CHAMP_DATA;
 
+        participant['championId'] = 523;
         if (participant['championId'] !== 0) {
           let champion = dataHandler.getChampionById(participant['championId']);
           champData = _parseChampionData(champion);

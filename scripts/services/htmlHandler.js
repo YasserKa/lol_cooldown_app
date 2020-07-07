@@ -88,10 +88,12 @@ define([],
                 if (ability['cooldownReduceType'] != '') {
                     el +=
                         ` data-toggle="tooltip" data - html=true title = "${ability['description']}"/>`
+                } else {
+                    el += `/>`
                 }
                 // Aphelios exception
                 if (ability.hasOwnProperty('icon1')) {
-                    el += `<img class="ability-icon" src="${$ability['icon1']}" alt="${ability['name1']}" ability="${key}"/> `;
+                    el += `<img class="ability-icon" src="${ability['icon1']}" alt="${ability['name1']}" ability="${key}"/> `;
                 }
 
                 el += `<div class="indication ${teamColor}"></div>`;
