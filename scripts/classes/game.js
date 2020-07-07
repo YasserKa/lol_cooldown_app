@@ -9,10 +9,6 @@ define([
      * @param {redTeam, blueTeam, events} data 
      */
     constructor(data) {
-      // cloud dragon stacks for each team
-      this.redCloudStacks = 0;
-      this.blueCloudStacks = 0;
-
       // teams' participants
       this.redTeam = data['redTeam'].map(participant => new Participant(participant));
       this.blueTeam = data['blueTeam'].map(participant => new Participant(participant));
@@ -48,8 +44,8 @@ define([
     }
 
     updateCloudStacks(events) {
-      let redCloudStacks = 0;
       let blueCloudStacks = 0;
+      let redCloudStacks = 0;
       for (let event of events) {
         let killerName = event['KillerName'];
 
@@ -66,8 +62,15 @@ define([
           }
         }
       }
-      this.blueCloudStacks = blueCloudStacks;
-      this.redCloudStacks = redCloudStacks;
+
+      // update participants' cloud stacks
+      for (let partic of this.blueTeam) {
+        partic.updateCloudStacks(blueCloudStacks);
+      }
+      for (let partic of this.redTeam) {
+        partic.updateCloudStacks(redCloudStacks);
+      }
+
     }
 
     updateTeam(inputTeam, team) {

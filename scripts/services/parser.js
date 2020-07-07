@@ -18,6 +18,13 @@ define([
           }
         }
       },
+      'Neeko': {
+        'abilities': {
+          'P': {
+            'cooldowns': [25, 25, 25, 22, 22, 22, 19, 19, 19, 16, 16, 16, 13, 13, 13, 10, 10, 10],
+          }
+        }
+      },
       'Qiyana': {
         'abilities': {
           'Q': {
@@ -257,7 +264,7 @@ define([
           'position': participant['assignedPosition'],
           'level': 0,
           'spells': spellsData,
-          'perks': 'MAYBE TODO FOR USER',
+          'runes': 'MAYBE TODO FOR USER',
           'items': [],
         };
 
@@ -310,16 +317,6 @@ define([
           }
         }
       };
-
-      // TODO: remove later
-      // Passive Cooldown: most 5 numbers is needed
-      if (champData['abilities']['P']['cooldowns'].length > 5) {
-        // Lengthy cooldown based on lvl (lvl 1-18)
-        champData['abilities']['P']['cooldowns'] = [
-          reset(data['abilities']['P']['cooldowns']),
-          end(data['abilities']['P']['cooldowns']),
-        ];
-      }
 
       // Deal with errors made by ddragon
       if (EXCEPTION_DATA.hasOwnProperty(champData['name'])) {
