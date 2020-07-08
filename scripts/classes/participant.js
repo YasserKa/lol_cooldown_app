@@ -51,11 +51,15 @@ define([
       this.updateCdRed();
       this.updateAbilitiesCd();
     }
+
     updateCdRed() {
+      // TODO: add it to runes.json
       const levelCdRed = [1, 1.53, 2.06, 2.59, 3.12, 3.65, 4.18, 4.71, 5.24, 5.76, 6.29, 6.82, 7.35, 7.88, 8.41, 8.94, 9.47, 10];
       let cdRed = 0;
 
-      // TODO: get CDr with items
+      for (let item of this.items) {
+        cdRed += item['cooldownReduction'];
+      }
 
      // 5007 0-10 CD
       if (this.runes.includes(5007)) {
@@ -135,7 +139,6 @@ define([
           newCds.push(roundedCd);
         })
         this.currentAbilities[key]['cooldowns'] = newCds;
-        console.log(newCds);
       }
     }
 

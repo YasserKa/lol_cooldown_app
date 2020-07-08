@@ -200,6 +200,8 @@ define([
           _parseSpellData(spell2),
         ];
 
+        let items = _parseItemsData(participant['items']);
+
         let parsedData = {
           'summonerName': participant['summonerName'],
           'champion': champData,
@@ -207,7 +209,7 @@ define([
           'level': participant['level'],
           'spells': spellsData,
           'runes': _parseParticipantRunes(participant['runes']),
-          'items': [],
+          'items': items,
         };
 
         if (participant['team'])
@@ -222,6 +224,13 @@ define([
         'blueTeam': blueTeam,
         'redTeam': redTeam,
       }
+    }
+
+    function _parseItemsData(participantItems) {
+        let itemsHasCDrId = dataHandler.getAllItemsHasCDrId();
+        let itemsId = participantItems.map((item) => item['itemID'].toString());
+        let neededItemsId = itemsId.filter(itemId => itemsHasCDrId.includes(itemId));
+        return neededItemsId.map((itemId) => dataHandler.getItemById(itemId));
     }
 
     /** 
@@ -245,7 +254,6 @@ define([
         // No champ has been picked yet
         let champData = DEFAULT_CHAMP_DATA;
 
-        participant['championId'] = 523;
         if (participant['championId'] !== 0) {
           let champion = dataHandler.getChampionById(participant['championId']);
           champData = _parseChampionData(champion);

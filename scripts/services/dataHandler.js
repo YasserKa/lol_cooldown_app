@@ -8,6 +8,7 @@ define([
     let _initialized = false;
 
     let _champions = {};
+    let _items = {};
     let _summonerSpells = {};
     let _cdReductionTypes = {};
     let _patchVersion = '';
@@ -23,6 +24,7 @@ define([
       // _data = JSON.parse(localStorage.getItem("data"));
 
       _champions = _data['champions'];
+      _items = _data['items'];
       _summonerSpells = _data['spells'];
       _cdReductionTypes = _data['cdReductionTypes'];
       _runesReforged = _data['runes'];
@@ -69,6 +71,15 @@ define([
       _init();
       return _champions[Object.keys(_champions).find(
         key => _champions[key]['name'] === name)];
+    }
+
+    function getItemById(id) {
+      _init();
+      return _items[id];
+    }
+
+    function getAllItemsHasCDrId() {
+      return Object.keys(_items);
     }
 
     function getSpellById(id) {
@@ -135,6 +146,8 @@ define([
     return {
       getChampionById,
       getChampionByName,
+      getItemById,
+      getAllItemsHasCDrId,
       getRuneById,
       getSpellById,
       getSpellByName,
