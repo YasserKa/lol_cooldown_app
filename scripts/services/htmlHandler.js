@@ -21,9 +21,9 @@ define([],
                     .attr('src', participant.getChampionIcon())
                     .attr('alt', participant.getChampionName());
 
-                // // CooldownReduction
-                // $(`table[partic-id="${participant['name']}"] .cooldown-reduction`)
-                //     .text(participant.getAbilitiesCDr());
+                // cooldownReduction
+                $(`table[partic-id="${participant.getId()}"] .cooldown-reduction`)
+                    .text(participant.getAbilitiesCDr());
 
                 // Champ Abilities
                 $(`table[partic-id="${participant.getId()}"] .cooldowns-abilities`).remove();
@@ -131,9 +131,9 @@ define([],
                 <th class="${teamColor}" colspan=4></th>
             </tr>
               <tr class=" champ-header" >
-                <!-- <td class="cooldown-reduction">
+                <td class="cooldown-reduction">
                 0
-                </td> -->
+                </td>
                 <td class="cell champ p-0" rowspan=2>
                     <img class="grip" src="../../img/grip-${teamColor}.png" />
                     <img class="champ-icon" src="${participant.getChampionIcon()}" alt="${participant.getChampionName()}">
