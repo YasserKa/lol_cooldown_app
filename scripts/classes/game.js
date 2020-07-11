@@ -15,24 +15,32 @@ define([
     }
 
     update(data) {
-      this.updateEvents(data['events']);
-      this.updateTeam(data['redTeam'], this.redTeam);
-      this.updateTeam(data['blueTeam'], this.blueTeam);
+      this._updateEvents(data['events']);
+      this._updateTeam(data['redTeam'], this.redTeam);
+      this._updateTeam(data['blueTeam'], this.blueTeam);
     }
 
-    updateEvents(events) {
+    getBlueTeam() {
+      return this.blueTeam;
+    }
+
+    getRedTeam() {
+      return this.redTeam;
+    }
+
+    _updateEvents(events) {
       let dragonKillsEvents = events.filter(value => value['EventName'] === 'DragonKill');
       if (dragonKillsEvents.length > 0) {
-        this.updateCloudStacks(dragonKillsEvents);
+        this._updateCloudStacks(dragonKillsEvents);
       }
 
       let championKillsEvents = events.filter(value => value['EventName'] === 'ChampionKill');
       if (championKillsEvents.length > 0) {
-        this.updateChampionKills(championKillsEvents)
+        this._updateChampionKills(championKillsEvents)
       }
     }
 
-    updateChampionKills(events) {
+    _updateChampionKills(events) {
       let participants = this.blueTeam.concat(this.redTeam);
       for (let event of events) {
         for (let partic of participants) {
@@ -43,7 +51,7 @@ define([
       }
     }
 
-    updateCloudStacks(events) {
+    _updateCloudStacks(events) {
       let blueCloudStacks = 0;
       let redCloudStacks = 0;
       for (let event of events) {
@@ -65,15 +73,15 @@ define([
 
       // update participants' cloud stacks
       for (let partic of this.blueTeam) {
-        partic.updateCloudStacks(blueCloudStacks);
+        partic._updateCloudStacks(blueCloudStacks);
       }
       for (let partic of this.redTeam) {
-        partic.updateCloudStacks(redCloudStacks);
+        partic._updateCloudStacks(redCloudStacks);
       }
 
     }
 
-    updateTeam(inputTeam, team) {
+    _updateTeam(inputTeam, team) {
       // Update participants using either cellId (champselect) or summonerName(in-game)
       for (let participant of team) {
         let participantId = participant.getId();
@@ -86,14 +94,6 @@ define([
           }
         }
       }
-    }
-
-    getBlueTeam() {
-      return this.blueTeam;
-    }
-
-    getRedTeam() {
-      return this.redTeam;
     }
   }
   return Game;
