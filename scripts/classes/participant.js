@@ -16,7 +16,6 @@ define([
       this.ultCdRed = 0;
       this.cloudDrakeStacks = 0;
 
-      // keeps track of abilities CD changes
       this.originalAbilities = data['champion']['abilities'];
       this.currentAbilities = JSON.parse(JSON.stringify(this.originalAbilities));
       this.originalSpells = data['spells'];
@@ -39,21 +38,81 @@ define([
       if  (data.hasOwnProperty('runes')) {
         this.runes = data['runes'];
       }
-      if (this.originalSpells !== data['spells']) {
-        this.originalSpells = data['spells'];
-        this.currentSpells = JSON.parse(JSON.stringify(this.originalSpells));
-      }
       if (this.champion['name'] !== data['champion']['name']) {
         this.originalAbilities = data['champion']['abilities'];
         this.currentAbilities = JSON.parse(JSON.stringify(this.originalAbilities));
         this.champion = data['champion'];
       }
-      this.updateCdRed();
-      this.updateAbilitiesCd();
-      this.updateSpellsCd();
+      if (this.originalSpells !== data['spells']) {
+        this.originalSpells = data['spells'];
+        this.currentSpells = JSON.parse(JSON.stringify(this.originalSpells));
+      }
+
+      this._updateCdRed();
+      this._updateAbilitiesCd();
+      this._updateSpellsCd();
     }
 
-    updateCdRed() {
+    updateCloudStacks(stacks) {
+      this.cloudDrakeStacks = stacks;
+      this._updateCdRed();
+      this._updateAbilitiesCd();
+    }
+
+    addUniqueKill(name) {
+      if (!this.uniqueKills.includes(name)) {
+        this.uniqueKills.push(name);
+      }
+      this.updateAbilitiesCd();
+    }
+
+    // using cellId (champSelect) or summonerName (in-game) for id
+    getId() {
+      return this.cellId === null ? this.summonerName : this.cellId;
+    }
+
+    getChampionIcon() {
+      return this.champion['icon'];
+    }
+
+    getChampionName() {
+      return this.champion['name'];
+    }
+
+    getChampionAbilities() {
+      return this.currentAbilities;
+    }
+
+    getSpellsCDr() {
+      return this.cdReduction;
+    }
+
+    getAbilitiesCDr() {
+      return this.cdRed;
+    }
+
+    getUltimateCDr() {
+      return this.ultCdRed;
+    }
+
+    getSummonerName() {
+      return this.summonerName;
+    }
+
+    getSummonerSpellName(index) {
+      return this.currentSpells[index]['name'];
+    }
+
+    getSummonerSpellImage(index) {
+      return this.currentSpells[index]['image'];
+    }
+
+    // TODO: Deal with teleport
+    getSummonerSpellCooldown(index) {
+      return this.currentSpells[index]['cooldown'];
+    }
+
+    _updateCdRed() {
       // TODO: add it to runes.json
       const levelCdRed = [1, 1.53, 2.06, 2.59, 3.12, 3.65, 4.18, 4.71, 5.24, 5.76, 6.29, 6.82, 7.35, 7.88, 8.41, 8.94, 9.47, 10];
       let cdRed = 0;
@@ -94,20 +153,7 @@ define([
       this.ultCdRed = this.cdRed + addedUltcdRed;
     }
 
-    updateCloudStacks(stacks) {
-      this.cloudDrakeStacks = stacks;
-      this.updateCdRed();
-      this.updateAbilitiesCd();
-    }
-
-    addUniqueKill(name) {
-      if (!this.uniqueKills.includes(name)) {
-        this.uniqueKills.push(name);
-      }
-      this.updateAbilitiesCd();
-    }
-
-    updateAbilitiesCd() {
+    _updateAbilitiesCd() {
       for (let key of Object.keys(this.originalAbilities)) {
         let cooldowns = this.originalAbilities[key]['cooldowns'];
         let newCds = [];
@@ -138,12 +184,11 @@ define([
 
         }
 
-        console.log(newCds);
         this.currentAbilities[key]['cooldowns'] = newCds;
       }
     }
 
-    updateSpellsCd() {
+    _updateSpellsCd() {
       for (let key of Object.keys(this.originalSpells)) {
         // not assigned yet
         let cooldown = this.originalSpells[key]['cooldown'];
@@ -176,49 +221,6 @@ define([
         let roundedCd = Math.round(newCd * 2) / 2;
         this.currentSpells[key]['cooldown'] = roundedCd;
       }
-    }
-
-
-    // using cellId (champSelect) or summonerName (in-game) for id
-    getId() {
-      return this.cellId === null ? this.summonerName : this.cellId;
-    }
-
-    getChampionIcon() {
-      return this.champion['icon'];
-    }
-
-    getChampionName() {
-      return this.champion['name'];
-    }
-
-    getChampionAbilities() {
-      return this.currentAbilities;
-    }
-
-    getSpellsCDr() {
-      return this.cdReduction;
-    }
-
-    getAbilitiesCDr() {
-      return this.cdRed;
-    }
-
-    getSummonerName() {
-      return this.summonerName;
-    }
-
-    getSummonerSpellName(index) {
-      return this.currentSpells[index]['name'];
-    }
-
-    getSummonerSpellImage(index) {
-      return this.currentSpells[index]['image'];
-    }
-
-    // TODO: Deal with teleport
-    getSummonerSpellCooldown(index) {
-      return this.currentSpells[index]['cooldown'];
     }
 
     _hasRune(id) {
