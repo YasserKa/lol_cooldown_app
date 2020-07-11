@@ -15,41 +15,41 @@ define([
       this.cdRed = 0;
       this.cloudDrakeStacks = 0;
 
-      // // Keeps track of abilities CD changes
-      this.originalAbilities = data.champion['abilities']
+      // keeps track of abilities CD changes
+      this.originalAbilities = data['champion']['abilities'];
       this.currentAbilities = JSON.parse(JSON.stringify(this.originalAbilities));
-      // this.originalSpells = participantInfo['spells'];
-      // this.currentSpells = JSON.parse(JSON.stringify(this.originalSpells));
+      this.originalSpells = data['spells'];
+      this.currentSpells = JSON.parse(JSON.stringify(this.originalSpells));
 
-      this.position = data.position;
-      this.cellId = data.hasOwnProperty('cellId') ? data['cellId']: null;
+      this.position = data['position'];
+      this.cellId = data.hasOwnProperty('cellId') ? data['cellId'] : null;
       this.summonerName = data.hasOwnProperty('summonerName') ? data['summonerName'] : null;
-      this.level = data.level;
-      this.items = data.items;
-      this.runes = data.runes;
-      this.spells = data.spells;
-      this.champion = data.champion;
+      this.level = data['level'];
+      this.items = data['items'];
+      this.runes = data['runes'];
+      this.champion = data['champion'];
     }
 
     update(data) {
-
-      this.position = data.position;
-      this.cellId = data.hasOwnProperty('cellId') ? data['cellId']: null;
+      this.position = data['position'];
       this.summonerName = data.hasOwnProperty('summonerName') ? data['summonerName'] : null;
-      this.level = data.level;
-      this.items = data.items;
+      this.level = data['level'];
+      this.items = data['items'];
       if  (data.hasOwnProperty('runes')) {
-        this.runes = data.runes;
+        this.runes = data['runes'];
       }
-        this.runes = [5007, 8106, 8134, 8210, 8347];
-      this.spells = data.spells;
-      if (this.champion['name'] !== data.champion['name']) {
-        this.originalAbilities = data.champion['abilities']
+      if (this.originalSpells !== data['spells']) {
+        this.originalSpells = data['spells'];
+        this.currentSpells = JSON.parse(JSON.stringify(this.originalSpells));
+      }
+      if (this.champion['name'] !== data['champion']['name']) {
+        this.originalAbilities = data['champion']['abilities'];
         this.currentAbilities = JSON.parse(JSON.stringify(this.originalAbilities));
-        this.champion = data.champion;
+        this.champion = data['champion'];
       }
       this.updateCdRed();
       this.updateAbilitiesCd();
+      this.updateSpellsCd();
     }
 
     updateCdRed() {
@@ -62,17 +62,16 @@ define([
       }
 
      // 5007 0-10 CD
-      if (this.runes.includes(5007)) {
+      if (this._hasRune(5007)) {
         // when it's 0 don't decrease it by 1
-        let level = this.level === 0 ? 0 : this.level - 1;
-        cdRed += levelCdRed[level];
+        cdRed += levelCdRed[this.level - 1];
       }
      // 8210 Transcendence
-      if (this.runes.includes(8210) && this.level >= 10) {
+      if (this._hasRune(8210) && this.level >= 10) {
         cdRed += 10;
       }
      // 8347 Cosmic Insight
-      if (this.runes.includes(8347)) {
+      if (this._hasRune(8347)) {
         cdRed += 5;
         // Max cdRed is 45%
         cdRed = cdRed > 45 ? 45 : cdRed;
@@ -81,11 +80,12 @@ define([
         cdRed = cdRed > 40 ? 40 : cdRed;
       }
 
-      this.cdRed = cdRed;
+      this.cdRed = Number(cdRed.toFixed(2));
     }
 
     updateCloudStacks(stacks) {
       this.cloudDrakeStacks = stacks;
+      this.updateCdRed();
       this.updateAbilitiesCd();
     }
 
@@ -93,6 +93,7 @@ define([
       if (!this.uniqueKills.includes(name)) {
         this.uniqueKills.push(name);
       }
+      this.updateAbilitiesCd();
     }
 
     updateAbilitiesCd() {
@@ -100,24 +101,23 @@ define([
       // CloudStacks
       let runesUltCdRed = this.cloudDrakeStacks;
       // 8106 UltimateHunter 
-      if (this.runes.includes(8106)) {
+      if (this._hasRune(8106)) {
         runesUltCdRed += 5 + this.uniqueKills.length * 4
       }
       let addedUltcdRed = (100 - this.cdRed) * (runesUltCdRed / 100);
-      let ultCdRed = (this.cdRed + addedUltcdRed) / 100;
+      let ultCdRed = this.cdRed + addedUltcdRed;
       // basic abilities cooldownreduction
-      let cdRed = this.cdRed / 100;
+      let cdRed = this.cdRed;
 
       for (let key of Object.keys(this.originalAbilities)) {
-        // TODO
+
         if (key === "P") {
           let passiveCooldowns = this.originalAbilities['P']['cooldowns'];
-          // passives that don't have cooldowns
-          if (passiveCooldowns.length <= 1) {
+          // passives that don't have cooldowns or one cooldown only
+          if (passiveCooldowns.length < 18) {
             continue;
           }
-          let level = this.level === 0 ? 0 : this.level - 1;
-          this.currentAbilities['P']['cooldowns'] = [passiveCooldowns[level]];
+          this.currentAbilities['P']['cooldowns'] = [passiveCooldowns[this.level - 1]];
           continue;
         }
         let cooldowns = this.originalAbilities[key]['cooldowns'];
@@ -127,13 +127,13 @@ define([
         if (cooldowns[0] === '-') {
           continue;
         }
-
+  
         cooldowns.forEach(cooldown => {
           let newCd = 0;
           if (key === "R") {
-            newCd = cooldown - (cooldown * ultCdRed);
+            newCd = cooldown - (cooldown * (ultCdRed / 100));
           } else {
-            newCd = cooldown - (cooldown * cdRed);
+            newCd = cooldown - (cooldown * (cdRed / 100));
           }
           let roundedCd = Math.round(newCd * 2) / 2;
           newCds.push(roundedCd);
@@ -141,6 +141,42 @@ define([
         this.currentAbilities[key]['cooldowns'] = newCds;
       }
     }
+
+    updateSpellsCd () {
+      for (let key of Object.keys(this.originalSpells)) {
+        // not assigned yet
+        let cooldown = this.originalSpells[key]['cooldown'];
+        if (cooldown === '-') {
+          continue;
+        }
+        // exception: Teleport has 2 numbers 420-240
+        if (this.originalSpells[key]['name'] == 'SummonerTeleport') {
+          // formula from https://leagueoflegends.fandom.com/wiki/Teleport 
+          cooldown = 430.588 - 10.588 * this.level;
+        }
+        let cdRed = 0;
+
+        if (this._hasRune(8347)) {
+          cdRed += 5;
+        }
+        // Max cdRed is 45%
+        // if (map == 'Howling Abyss')
+        //     cdRed += 40;
+        // if (this.hasCdrBoots)
+        //     cdRed += 10;
+        // if (this.hasFiveCdrRune) {
+        //     if (map == 'Howling Abyss')
+        //         cdRed += ((100 - cdRed) * 0.05);
+        //     else
+        //         cdRed += 5
+        // }
+
+        let newCd = cooldown - (cooldown * (cdRed) / 100)
+        let roundedCd = Math.round(newCd * 2) / 2;
+        this.currentSpells[key]['cooldown'] = roundedCd;
+      }
+    }
+
 
     // using cellId (champSelect) or summonerName (in-game) for id
     getId() {
@@ -164,6 +200,7 @@ define([
     }
 
     getAbilitiesCDr() {
+      console.log(this.cdRed);
       return this.cdRed;
     }
 
@@ -172,16 +209,20 @@ define([
     }
 
     getSummonerSpellName(index) {
-      return this.spells[index]['name'];
+      return this.currentSpells[index]['name'];
     }
 
     getSummonerSpellImage(index) {
-      return this.spells[index]['image'];
+      return this.currentSpells[index]['image'];
     }
 
     // TODO: Deal with teleport
     getSummonerSpellCooldown(index) {
-      return this.spells[index]['cooldown'];
+      return this.currentSpells[index]['cooldown'];
+    }
+
+    _hasRune(id) {
+      return Object.keys(this.runes).includes(id.toString());
     }
 
   }
