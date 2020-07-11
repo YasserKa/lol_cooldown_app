@@ -1,15 +1,16 @@
 define([
 ], function (
 ) {
+  const RUNES_ENUM = {
+    UltimateHunter: 8106,
+    CooldownReduction: 5007,
+    IngeniousHunter: 8134,
+    Transcendence: 8210,
+    CosmicInsight: 8347,
+  };
   class Participant {
 
-    /* Runes
-     * 8106 UltimateHunter 
-     * 5007 0-10 CD
-     * 8134 Ingenious Hunter (items)
-     * 8210 Transcendence
-     * 8347 Cosmic Insight
-    */
+
     constructor(data) {
       this.uniqueKills = [];
       this.cdRed = 0;
@@ -35,7 +36,7 @@ define([
       this.summonerName = data.hasOwnProperty('summonerName') ? data['summonerName'] : null;
       this.level = data['level'];
       this.items = data['items'];
-      if  (data.hasOwnProperty('runes')) {
+      if (data.hasOwnProperty('runes')) {
         this.runes = data['runes'];
       }
       if (this.champion['name'] !== data['champion']['name']) {
@@ -121,17 +122,14 @@ define([
         cdRed += item['cooldownReduction'];
       }
 
-     // 5007 0-10 CD
-      if (this._hasRune(5007)) {
+      if (this._hasRune(RUNES_ENUM.CooldownReduction)) {
         // when it's 0 don't decrease it by 1
         cdRed += levelCdRed[this.level - 1];
       }
-     // 8210 Transcendence
-      if (this._hasRune(8210) && this.level >= 10) {
+      if (this._hasRune(RUNES_ENUM.Transcendence) && this.level >= 10) {
         cdRed += 10;
       }
-     // 8347 Cosmic Insight
-      if (this._hasRune(8347)) {
+      if (this._hasRune(RUNES_ENUM.CosmicInsight)) {
         cdRed += 5;
         // Max cdRed is 45%
         cdRed = cdRed > 45 ? 45 : cdRed;
@@ -145,8 +143,7 @@ define([
       // Ultimate Cooldown reduction addition from runes & dragon stacks
       // CloudStacks
       let runesUltCdRed = this.cloudDrakeStacks * 10;
-      // 8106 UltimateHunter 
-      if (this._hasRune(8106)) {
+      if (this._hasRune(RUNES_ENUM.UltimateHunter)) {
         runesUltCdRed += 5 + this.uniqueKills.length * 4
       }
       let addedUltcdRed = (100 - this.cdRed) * (runesUltCdRed / 100);
@@ -202,7 +199,7 @@ define([
         }
         let cdRed = 0;
 
-        if (this._hasRune(8347)) {
+        if (this._hasRune(RUNES_ENUM.CosmicInsight)) {
           cdRed += 5;
         }
         // Max cdRed is 45%
