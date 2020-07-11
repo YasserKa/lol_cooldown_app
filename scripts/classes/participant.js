@@ -13,6 +13,7 @@ define([
     constructor(data) {
       this.uniqueKills = [];
       this.cdRed = 0;
+      this.ultCdRed = 0;
       this.cloudDrakeStacks = 0;
 
       // keeps track of abilities CD changes
@@ -81,6 +82,16 @@ define([
       }
 
       this.cdRed = Number(cdRed.toFixed(2));
+
+      // Ultimate Cooldown reduction addition from runes & dragon stacks
+      // CloudStacks
+      let runesUltCdRed = this.cloudDrakeStacks * 10;
+      // 8106 UltimateHunter 
+      if (this._hasRune(8106)) {
+        runesUltCdRed += 5 + this.uniqueKills.length * 4
+      }
+      let addedUltcdRed = (100 - this.cdRed) * (runesUltCdRed / 100);
+      this.ultCdRed = this.cdRed + addedUltcdRed;
     }
 
     updateCloudStacks(stacks) {
@@ -97,29 +108,7 @@ define([
     }
 
     updateAbilitiesCd() {
-      // Ultimate Cooldown reduction addition from runes & dragon stacks
-      // CloudStacks
-      let runesUltCdRed = this.cloudDrakeStacks;
-      // 8106 UltimateHunter 
-      if (this._hasRune(8106)) {
-        runesUltCdRed += 5 + this.uniqueKills.length * 4
-      }
-      let addedUltcdRed = (100 - this.cdRed) * (runesUltCdRed / 100);
-      let ultCdRed = this.cdRed + addedUltcdRed;
-      // basic abilities cooldownreduction
-      let cdRed = this.cdRed;
-
       for (let key of Object.keys(this.originalAbilities)) {
-
-        if (key === "P") {
-          let passiveCooldowns = this.originalAbilities['P']['cooldowns'];
-          // passives that don't have cooldowns or one cooldown only
-          if (passiveCooldowns.length < 18) {
-            continue;
-          }
-          this.currentAbilities['P']['cooldowns'] = [passiveCooldowns[this.level - 1]];
-          continue;
-        }
         let cooldowns = this.originalAbilities[key]['cooldowns'];
         let newCds = [];
 
@@ -127,22 +116,34 @@ define([
         if (cooldowns[0] === '-') {
           continue;
         }
-  
-        cooldowns.forEach(cooldown => {
-          let newCd = 0;
-          if (key === "R") {
-            newCd = cooldown - (cooldown * (ultCdRed / 100));
+
+        if (key === "P") {
+          // passives that don't have cooldowns or one cooldown only
+          if (cooldowns.length === 18) {
+            newCds = [cooldowns[this.level - 1]];
           } else {
-            newCd = cooldown - (cooldown * (cdRed / 100));
+            newCds = [cooldowns[0]];
           }
-          let roundedCd = Math.round(newCd * 2) / 2;
-          newCds.push(roundedCd);
-        })
+        } else {
+          cooldowns.forEach(cooldown => {
+            let newCd = 0;
+            if (key === "R") {
+              newCd = cooldown - (cooldown * (this.ultCdRed / 100));
+            } else {
+              newCd = cooldown - (cooldown * (this.cdRed / 100));
+            }
+            let roundedCd = Math.round(newCd * 2) / 2;
+            newCds.push(roundedCd);
+          });
+
+        }
+
+        console.log(newCds);
         this.currentAbilities[key]['cooldowns'] = newCds;
       }
     }
 
-    updateSpellsCd () {
+    updateSpellsCd() {
       for (let key of Object.keys(this.originalSpells)) {
         // not assigned yet
         let cooldown = this.originalSpells[key]['cooldown'];
@@ -200,7 +201,6 @@ define([
     }
 
     getAbilitiesCDr() {
-      console.log(this.cdRed);
       return this.cdRed;
     }
 
