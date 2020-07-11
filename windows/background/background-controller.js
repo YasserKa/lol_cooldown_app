@@ -37,9 +37,7 @@ define([
       switch (state) {
         case States.IDLE:
           // open at the start or if transitioning from another state
-          if (!this._initialized || 
-            this._currentState === States.IN_CHAMPSELECT || this._currentState === States.IN_GAME
-            )  {
+          if (!this._initialized || this._currentState !== States.IDLE) {
             WindowsService.openWindowOnlyIfNotOpen(WindowNames.MAIN);
           }
           break;
