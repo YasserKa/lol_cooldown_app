@@ -18,10 +18,150 @@ define([
           }
         }
       },
+      'Braum': {
+        'abilities': {
+          'P': {
+            'cooldowns': [
+              8, 8, 8, 8, 8, 8,
+              7, 7, 7 ,7 ,7, 7,
+              10, 10, 10 ,10 ,10, 10
+            ],
+          }
+        }
+      },
+      'Blitzcrank': {
+        'abilities': {
+          'P': {
+            'cooldowns': [90],
+          }
+        }
+      },
+      'Camille': {
+        'abilities': {
+          'P': {
+            'cooldowns': [
+              16, 16, 16, 16, 16, 16, 
+              13, 13, 13, 13, 13, 13, 
+              10, 10, 10 ,10 ,10, 10
+            ],
+          }
+        }
+      },
+      'Illaoi': {
+        'abilities': {
+          'P': {
+            'cooldowns': [
+              20, 20, 19, 19, 18, 18, 
+              17, 17, 16, 16, 15, 15, 
+              14, 14, 13, 13, 12, 12
+            ],
+          }
+        }
+      },
+      'Kindred': {
+        'abilities': {
+          'P': {
+            'cooldowns': [240],
+          }
+        }
+      },
+      'Malphite': {
+        'abilities': {
+          'P': {
+            'cooldowns': [
+              10, 10, 10, 10, 10, 10, 
+              8, 8, 8, 8, 8, 8,
+              6, 6, 6, 6, 6, 6
+            ],
+          }
+        }
+      },
+      'Maokai': {
+        'abilities': {
+          'P': {
+            'cooldowns': [
+              30, 30, 30, 30, 30, 25, 
+              25, 25, 25, 25, 20, 20, 
+              20, 20, 20, 20, 20, 20
+
+            ],
+          }
+        }
+      },
       'Neeko': {
         'abilities': {
           'P': {
-            'cooldowns': [25, 25, 25, 22, 22, 22, 19, 19, 19, 16, 16, 16, 13, 13, 13, 10, 10, 10],
+            'cooldowns': [
+              25, 25, 25, 22, 22, 22, 
+              19, 19, 19, 16, 16, 16, 
+              13, 13, 13, 10, 10, 10
+            ],
+          }
+        }
+      },
+      'Poppy': {
+        'abilities': {
+          'P': {
+            'cooldowns': [
+              16, 16, 16, 16, 16, 16,
+              12, 12, 12, 12, 12, 12,
+              8, 8, 8, 8, 8, 8
+            ],
+          }
+        }
+      },
+      'Rakan': {
+        'abilities': {
+          'P': {
+            'cooldowns': [
+              40, 40, 37, 37, 34, 34, 
+              31, 31, 28, 28, 25, 25,
+              22, 22, 19, 19, 16, 16
+            ],
+          }
+        }
+      },
+      'Swain': {
+        'abilities': {
+          'P': {
+            'cooldowns': [
+              12, 12, 12, 12, 12, 9,
+              9, 9, 9, 9, 6, 6,
+              6, 6, 6, 6, 6, 6
+            ],
+          }
+        }
+      },
+      'Urgot': {
+        'abilities': {
+          'P': {
+            'cooldowns': [
+              30, 30, 30, 30, 30, 20, 
+              20, 20, 10, 10, 5, 5, 
+              2.5, 2.5, 2.5, 2.5, 2.5, 2.5
+            ],
+          }
+        }
+      },
+      'Vi': {
+        'abilities': {
+          'P': {
+            'cooldowns': [
+              16, 15.5, 15, 14.5, 14, 13.5, 
+              13, 12.5, 12, 12, 12, 12, 
+              12, 12, 12, 12, 12, 12
+            ],
+          }
+        }
+      },
+      'Zyra': {
+        'abilities': {
+          'P': {
+            'cooldowns': [
+              13, 13, 13, 13, 12, 12,
+              12, 12, 11, 11, 11, 11,
+              10, 10, 10, 10, 10, 9
+            ],
           }
         }
       },
@@ -115,9 +255,9 @@ define([
             }
             allPlayers[player]['runes'] = runes;
           }
-          let allPlayersParsed = _parseInGameAllPlayersData(allPlayers);
-          Object.assign(parsedData, allPlayersParsed);
         }
+        let allPlayersParsed = _parseInGameAllPlayersData(allPlayers);
+        Object.assign(parsedData, allPlayersParsed);
       }
 
       if (data.hasOwnProperty('events')) {
@@ -127,110 +267,6 @@ define([
       }
 
       return parsedData;
-    }
-
-    ///// 
-    // Assisters: []
-    // EventID: 3
-    // EventName: "ChampionKill"
-    // EventTime: 582.3441162109375
-    // KillerName: "Clumsy Gamer"
-    // VictimName: "Trundle Bot"
-    ///// 
-    // Assisters: []
-    // DragonType: "Air"
-    // EventID: 6
-    // EventName: "DragonKill"
-    // EventTime: 770.9714965820312
-    // KillerName: "Clumsy Gamer"
-    // Stolen: "False"
-    //////
-    function _parseInGameEvents(events) {
-      let parsedEvents = [];
-      for (event of events) {
-        if (event['EventName'] === 'ChampionKill') {
-          parsedEvents.push({
-            'EventName': 'ChampionKill',
-            'Contributors': [...event['Assisters'], event['KillerName']],
-            'VictimName': event['VictimName'],
-          });
-        }
-        if (event['EventName'] === 'DragonKill' && event['DragonType'] === 'Air') {
-          parsedEvents.push({
-            'EventName': 'DragonKill',
-            'KillerName': event['KillerName'],
-          });
-        }
-      }
-      return parsedEvents;
-
-    }
-
-
-    function _parseParticipantRunes(participantRunes) {
-      let parsedParticipantRunes = {};
-
-      let neededRuneIds = participantRunes.filter(value => NEEDED_RUNES.includes(value));
-
-      for (let runeId of neededRuneIds) {
-        let rune = dataHandler.getRuneById(runeId);
-        parsedParticipantRunes[runeId] = {
-          'id': rune['id'],
-          'image': rune['id'] == 5007 ? rune['icon'] : 'https://ddragon.leagueoflegends.com/cdn/img/' + rune['icon'],
-          'name': rune['key'],
-          'description': rune['shortDesc'],
-        };
-      }
-      return parsedParticipantRunes;
-    }
-
-    function _parseInGameAllPlayersData(participantsData) {
-      let blueTeam = [];
-      let redTeam = [];
-
-      for (let participant of participantsData) {
-        let champion = dataHandler.getChampionByName(participant['championName']);
-        let champData = _parseChampionData(champion);
-
-        let spell1 = dataHandler.getSpellByName(participant['summonerSpells']['summonerSpellOne']['displayName']);
-        let spell2 = dataHandler.getSpellByName(participant['summonerSpells']['summonerSpellTwo']['displayName']);
-
-        let spellsData = [
-          _parseSpellData(spell1),
-          _parseSpellData(spell2),
-        ];
-
-        let items = _parseItemsData(participant['items']);
-
-        let parsedData = {
-          'summonerName': participant['summonerName'],
-          'champion': champData,
-          'position': participant['position'],
-          'level': participant['level'],
-          'spells': spellsData,
-          'runes': _parseParticipantRunes(participant['runes']),
-          'items': items,
-        };
-
-        if (participant['team'])
-          if (participant['team'] === "ORDER") {
-            blueTeam.push(parsedData);
-          } else if (participant['team'] === "CHAOS") {
-            redTeam.push(parsedData);
-          }
-      }
-
-      return {
-        'blueTeam': blueTeam,
-        'redTeam': redTeam,
-      }
-    }
-
-    function _parseItemsData(participantItems) {
-        let itemsHasCDrId = dataHandler.getAllItemsHasCDrId();
-        let itemsId = participantItems.map((item) => item['itemID'].toString());
-        let neededItemsId = itemsId.filter(itemId => itemsHasCDrId.includes(itemId));
-        return neededItemsId.map((itemId) => dataHandler.getItemById(itemId));
     }
 
     /** 
@@ -271,7 +307,7 @@ define([
           'cellId': participant['cellId'],
           'champion': champData,
           'position': participant['assignedPosition'],
-          'level': 0,
+          'level': 1,
           'spells': spellsData,
           'runes': 'MAYBE TODO FOR USER',
           'items': [],
@@ -288,6 +324,95 @@ define([
         'redTeam': redTeam,
         'events': [],
       }
+    }
+
+    function _parseInGameAllPlayersData(participantsData) {
+      let blueTeam = [];
+      let redTeam = [];
+
+      for (let participant of participantsData) {
+        // participant['championName'] = 'Neeko';
+        let champion = dataHandler.getChampionByName(participant['championName']);
+        let champData = _parseChampionData(champion);
+
+        let spell1 = dataHandler.getSpellByName(participant['summonerSpells']['summonerSpellOne']['displayName']);
+        let spell2 = dataHandler.getSpellByName(participant['summonerSpells']['summonerSpellTwo']['displayName']);
+
+        let spellsData = [
+          _parseSpellData(spell1),
+          _parseSpellData(spell2),
+        ];
+
+        let items = _parseItemsData(participant['items']);
+
+        let parsedData = {
+          'summonerName': participant['summonerName'],
+          'champion': champData,
+          'position': participant['position'],
+          'level': participant['level'],
+          'spells': spellsData,
+          'runes': _parseParticipantRunes(participant['runes']),
+          'items': items,
+        };
+
+        if (participant['team'])
+          if (participant['team'] === "ORDER") {
+            blueTeam.push(parsedData);
+          } else if (participant['team'] === "CHAOS") {
+            redTeam.push(parsedData);
+          }
+      }
+
+      return {
+        'blueTeam': blueTeam,
+        'redTeam': redTeam,
+      }
+    }
+
+    function _parseInGameEvents(events) {
+      let parsedEvents = [];
+      for (event of events) {
+        if (event['EventName'] === 'ChampionKill') {
+          parsedEvents.push({
+            'EventName': 'ChampionKill',
+            'Contributors': [...event['Assisters'], event['KillerName']],
+            'VictimName': event['VictimName'],
+          });
+        }
+        if (event['EventName'] === 'DragonKill' && event['DragonType'] === 'Air') {
+          parsedEvents.push({
+            'EventName': 'DragonKill',
+            'KillerName': event['KillerName'],
+          });
+        }
+      }
+      return parsedEvents;
+
+    }
+
+    function _parseParticipantRunes(participantRunes) {
+      let parsedParticipantRunes = {};
+
+      let neededRuneIds = participantRunes.filter(value => NEEDED_RUNES.includes(value));
+
+      for (let runeId of neededRuneIds) {
+        let rune = dataHandler.getRuneById(runeId);
+        parsedParticipantRunes[runeId] = {
+          'id': rune['id'],
+          'image': rune['id'] == 5007 ? rune['icon'] : 'https://ddragon.leagueoflegends.com/cdn/img/' + rune['icon'],
+          'name': rune['key'],
+          'description': rune['shortDesc'],
+        };
+      }
+      return parsedParticipantRunes;
+    }
+
+
+    function _parseItemsData(participantItems) {
+      let itemsHasCDrId = dataHandler.getAllItemsHasCDrId();
+      let itemsId = participantItems.map((item) => item['itemID'].toString());
+      let neededItemsId = itemsId.filter(itemId => itemsHasCDrId.includes(itemId));
+      return neededItemsId.map((itemId) => dataHandler.getItemById(itemId));
     }
 
     function _parseChampionData(champion) {
