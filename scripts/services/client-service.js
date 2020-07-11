@@ -105,11 +105,11 @@ define(["../../scripts/constants/states.js",],
 
     // get the current state of the launcher
     async function getState() {
-      await init();
-
       let isGameRunning = await _isGameRunning();
       if (isGameRunning)
         return States.IN_GAME;
+
+      await init();
 
       return new Promise((resolve => {
         overwolf.games.launchers.events.getInfo(LAUNCHER_ID, function (event) {
