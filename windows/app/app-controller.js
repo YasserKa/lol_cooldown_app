@@ -25,11 +25,11 @@ define([
     // add listeners to services depending on the state (in-champselect/in-game)
     async run() {
       ClientService.updateStateChangedForAppListener(this._registerEvents);
-      this._registerEvents();
+      const state = await ClientService.getState();
+      this._registerEvents(state);
     }
 
-    async _registerEvents() {
-      const state = await ClientService.getState();
+    async _registerEvents(state) {
       switch (state) {
         case States.IN_CHAMPSELECT:
           ClientService.updateChampSelectChangedListener(this._inChampSelectEventUpdateListener);
