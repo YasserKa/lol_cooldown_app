@@ -49,6 +49,11 @@ define([
         data = data['info']['live_client_data'];
       }
 
+      // attributes to parse
+      if (!data.hasOwnProperty('all_players') && !data.hasOwnProperty('events')) {
+        return;
+      }
+
       // if (Object.keys(this._participantRunes).length === 0) {
       //   _updateRunesUsingServer((participantRunes) => {
       //     this._participantRunes = JSON.parse(participantRunes);
