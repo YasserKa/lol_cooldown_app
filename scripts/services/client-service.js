@@ -76,6 +76,7 @@ define(["../../scripts/constants/states.js",],
       }
     }
 
+    let currentState = States.NONE;
     // trigger listeners on state change for the launcher
     function _onStateChanged(event) {
       const phase = event['info']['game_flow']['phase'];
@@ -94,6 +95,11 @@ define(["../../scripts/constants/states.js",],
           state = States.IDLE;
           break;
       }
+
+      if (state === currentState) {
+        return;
+      }
+      currentState = state;
 
       if (_onStateChangedListener !== null) {
         _onStateChangedListener(state);
