@@ -135,6 +135,7 @@ define([],
                 0
                 </td>
                 <td class="cell champ p-0" rowspan=2>
+                <td class="cell champ p-0" rowspan=1>
                     <img class="grip" src="../../img/grip-${teamColor}.png" />
                     <img class="champ-icon" src="${participant.getChampionIcon()}" alt="${participant.getChampionName()}">
                 </td>`+
