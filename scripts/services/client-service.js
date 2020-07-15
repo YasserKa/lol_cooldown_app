@@ -112,8 +112,15 @@ define(["../../scripts/constants/states.js",],
     // get the current state of the launcher
     async function getState() {
       let isGameRunning = await _isGameRunning();
-      if (isGameRunning)
+      if (isGameRunning) {
+        // if game is running, initialize the client service upon exiting the game
+        overwolf.games.onGameInfoUpdated.addListener(async (info) => {
+          if (!info['gameInfo']['isRunning']) {
+            await init();
+          }
+        });
         return States.IN_GAME;
+      }
 
       await init();
 
