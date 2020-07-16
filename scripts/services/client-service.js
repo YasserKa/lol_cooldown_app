@@ -34,6 +34,8 @@ define(["../../scripts/constants/states.js",],
     function registerEvents() {
       overwolf.games.launchers.events.onInfoUpdates.removeListener(_onEventUpdate);
       overwolf.games.launchers.events.onInfoUpdates.addListener(_onEventUpdate);
+      overwolf.games.onGameInfoUpdated.removeListener(_onEventUpdate);
+      overwolf.games.onGameInfoUpdated.addListener(_onEventUpdate);
     }
 
     async function getSummonerInfo() {
@@ -67,7 +69,9 @@ define(["../../scripts/constants/states.js",],
     }
 
     function _onEventUpdate(event) {
-      if (event['feature'] === 'game_flow') {
+      if (event.gameChanged || event.runningChanged) {
+        _onGameStateChanged(event);
+      } else if (event['feature'] === 'game_flow') {
         // Client state change
         _onStateChanged(event);
       } else if (event['feature'] === 'champ_select') {
@@ -76,7 +80,18 @@ define(["../../scripts/constants/states.js",],
       }
     }
 
-    let currentState = States.NONE;
+    function _onGameStateChanged(event) {
+      if (event.gameInfo && event.gameInfo.isRunning) {
+        if (_onStateChangedListener !== null) {
+          _onStateChangedListener(States.IN_GAME);
+        }
+        if (_onStateChangedForAppListener !== null) {
+          _onStateChangedForAppListener(States.IN_GAME);
+        }
+      }
+    }
+
+    // let currentState = States.NONE;
     // trigger listeners on state change for the launcher
     function _onStateChanged(event) {
       const phase = event['info']['game_flow']['phase'];
@@ -86,19 +101,20 @@ define(["../../scripts/constants/states.js",],
         case 'ChampSelect':
           state = States.IN_CHAMPSELECT;
           break;
-        case 'InProgress':
         case 'GameStart':
+        case 'InProgress':
         case 'Reconnect':
-          state = States.IN_GAME;
+          return;
+          // state = States.IN_GAME;
           break;
         default:
           state = States.IDLE;
           break;
       }
 
-      if (state === currentState) {
-        return;
-      }
+      // if (state === currentState) {
+      //   return;
+      // }
       currentState = state;
 
       if (_onStateChangedListener !== null) {
@@ -115,7 +131,7 @@ define(["../../scripts/constants/states.js",],
       if (isGameRunning) {
         // if game is running, initialize the client service upon exiting the game
         overwolf.games.onGameInfoUpdated.addListener(async (info) => {
-          if (!info['gameInfo']['isRunning']) {
+          if (info.gameInfo && info.gameInfo.isRunning) {
             await init();
           }
         });
@@ -131,9 +147,9 @@ define(["../../scripts/constants/states.js",],
             case 'ChampSelect':
               resolve(States.IN_CHAMPSELECT);
               break;
-            case 'InProgress':
-            case 'Reconnect':
-              resolve(States.IN_GAME);
+            // case 'InProgress':
+            // case 'Reconnect':
+            //   resolve(States.IN_GAME);
             default:
               resolve(States.IDLE);
               break;

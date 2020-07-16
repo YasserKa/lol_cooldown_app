@@ -25,9 +25,10 @@ define([
       'match_info',
       'live_client_data'
     ];
-    const REGISTER_RETRY_TIMEOUT = 10000;
+    const REGISTER_RETRY_TIMEOUT = 2000;
     const NUMBER_OF_RETRIES = 5;
     let _isRegisteredToGEP = false;
+    let retries = 0;
 
     // get the current state of the launcher
     function getInGameInfo() {
@@ -44,7 +45,6 @@ define([
     }
 
     function registerToGEP(listener) {
-      let retries = 0;
       overwolf.games.events.setRequiredFeatures(REQUIRED_FEATURES, function (response) {
         if (response.status === 'error') { 
           console.log(`Failed to register to GEP, retrying in ${REGISTER_RETRY_TIMEOUT / 1000}s...`);

@@ -14,6 +14,11 @@ define([
       this.blueTeam = data['blueTeam'].map(participant => new Participant(participant));
     }
 
+    updateForInGame(data) {
+      this._updateParticipantsForInGame(data['redTeam'], this.redTeam);
+      this._updateParticipantsForInGame(data['blueTeam'], this.blueTeam);
+    }
+
     update(data) {
       this._updateEvents(data['events']);
       this._updateTeam(data['redTeam'], this.redTeam);
@@ -90,11 +95,27 @@ define([
           // same participant
           if (participantId === participantInputId) {
             participant.update(participantInput);
-            return;
           }
         }
       }
     }
+
+    _updateParticipantsForInGame(inputTeam, team) {
+      for (let participantInput of inputTeam) {
+        for (let participant of team) {
+          let champName = participant.getChampionName();
+          let champNameInput = participant['champion']['name'];
+          if (champNameInput !== champName) {
+            continue;
+          }
+          participant.setSummonerName(participantInput['summonerName']);
+
+          team = team.filter(item => item !== participant);
+          break;
+        }
+      }
+    }
   }
+
   return Game;
 });

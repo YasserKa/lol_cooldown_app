@@ -290,8 +290,9 @@ define([
         // No champ has been picked yet
         let champData = DEFAULT_CHAMP_DATA;
 
-        if (participant['championId'] !== 0) {
-          let champion = dataHandler.getChampionById(participant['championId']);
+        let champId = participant['championId'] === 0 ? participant['championPickIntent'] : participant['championId'];
+        if (champId !== 0) {
+          let champion = dataHandler.getChampionById(champId);
           champData = _parseChampionData(champion);
         }
 

@@ -67,6 +67,10 @@ define([
       this.updateAbilitiesCd();
     }
 
+    setSummonerName(summonerName) {
+      this.cellId = null;
+      this.summonerName = summonerName;
+    }
     // using cellId (champSelect) or summonerName (in-game) for id
     getId() {
       return this.cellId === null ? this.summonerName : this.cellId;

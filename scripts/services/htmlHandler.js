@@ -9,6 +9,29 @@ define([],
             _createGame(game);
         }
 
+        function updateViewForInGame(game) {
+            let blueParticipantEls = $('#team-blue table.champ');
+            let redParticipantEls = $('#team-red table.champ');
+            _updateTeamForInGame(game.getBlueTeam(), blueParticipantEls);
+            _updateTeamForInGame(game.getRedTeam(), redParticipantEls);
+        }
+
+        function _updateTeamForInGame(team, teamEls) {
+            for (let participant of team) {
+                for (participantEl of teamEls) {
+                    let champName = $(participantEl).find('.champ-icon').attr('alt');
+                    let participantChampName = participant.getChampionName();
+                    if (participantChampName !== champName && participantChampName !== 'no-champ') {
+                        continue;
+                    }
+                    $(participantEl).attr('partic-id', participant.getSummonerName());
+
+                    teamEls = teamEls.not(`[partic-id="${participant.getId()}"]`);
+                    break;
+                }
+            }
+        }
+
         function _updateView(game) {
             _updateTeam(game.getBlueTeam(), 'blue');
             _updateTeam(game.getRedTeam(), 'red');
@@ -52,8 +75,8 @@ define([],
                 $(`table[partic-id="${participant.getId()}"] div.spell-2 p span`)
                     .text(participant.getSummonerSpellCooldown(1));
 
+            }
         }
-    }
 
         function _createGame(game) {
             let el = _createTeam(game.getBlueTeam(), 'blue') + _createTeam(game.getRedTeam(), 'red');
@@ -134,7 +157,6 @@ define([],
                 <td class="cooldown-reduction">
                 0
                 </td>
-                <td class="cell champ p-0" rowspan=2>
                 <td class="cell champ p-0" rowspan=1>
                     <img class="grip" src="../../img/grip-${teamColor}.png" />
                     <img class="champ-icon" src="${participant.getChampionIcon()}" alt="${participant.getChampionName()}">
@@ -159,5 +181,6 @@ define([],
         return {
             update,
             initializeView,
+            updateViewForInGame,
         }
     });

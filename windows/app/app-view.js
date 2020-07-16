@@ -10,6 +10,7 @@ define([
     class AppView extends SampleAppView {
 
       _initialized = false;
+      _inGameUpdate = false;
 
       constructor() {
         super();
@@ -37,6 +38,25 @@ define([
         this._initialized = true;
       }
 
+      updateInChampSelect(data) {
+        this.update(data);
+      }
+
+      updateInGame(data) {
+        this.update(data);
+        if (!this._inGameUpdate &&
+          (
+            (data['redTeam'].length > 0 && data['redTeam'][0].hasOwnProperty('summonerName')) ||
+            (data['blueTeam'].length > 0 && data['blueTeam'][0].hasOwnProperty('summonerName')))
+        ) {
+          this.game.updateForInGame(data);
+          HtmlHandler.updateViewForInGame(this.game);
+          this._inGameUpdate = true;
+          this.update(data);
+        }
+      }
+
+      // TOP JUNGLE MIDDLE BOTTOM UTILITY
       update(data) {
         if (!this._initialized) {
           this._init(data);

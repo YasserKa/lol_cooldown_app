@@ -71,13 +71,13 @@ define([
 
       let parsedData = Parser.parseInGameData(data);
 
-      this.appView.update(parsedData);
+      this.appView.updateInGame(parsedData);
     }
 
     _inChampSelectEventUpdateListener(data) {
       if (data.hasOwnProperty('myTeam') && data['myTeam'].length > 0) {
         let parsedData = Parser.parseInChampSelectData(data);
-        this.appView.update(parsedData);
+        this.appView.updateInChampSelect(parsedData);
       }
     }
   }
