@@ -4,12 +4,14 @@ define([
   "../../scripts/services/parser.js",
   "../../scripts/services/gep-service.js",
   "../../scripts/services/client-service.js",
+  "../../scripts/services/testing.js",
 ], function (
   AppView,
   States,
   Parser,
   GepService,
   ClientService,
+  Testing,
   ) {
   class AppController {
 
@@ -24,9 +26,18 @@ define([
 
     // add listeners to services depending on the state (in-champselect/in-game)
     async run() {
-      ClientService.updateStateChangedForAppListener(this._registerEvents);
-      const state = await ClientService.getState();
-      this._registerEvents(state);
+      if (Testing.isTesting()) {
+        if (Testing.getState() === States.IN_CHAMPSELECT) {
+          this._inChampSelectEventUpdateListener(Testing.getData());
+        } else if (Testing.getState() === States.IN_GAME) {
+          this._inGameEventUpdateListener(Testing.getData());
+        }
+      } else {
+        ClientService.updateStateChangedForAppListener(this._registerEvents);
+        const state = await ClientService.getState();
+        this._registerEvents(state);
+
+      }
     }
 
     async _registerEvents(state) {

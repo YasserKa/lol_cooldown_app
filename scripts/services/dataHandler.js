@@ -1,7 +1,8 @@
 define([
-  "../../scripts/services/client-service.js",
+  "../../scripts/services/testing.js",
 ],
   function (
+    Testing,
     ) {
 
     let _initialized = false;
@@ -19,8 +20,6 @@ define([
       
       _updateDataIfNeeded();
 
-      // _data = JSON.parse(localStorage.getItem("data"));
-
       _champions = _data['champions'];
       _items = _data['items'];
       _summonerSpells = _data['spells'];
@@ -36,7 +35,9 @@ define([
       // 3- make a call just to check the version
     function _updateDataIfNeeded() {
       _data = JSON.parse(localStorage.getItem("data"));
-      return;
+      if (Testing.isTesting()) {
+        return;
+      }
       // update if it doesn't exist or outdated
       if (_data === null) {
         _updateDataUsingServer();

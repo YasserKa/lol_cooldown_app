@@ -3,11 +3,13 @@ define([
   "../../scripts/constants/window-names.js",
   "../../scripts/services/client-service.js",
   "../../scripts/services/windows-service.js",
+  "../../scripts/services/testing.js",
 ], function (
   States,
   WindowNames,
   ClientService,
   WindowsService,
+  Testing,
 ) {
   class BackgroundController {
 
@@ -15,10 +17,15 @@ define([
       this._initialized = false
       this._currentState = States.NONE;
 
-      // open the appropriate window depending on the state
-      await this._init();
-      // close/open windows upon state change
-      ClientService.updateStateChangedListener(this._onStateChanged);
+
+      if (Testing.isTesting()) {
+        this._updateWindows(Testing.getState());
+      } else {
+        // open the appropriate window depending on the state
+        await this._init();
+        // close/open windows upon state change
+        ClientService.updateStateChangedListener(this._onStateChanged);
+      }
     }
 
     // Initialize app
