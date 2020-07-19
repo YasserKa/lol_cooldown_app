@@ -28,9 +28,10 @@ define([
     async run() {
       if (Testing.isTesting()) {
         if (Testing.getState() === States.IN_CHAMPSELECT) {
-          this._inChampSelectEventUpdateListener(Testing.getData());
+          this._inChampSelectEventUpdateListener(Testing.getInChampSelectData());
         } else if (Testing.getState() === States.IN_GAME) {
-          this._inGameEventUpdateListener(Testing.getData());
+          this._inChampSelectEventUpdateListener(Testing.getInChampSelectData());
+          this._inGameEventUpdateListener(Testing.getInGameData());
         }
       } else {
         ClientService.updateStateChangedForAppListener(this._registerEvents);
@@ -65,20 +66,13 @@ define([
         return;
       }
 
-      // if (Object.keys(this._participantRunes).length === 0) {
-      //   _updateRunesUsingServer((participantRunes) => {
-      //     this._participantRunes = JSON.parse(participantRunes);
-      //   });
-      // }
-      this._participantRunes = {
-        'Clumsy Gamer': {
-          perkIds: [5007, 8106, 8134, 8210, 8347],
-          perkStyle: 8000,
-          perkSubStyle: 8200,
+      if (!Testing.isTesting()) {
+        if (Object.keys(this._participantRunes).length === 0) {
+          _updateRunesUsingServer((participantRunes) => {
+            this._participantRunes = JSON.parse(participantRunes);
+          });
         }
-      };
-
-      data['participantRunes'] = this._participantRunes;
+      }
 
       let parsedData = Parser.parseInGameData(data);
 
