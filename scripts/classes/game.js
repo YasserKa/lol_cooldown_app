@@ -26,11 +26,25 @@ define([
     }
 
     getBlueTeam() {
-      return this.blueTeam;
+      return this.blueTeam.sort(this.sortTeam);
     }
 
     getRedTeam() {
-      return this.redTeam;
+      return this.redTeam.sort(this.sortTeam);
+    }
+
+    sortTeam(participantOne, participantTwo) {
+      const positionOrder = ['TOP', 'JUNGLE', 'MIDDLE', 'BOTTOM', 'UTILITY'];
+
+      if (participantOne.getPosition() !== '') {
+        return positionOrder.indexOf(participantOne.getPosition()) 
+        > positionOrder.indexOf(participantTwo.getPosition()) ? 1 : -1;
+      }
+
+      // in champ select
+      if (participantOne.getCellId() !== null)  {
+        return participantOne.getCellId() > participantTwo.getCellId() ? 1 : -1 ;
+      }
     }
 
     _updateEvents(events) {

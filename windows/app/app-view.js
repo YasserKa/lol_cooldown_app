@@ -18,19 +18,6 @@ define([
         this.update = this.update.bind(this);
       }
 
-      /**
-       * @param {:
-       *   blueTeam: [{
-       *   name,
-       *   champion,
-       *   position,
-       *   level,
-       *   spells,
-       *   perks,
-       *   items,
-       * }, ...]
-       * , redTeam:...}
-       */
       _init(data) {
         this.game = new Game(data);
         HtmlHandler.initializeView(this.game);
@@ -50,6 +37,7 @@ define([
             (data['blueTeam'].length > 0 && data['blueTeam'][0].hasOwnProperty('summonerName')))
         ) {
           this.game.updateForInGame(data);
+          this.game.update(data);
           HtmlHandler.updateViewForInGame(this.game);
           this._inGameUpdate = true;
           this.update(data);

@@ -8,9 +8,8 @@ define([
     Transcendence: 8210,
     CosmicInsight: 8347,
   };
+
   class Participant {
-
-
     constructor(data) {
       this.uniqueKills = [];
       this.cdRed = 0;
@@ -68,12 +67,23 @@ define([
     }
 
     setSummonerName(summonerName) {
-      this.cellId = null;
       this.summonerName = summonerName;
     }
+
     // using cellId (champSelect) or summonerName (in-game) for id
     getId() {
-      return this.cellId === null ? this.summonerName : this.cellId;
+      return this.summonerName === null ? this.cellId : this.summonerName;
+    }
+    getCellId() {
+      return this.cellId;
+    }
+
+    getSummonerName() {
+      return this.summonerName;
+    }
+
+    getPosition() {
+      return this.position;
     }
 
     getChampionIcon() {
@@ -102,10 +112,6 @@ define([
 
     getUltimateCDr() {
       return this.ultCdRed;
-    }
-
-    getSummonerName() {
-      return this.summonerName;
     }
 
     getSummonerSpellName(index) {

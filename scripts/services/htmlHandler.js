@@ -14,19 +14,28 @@ define([],
             let redParticipantEls = $('#team-red table.champ');
             _updateTeamForInGame(game.getBlueTeam(), blueParticipantEls);
             _updateTeamForInGame(game.getRedTeam(), redParticipantEls);
+            _addRunesIfNeeded(game);
+        }
+
+        function _addRunesIfNeeded(game) {
+            let participants =  game.getBlueTeam().concat(game.getRedTeam());
+            for (let participant of participants) {
+                let runes = participant.getRunes();
+                let runesEl = $(`table[partic-id="${participant.getId()}"] .runes`).children();
+                console.log(runesEl.length, Object.keys(runes).length);
+                if (Object.keys(runes).length > 0 && runesEl.length > 0) {
+                    continue;
+                }
+                $(`table[partic-id="${participant.getId()}"] .runes`).append(_createRunes(participant));
+            }
         }
 
         function _updateTeamForInGame(team, teamEls) {
             for (let participant of team) {
                 for (participantEl of teamEls) {
-                    let champName = $(participantEl).find('.champ-icon').attr('alt');
-                    let participantChampName = participant.getChampionName();
-                    if (participantChampName !== champName && participantChampName !== 'no-champ') {
-                        continue;
-                    }
                     $(participantEl).attr('partic-id', participant.getSummonerName());
-
                     teamEls = teamEls.not(`[partic-id="${participant.getId()}"]`);
+
                     break;
                 }
             }
@@ -180,8 +189,10 @@ define([],
         }
 
         function _createRunes(participant) {
+            // console.log(participant.getRunes());
             let el = ''
             for (let [key, rune] of Object.entries(participant.getRunes())) {
+                // console.log(rune);
                 el += `<img class="rune-icon ml-1" src="${rune.image}" alt="${rune.name}" data-toggle="tooltip" data-html="true" title="" data-original-title="${rune.description}">`
             }
 
