@@ -88,6 +88,10 @@ define([
       return this.currentAbilities;
     }
 
+    getRunes() {
+      return this.runes;
+    }
+
     getSpellsCDr() {
       return this.cdReduction;
     }

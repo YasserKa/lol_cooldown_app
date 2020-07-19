@@ -160,11 +160,12 @@ define([],
                 <td class="cell champ p-0" rowspan=1>
                     <img class="grip" src="../../img/grip-${teamColor}.png" />
                     <img class="champ-icon" src="${participant.getChampionIcon()}" alt="${participant.getChampionName()}">
-                </td>`+
-                // <td class="cell runes">
-                //     <img class="rune-icon ml-1" src="https://ddragon.leagueoflegends.com/cdn/img/perk-images/Styles/Domination/IngeniousHunter/IngeniousHunter.png" alt="IngeniousHunter" data-toggle="tooltip" data-html="true" title="" data-original-title="<b>Unique</b> <lol-uikit-tooltipped-keyword key='LinkTooltip_Description_Takedown'>takedowns</lol-uikit-tooltipped-keyword> grant permanent Active Item <lol-uikit-tooltipped-keyword key='LinkTooltip_Description_CDR'>CDR</lol-uikit-tooltipped-keyword> (includes Trinkets).">
-                // </td>
-                `<td class="cell spells p-0">
+                </td>
+                <td class="cell runes">`+
+                _createRunes(participant)
+                +
+                `</td>
+                <td class="cell spells p-0">
                     <div class="spell-1">
                         <img class="spell-icon" src="${participant.getSummonerSpellImage(0)}" alt="${participant.getSummonerSpellImage(0)}">
                         <p class="cooldown" spell="0" spell-name="${participant.getSummonerSpellName(0)}"><span>${participant.getSummonerSpellCooldown(0)}</span><small></small></p>
@@ -175,6 +176,15 @@ define([],
                     </div>
                 </td>
             </tr> </tbdoy></table>`;
+            return el;
+        }
+
+        function _createRunes(participant) {
+            let el = ''
+            for (let [key, rune] of Object.entries(participant.getRunes())) {
+                el += `<img class="rune-icon ml-1" src="${rune.image}" alt="${rune.name}" data-toggle="tooltip" data-html="true" title="" data-original-title="${rune.description}">`
+            }
+
             return el;
         }
 
