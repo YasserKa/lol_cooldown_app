@@ -108,7 +108,7 @@ define([],
                     <div class='ability-img-container d-flex'>
                         <img class="ability-icon" src="${ability['icon']}" alt="${ability['name']}" ability="${key}" `;
                 // Add description for abilities that has cooldown reduction effect
-                if (ability['cooldownReduceType'] != '') {
+                if (ability['cdrType'] != '') {
                     el +=
                         ` data-toggle="tooltip" data - html=true title = "${ability['description']}"/>`
                 } else {
@@ -120,7 +120,7 @@ define([],
                 }
 
                 el += `<div class="indication ${teamColor}"></div>`;
-                if (ability['cooldownReduceType'] != '') {
+                if (ability['cdrType'] != '') {
                     el += `<img class="info" src="../../img/info.svg" data-toggle="tooltip" data-html=true title="This ability decreases cooldowns" />`
                 }
 

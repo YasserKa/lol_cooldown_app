@@ -9,7 +9,6 @@ define([
     let _champions = {};
     let _items = {};
     let _summonerSpells = {};
-    let _cdReductionTypes = {};
     let _patchVersion = '';
     let _runesReforged = {};
     let _data = {};
@@ -25,7 +24,6 @@ define([
       _champions = _data['champions'];
       _items = _data['items'];
       _summonerSpells = _data['spells'];
-      _cdReductionTypes = _data['cdReductionTypes'];
       _runesReforged = _data['runes'];
       _patchVersion = _data['version'];
 
@@ -38,6 +36,7 @@ define([
       // 3- make a call just to check the version
     function _updateDataIfNeeded() {
       _data = JSON.parse(localStorage.getItem("data"));
+      return;
       // update if it doesn't exist or outdated
       if (_data === null) {
         _updateDataUsingServer();
@@ -112,50 +111,17 @@ define([
         key => _summonerSpells[key]['name'] === name)];
     }
 
-    function getCdReductionType(abilityName) {
+    function getRunesNeeded() {
       _init();
-      // Loop through the list of abilities
-      for (let [type, abilities] of Object.entries(_cdReductionTypes)) {
-        if (abilities.includes(abilityName)) {
-          return type;
-        }
-      }
-      return '';
+      return Object.keys(_runesReforged);
     }
 
     function getRuneById(id) {
       _init();
       // cooldown reduction minor rune
-      if (id === 5007) {
-        return {
-          'icon': '../../img/statmodscdrscalingicon.png',
-          'key': 'statmodscdrscaling',
-          'shortDesc': '1%-10% (based on level) cooldown reduction',
-          'id': 5007,
-        };
-      }
-      for (let runeReforged of _runesReforged) {
-        for (let slot of runeReforged['slots']) {
-          for (let rune of slot['runes']) {
-            if (rune['id'] === id) {
-              return rune;
-            }
-          }
-        }
-      }
+      return  _runesReforged[id];
     }
 
-    function getCdDescription(champId, abilityKey) {
-      _init();
-      let champsDetails = getChampionById(champId);
-      let effects = champsDetails['abilities'][abilityKey][0]['effects'];
-      for (let effect of effects) {
-        if (effect['description'].includes('cooldown')) {
-          return effect['description'];
-        }
-      }
-      return '';
-    }
     function getPatchVersion() {
       _init();
       return _patchVersion;
@@ -167,10 +133,9 @@ define([
       getItemById,
       getAllItemsHasCDrId,
       getRuneById,
+      getRunesNeeded,
       getSpellById,
       getSpellByName,
-      getCdReductionType,
-      getCdDescription,
       getPatchVersion,
     }
   });

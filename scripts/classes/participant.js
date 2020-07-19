@@ -197,7 +197,7 @@ define([
           continue;
         }
         // exception: Teleport has 2 numbers 420-240
-        if (this.originalSpells[key]['name'] == 'SummonerTeleport') {
+        if (this.originalSpells[key]['name'] == 'Teleport') {
           // formula from https://leagueoflegends.fandom.com/wiki/Teleport 
           cooldown = 430.588 - 10.588 * this.level;
         }
