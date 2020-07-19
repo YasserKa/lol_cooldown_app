@@ -2,7 +2,6 @@ define([
   "../../scripts/services/client-service.js",
 ],
   function (
-    ClientService
     ) {
 
     let _initialized = false;
@@ -39,27 +38,46 @@ define([
       // 3- make a call just to check the version
     function _updateDataIfNeeded() {
       _data = JSON.parse(localStorage.getItem("data"));
+      // update if it doesn't exist or outdated
       if (_data === null) {
-        _updateDataUsingServer((data) => {
-          localStorage.setItem("data", data);
-          _data = JSON.parse(data);
+        _updateDataUsingServer();
+      } else {
+        _getLastDateUpdated(data => {
+          let dateAtServer = new Date(JSON.parse(data).lastDateUpdated);
+          let dateAtClient = new Date(_data.lastDateUpdated);
+          if (dateAtServer > dateAtClient) {
+            _updateDataUsingServer();
+          }
         });
       }
     }
 
-    function _updateDataUsingServer(callback) {
-        let path = 'https://www.lolcooldown.com/api/data';
-        let xhr = new XMLHttpRequest();
+    function _getLastDateUpdated(callback) {
+      let url = 'https://www.lolcooldown.com/api/lastdateupdated';
+      _makeXMLHttpRequest(url, callback);
+    }
 
-        xhr.onreadystatechange = () => {
-          if (xhr.readyState === XMLHttpRequest.DONE) {
-            if (xhr.status === 201) {
-              callback(xhr.response);
-            }
+    function _updateDataUsingServer() {
+      console.log('updating data from server');
+      let url = 'https://www.lolcooldown.com/api/data';
+      _makeXMLHttpRequest(url, (data) => {
+        localStorage.setItem("data", data);
+        _data = JSON.parse(data);
+      });
+    }
+
+    function _makeXMLHttpRequest(url, callback) {
+      let xhr = new XMLHttpRequest();
+
+      xhr.onreadystatechange = () => {
+        if (xhr.readyState === XMLHttpRequest.DONE) {
+          if (xhr.status === 201) {
+            callback(xhr.response);
           }
-        };
-        xhr.open("GET", path, false);
-        xhr.send();
+        }
+      };
+      xhr.open("GET", url, false);
+      xhr.send();
     }
 
     function getChampionById(id) {
@@ -109,12 +127,12 @@ define([
       _init();
       // cooldown reduction minor rune
       if (id === 5007) {
-          return {
-              'icon': '../../img/statmodscdrscalingicon.png',
-              'key': 'statmodscdrscaling',
-              'shortDesc': '1%-10% (based on level) cooldown reduction',
-              'id': 5007,
-          };
+        return {
+          'icon': '../../img/statmodscdrscalingicon.png',
+          'key': 'statmodscdrscaling',
+          'shortDesc': '1%-10% (based on level) cooldown reduction',
+          'id': 5007,
+        };
       }
       for (let runeReforged of _runesReforged) {
         for (let slot of runeReforged['slots']) {
