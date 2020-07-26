@@ -50,6 +50,7 @@ define([
           break;
         case States.IN_CHAMPSELECT:
         case States.IN_GAME:
+        case States.CHAMPSELECT_TO_GAME:
           WindowsService.openWindowOnlyIfNotOpen(WindowNames.APP);
           break;
       }

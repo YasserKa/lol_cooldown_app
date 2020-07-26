@@ -16,7 +16,7 @@ define([
   class AppController {
 
     constructor() {
-      this.appView = new AppView();
+      this._appView = new AppView();
       this._participantRunes = {};
 
       this._inChampSelectEventUpdateListener = this._inChampSelectEventUpdateListener.bind(this);
@@ -31,7 +31,11 @@ define([
           this._inChampSelectEventUpdateListener(Testing.getInChampSelectData());
         } else if (Testing.getState() === States.IN_GAME) {
           this._inChampSelectEventUpdateListener(Testing.getInChampSelectData());
-          this._inGameEventUpdateListener(Testing.getInGameData());
+        } else if (Testing.getState() === States.CHAMPSELECT_TO_GAME) {
+          this._inChampSelectEventUpdateListener(Testing.getInChampSelectData());
+          setTimeout(() => {
+            this._inGameEventUpdateListener(Testing.getInGameData());
+          }, 2000);
         }
       } else {
         ClientService.updateStateChangedForAppListener(this._registerEvents);
@@ -55,7 +59,6 @@ define([
     }
 
     _inGameEventUpdateListener(data) {
-      // TODO: get JSON.parse(data['game_data'])['mapNumber']
       // Using it from registering the function
       if (data.hasOwnProperty('feature') && data['feature'] === 'live_client_data') {
         data = data['info']['live_client_data'];
@@ -67,22 +70,29 @@ define([
       }
 
       if (!Testing.isTesting()) {
-        if (Object.keys(this._participantRunes).length === 0) {
-          _updateRunesUsingServer((participantRunes) => {
-            this._participantRunes = JSON.parse(participantRunes);
-          });
-        }
+        // if (Object.keys(this._participantRunes).length === 0) {
+        //   _updateRunesUsingServer((participantRunes) => {
+        //     this._participantRunes = JSON.parse(participantRunes);
+        //   });
+        // }
+      data.participantRunes = {
+          'Clumsy Gamer': {
+          perkIds: [5007, 8106, 8134, 8210, 8347],
+          perkStyle: 8000,
+          perkSubStyle: 8200,
+          }
+        };
       }
 
       let parsedData = Parser.parseInGameData(data);
 
-      this.appView.updateInGame(parsedData);
+      this._appView.updateInGame(parsedData);
     }
 
     _inChampSelectEventUpdateListener(data) {
       if (data.hasOwnProperty('myTeam') && data['myTeam'].length > 0) {
         let parsedData = Parser.parseInChampSelectData(data);
-        this.appView.updateInChampSelect(parsedData);
+        this._appView.updateInChampSelect(parsedData);
       }
     }
   }
