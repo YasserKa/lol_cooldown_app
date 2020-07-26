@@ -1,10 +1,8 @@
 define([
   "../../scripts/services/dataHandler.js",
-  "../../scripts/services/gep-service.js",
 ],
   function (
     dataHandler,
-    GepService,
   ) {
 
     const EXCEPTION_DATA = {
@@ -93,7 +91,7 @@ define([
             if (data['participantRunes'].hasOwnProperty(summonerName)) {
               runes = data['participantRunes'][summonerName]['perkIds'];
             }
-            allPlayers[player]['runes'] = runes;
+            allPlayers[player]['runesReforged'] = runes;
           }
         }
         let allPlayersParsed = _parseInGameAllPlayersData(allPlayers);
@@ -144,7 +142,6 @@ define([
           'position': participant['assignedPosition'],
           'level': 1,
           'spells': spellsData,
-          // 'runes': 'MAYBE TODO FOR USER',
           'runes': [],
           'items': [],
         };
@@ -188,7 +185,7 @@ define([
           'position': participant['position'],
           'level': participant['level'],
           'spells': spellsData,
-          'runes': _parseParticipantRunes(participant['runes']),
+          'runes': _parseParticipantRunes(participant['runesReforged']),
           'items': items,
         };
 
