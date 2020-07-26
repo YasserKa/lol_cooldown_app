@@ -26,25 +26,11 @@ define([
     }
 
     getBlueTeam() {
-      return this.blueTeam.sort(this.sortTeam);
+      return this.blueTeam;
     }
 
     getRedTeam() {
-      return this.redTeam.sort(this.sortTeam);
-    }
-
-    sortTeam(participantOne, participantTwo) {
-      const positionOrder = ['TOP', 'JUNGLE', 'MIDDLE', 'BOTTOM', 'UTILITY'];
-
-      if (participantOne.getPosition() !== '') {
-        return positionOrder.indexOf(participantOne.getPosition()) 
-        > positionOrder.indexOf(participantTwo.getPosition()) ? 1 : -1;
-      }
-
-      // in champ select
-      if (participantOne.getCellId() !== null)  {
-        return participantOne.getCellId() > participantTwo.getCellId() ? 1 : -1 ;
-      }
+      return this.redTeam;
     }
 
     _updateEvents(events) {
@@ -115,20 +101,32 @@ define([
     }
 
     _updateParticipantsForInGame(inputTeam, team) {
-      for (let participantInput of inputTeam) {
-        for (let participant of team) {
-          let champName = participant.getChampionName();
-          let champNameInput = participant['champion']['name'];
-          if (champNameInput !== champName) {
-            continue;
-          }
-          participant.setSummonerName(participantInput['summonerName']);
+      for (let participant of team) {
+        let champName = participant.getChampionName();
 
-          team = team.filter(item => item !== participant);
-          break;
-        }
+        let particInputIndex = Object.keys(inputTeam).find(key => inputTeam[key]['champion']['name'] === champName);
+        let particInput = inputTeam[particInputIndex];
+        participant.setSummonerName(particInput['summonerName']);
+
+      }
+      this.blueTeam = this.blueTeam.sort(this._sortTeam);
+      this.redTeam = this.redTeam.sort(this._sortTeam);
+    }
+
+    _sortTeam(participantOne, participantTwo) {
+      const positionOrder = ['TOP', 'JUNGLE', 'MIDDLE', 'BOTTOM', 'UTILITY'];
+
+      if (participantOne.getPosition() !== '') {
+        return positionOrder.indexOf(participantOne.getPosition())
+          > positionOrder.indexOf(participantTwo.getPosition()) ? 1 : -1;
+      }
+
+      // in champ select
+      if (participantOne.getCellId() !== null) {
+        return participantOne.getCellId() > participantTwo.getCellId() ? 1 : -1;
       }
     }
+
   }
 
   return Game;

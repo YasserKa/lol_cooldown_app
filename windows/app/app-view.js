@@ -39,12 +39,11 @@ define([
           this.game.updateForInGame(data);
           this.game.update(data);
           HtmlHandler.updateViewForInGame(this.game);
-          this._inGameUpdate = true;
           this.update(data);
+          this._inGameUpdate = true;
         }
       }
 
-      // TOP JUNGLE MIDDLE BOTTOM UTILITY
       update(data) {
         if (!this._initialized) {
           this._init(data);

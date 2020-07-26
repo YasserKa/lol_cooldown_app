@@ -12,8 +12,8 @@ define([],
         function updateViewForInGame(game) {
             let blueParticipantEls = $('#team-blue table.champ');
             let redParticipantEls = $('#team-red table.champ');
-            _updateTeamForInGame(game.getBlueTeam(), blueParticipantEls);
-            _updateTeamForInGame(game.getRedTeam(), redParticipantEls);
+            _sortTeam(game.getBlueTeam(), blueParticipantEls);
+            _sortTeam(game.getRedTeam(), redParticipantEls);
             _addRunesIfNeeded(game);
         }
 
@@ -22,7 +22,6 @@ define([],
             for (let participant of participants) {
                 let runes = participant.getRunes();
                 let runesEl = $(`table[partic-id="${participant.getId()}"] .runes`).children();
-                console.log(runesEl.length, Object.keys(runes).length);
                 if (Object.keys(runes).length > 0 && runesEl.length > 0) {
                     continue;
                 }
@@ -30,15 +29,10 @@ define([],
             }
         }
 
-        function _updateTeamForInGame(team, teamEls) {
-            for (let participant of team) {
-                for (participantEl of teamEls) {
-                    $(participantEl).attr('partic-id', participant.getSummonerName());
-                    teamEls = teamEls.not(`[partic-id="${participant.getId()}"]`);
-
-                    break;
+        function _sortTeam(team, teamEls) {
+            for (let [index, partic] of Object.entries(team)) {
+                    $(teamEls[index]).attr('partic-id', partic.getSummonerName());
                 }
-            }
         }
 
         function _updateView(game) {
