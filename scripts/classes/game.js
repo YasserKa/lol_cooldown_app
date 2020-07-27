@@ -10,13 +10,8 @@ define([
      */
     constructor(data) {
       // teams' participants
-      this.redTeam = data['redTeam'].map(participant => new Participant(participant));
-      this.blueTeam = data['blueTeam'].map(participant => new Participant(participant));
-    }
-
-    updateForInGame(data) {
-      this._updateParticipantsForInGame(data['redTeam'], this.redTeam);
-      this._updateParticipantsForInGame(data['blueTeam'], this.blueTeam);
+      this.redTeam = data['redTeam'].map(participant => new Participant(participant)).sort(this._sortTeam);
+      this.blueTeam = data['blueTeam'].map(participant => new Participant(participant)).sort(this._sortTeam);
     }
 
     update(data) {
@@ -87,30 +82,17 @@ define([
     }
 
     _updateTeam(inputTeam, team) {
-      // Update participants using either cellId (champselect) or summonerName(in-game)
+      // update participants using either cellId (champselect) or summonerName(in-game)
       for (let participant of team) {
         let participantId = participant.getId();
         for (let participantInput of inputTeam) {
           let participantInputId = participantInput.hasOwnProperty('cellId') ? participantInput['cellId'] : participantInput['summonerName'];
-          // same participant
+
           if (participantId === participantInputId) {
             participant.update(participantInput);
           }
         }
       }
-    }
-
-    _updateParticipantsForInGame(inputTeam, team) {
-      for (let participant of team) {
-        let champName = participant.getChampionName();
-
-        let particInputIndex = Object.keys(inputTeam).find(key => inputTeam[key]['champion']['name'] === champName);
-        let particInput = inputTeam[particInputIndex];
-        participant.setSummonerName(particInput['summonerName']);
-
-      }
-      this.blueTeam = this.blueTeam.sort(this._sortTeam);
-      this.redTeam = this.redTeam.sort(this._sortTeam);
     }
 
     _sortTeam(participantOne, participantTwo) {

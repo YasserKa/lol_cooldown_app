@@ -32,12 +32,8 @@ define([
 
     update(data) {
       this.position = data['position'];
-      this.summonerName = data.hasOwnProperty('summonerName') ? data['summonerName'] : null;
       this.level = data['level'];
       this.items = data['items'];
-      if (data.hasOwnProperty('runes')) {
-        this.runes = data['runes'];
-      }
       if (this.champion['name'] !== data['champion']['name']) {
         this.originalAbilities = data['champion']['abilities'];
         this.currentAbilities = JSON.parse(JSON.stringify(this.originalAbilities));

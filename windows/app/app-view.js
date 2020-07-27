@@ -30,18 +30,11 @@ define([
       }
 
       updateInGame(data) {
-        this.update(data);
-        if (!this._inGameUpdate &&
-          (
-            (data['redTeam'].length > 0 && data['redTeam'][0].hasOwnProperty('summonerName')) ||
-            (data['blueTeam'].length > 0 && data['blueTeam'][0].hasOwnProperty('summonerName')))
-        ) {
-          this.game.updateForInGame(data);
-          this.game.update(data);
-          HtmlHandler.updateViewForInGame(this.game);
-          this.update(data);
+        if (!this._inGameUpdate) {
+          this._init(data);
           this._inGameUpdate = true;
         }
+        this.update(data);
       }
 
       update(data) {

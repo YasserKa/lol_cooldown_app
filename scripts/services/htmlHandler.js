@@ -1,38 +1,13 @@
 define([],
     function () {
 
-        function update(game) {
-            _updateView(game);
-        }
-
         function initializeView(game) {
+            $(".game-details .team").remove();
             _createGame(game);
         }
 
-        function updateViewForInGame(game) {
-            let blueParticipantEls = $('#team-blue table.champ');
-            let redParticipantEls = $('#team-red table.champ');
-            _sortTeam(game.getBlueTeam(), blueParticipantEls);
-            _sortTeam(game.getRedTeam(), redParticipantEls);
-            _addRunesIfNeeded(game);
-        }
-
-        function _addRunesIfNeeded(game) {
-            let participants =  game.getBlueTeam().concat(game.getRedTeam());
-            for (let participant of participants) {
-                let runes = participant.getRunes();
-                let runesEl = $(`table[partic-id="${participant.getId()}"] .runes`).children();
-                if (Object.keys(runes).length > 0 && runesEl.length > 0) {
-                    continue;
-                }
-                $(`table[partic-id="${participant.getId()}"] .runes`).append(_createRunes(participant));
-            }
-        }
-
-        function _sortTeam(team, teamEls) {
-            for (let [index, partic] of Object.entries(team)) {
-                    $(teamEls[index]).attr('partic-id', partic.getSummonerName());
-                }
+        function update(game) {
+            _updateView(game);
         }
 
         function _updateView(game) {
@@ -196,6 +171,5 @@ define([],
         return {
             update,
             initializeView,
-            updateViewForInGame,
         }
     });
