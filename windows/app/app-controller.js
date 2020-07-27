@@ -27,15 +27,19 @@ define([
     // add listeners to services depending on the state (in-champselect/in-game)
     async run() {
       if (Testing.isTesting()) {
-        if (Testing.getState() === States.IN_CHAMPSELECT) {
+        switch (Testing.getState()) {
+          case States.IN_CHAMPSELECT:
           this._inChampSelectEventUpdateListener(Testing.getInChampSelectData());
-        } else if (Testing.getState() === States.IN_GAME) {
-          this._inChampSelectEventUpdateListener(Testing.getInChampSelectData());
-        } else if (Testing.getState() === States.CHAMPSELECT_TO_GAME) {
-          this._inChampSelectEventUpdateListener(Testing.getInChampSelectData());
-          setTimeout(() => {
+            break;
+          case States.IN_GAME:
             this._inGameEventUpdateListener(Testing.getInGameData());
-          }, 2000);
+            break;
+          case States.CHAMPSELECT_TO_GAME:
+            this._inChampSelectEventUpdateListener(Testing.getInChampSelectData());
+            setTimeout(() => {
+              this._inGameEventUpdateListener(Testing.getInGameData());
+            }, 2000);
+            break;
         }
       } else {
         ClientService.updateStateChangedForAppListener(this._registerEvents);
@@ -75,11 +79,11 @@ define([
         //     this._participantRunes = JSON.parse(participantRunes);
         //   });
         // }
-      data.participantRunes = {
+        data.participantRunes = {
           'Clumsy Gamer': {
-          perkIds: [5007, 8106, 8134, 8210, 8347],
-          perkStyle: 8000,
-          perkSubStyle: 8200,
+            perkIds: [5007, 8106, 8134, 8210, 8347],
+            perkStyle: 8000,
+            perkSubStyle: 8200,
           }
         };
       }
