@@ -9,20 +9,6 @@ define([
   function () {
 
     const REQUIRED_FEATURES = [
-      'summoner_info',
-      'gameMode',
-      'teams',
-      'matchState',
-      'kill',
-      'death',
-      'respawn',
-      'assist',
-      'minions',
-      'level',
-      'abilities',
-      'announcer',
-      'counters',
-      'match_info',
       'live_client_data'
     ];
     const REGISTER_RETRY_TIMEOUT = 2000;
