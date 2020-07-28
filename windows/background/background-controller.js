@@ -19,7 +19,7 @@ define([
 
 
       if (Testing.isTesting()) {
-        this._updateWindows(Testing.getState());
+        BackgroundController._updateWindows(Testing.getState());
       } else {
         // open the appropriate window depending on the state
         await this._init();
@@ -30,13 +30,13 @@ define([
 
     static async _init() {
       const state = await ClientService.getState();
-      this._updateWindows(state)
+      BackgroundController._updateWindows(state)
       this._initialized = true;
     }
 
     // on client state change (idle/in-champselect/in-game)
     static _onStateChanged(state) {
-      this._updateWindows(state);
+      BackgroundController._updateWindows(state);
     }
 
     static async _updateWindows(state) {

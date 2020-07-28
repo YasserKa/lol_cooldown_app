@@ -147,9 +147,9 @@ define(["../../scripts/constants/states.js",],
             case 'ChampSelect':
               resolve(States.IN_CHAMPSELECT);
               break;
-            // case 'InProgress':
+            case 'InProgress':
             // case 'Reconnect':
-            //   resolve(States.IN_GAME);
+              resolve(States.IN_GAME);
             default:
               resolve(States.IDLE);
               break;
