@@ -12,7 +12,7 @@ define([
       'live_client_data'
     ];
     const REGISTER_RETRY_TIMEOUT = 2000;
-    const NUMBER_OF_RETRIES = 5;
+    const NUMBER_OF_RETRIES = 10;
     let _isRegisteredToGEP = false;
     let retries = 0;
 
