@@ -28,16 +28,15 @@ define([
       }
     }
 
-    // Initialize app
     static async _init() {
       const state = await ClientService.getState();
-      BackgroundController._updateWindows(state)
+      this._updateWindows(state)
       this._initialized = true;
     }
 
-    // On client state change (idle/in-champselect/in-game)
+    // on client state change (idle/in-champselect/in-game)
     static _onStateChanged(state) {
-      BackgroundController._updateWindows(state);
+      this._updateWindows(state);
     }
 
     static async _updateWindows(state) {
@@ -50,6 +49,7 @@ define([
           break;
         case States.IN_CHAMPSELECT:
         case States.IN_GAME:
+        // a state used for testing
         case States.CHAMPSELECT_TO_GAME:
           WindowsService.openWindowOnlyIfNotOpen(WindowNames.APP);
           break;
