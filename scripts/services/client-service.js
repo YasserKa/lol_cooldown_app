@@ -19,7 +19,7 @@ define(["../../scripts/constants/states.js",],
 
     let _initialized = false;
 
-    // Used to not trigger champSelectChangedListeners with duplicated data
+    // used to not trigger champSelectChangedListeners with duplicated data
     let _currentData = {};
 
     async function init() {
@@ -30,7 +30,7 @@ define(["../../scripts/constants/states.js",],
       _initialized = true;
     }
 
-    // Registering events for champselect & client state change
+    // registering events for champselect & client state change
     function registerEvents() {
       overwolf.games.launchers.events.onInfoUpdates.removeListener(_onEventUpdate);
       overwolf.games.launchers.events.onInfoUpdates.addListener(_onEventUpdate);
@@ -47,7 +47,7 @@ define(["../../scripts/constants/states.js",],
       }));
     }
 
-    // Subscribe to features in LoL's launcher
+    // subscribe to features in LoL's launcher
     function setFeatures() {
       return new Promise((resolve => {
         overwolf.games.launchers.events.setRequiredFeatures(
@@ -72,7 +72,7 @@ define(["../../scripts/constants/states.js",],
       if (event.gameChanged || event.runningChanged) {
         _onGameStateChanged(event);
       } else if (event['feature'] === 'game_flow') {
-        // Client state change
+        // client state change
         _onStateChanged(event);
       } else if (event['feature'] === 'champ_select') {
         // champselect change
@@ -91,7 +91,6 @@ define(["../../scripts/constants/states.js",],
       }
     }
 
-    // let currentState = States.NONE;
     // trigger listeners on state change for the launcher
     function _onStateChanged(event) {
       const phase = event['info']['game_flow']['phase'];
@@ -105,17 +104,11 @@ define(["../../scripts/constants/states.js",],
         case 'InProgress':
         case 'Reconnect':
           return;
-          // state = States.IN_GAME;
           break;
         default:
           state = States.IDLE;
           break;
       }
-
-      // if (state === currentState) {
-      //   return;
-      // }
-      currentState = state;
 
       if (_onStateChangedListener !== null) {
         _onStateChangedListener(state);
@@ -148,7 +141,6 @@ define(["../../scripts/constants/states.js",],
               resolve(States.IN_CHAMPSELECT);
               break;
             case 'InProgress':
-            // case 'Reconnect':
               resolve(States.IN_GAME);
             default:
               resolve(States.IDLE);
@@ -191,7 +183,7 @@ define(["../../scripts/constants/states.js",],
       }
     }
 
-    // Get the current state of the launcher
+    // get the current state of the launcher
     async function getChampSelectInfo() {
       await init();
 
