@@ -63,7 +63,7 @@ define([
     }
 
     _inGameEventUpdateListener(data) {
-      // Using it from registering the function
+      // using it from registering the function
       if (data.hasOwnProperty('feature') && data['feature'] === 'live_client_data') {
         data = data['info']['live_client_data'];
       }

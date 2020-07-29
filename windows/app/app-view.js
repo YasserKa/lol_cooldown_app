@@ -10,12 +10,12 @@ define([
     class AppView extends SampleAppView {
 
       _initialized = false;
-      _inGameUpdate = false;
+      _firstInGameUpdate = false;
 
       constructor() {
         super();
 
-        this.update = this.update.bind(this);
+        this._update = this._update.bind(this);
       }
 
       _init(data) {
@@ -26,18 +26,18 @@ define([
       }
 
       updateInChampSelect(data) {
-        this.update(data);
+        this._update(data);
       }
 
       updateInGame(data) {
-        if (!this._inGameUpdate) {
+        if (!this._firstInGameUpdate) {
           this._init(data);
-          this._inGameUpdate = true;
+          this._firstInGameUpdate = true;
         }
-        this.update(data);
+        this._update(data);
       }
 
-      update(data) {
+      _update(data) {
         if (!this._initialized) {
           this._init(data);
         }

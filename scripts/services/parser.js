@@ -37,30 +37,6 @@ define([
       }
     };
 
-    /** 
-     * array of champions
-     * data {
-     * 'position',
-     * 'level'
-     * 'items'
-     *    'itemID'
-     *    'displayName'
-     * 'championName',
-     * 'summonerSpells
-     *     'summonerSpellOne'
-     *        'displayName'
-     *     'summonerSpellTwo'
-     *        'displayName'
-     * 'runes'
-     *    'keystone'
-     *    'primaryRuneTree'
-     *       'displayName'
-     *       'id'
-     *    'secondaryRuneTree'
-     *      '
-     * 'team' "ORDER" blue or "CHAOS" red
-     * }
-     */
     const DEFAULT_CHAMP_DATA = {
       'abilities': [],
       'name': 'no-champ',
@@ -110,7 +86,7 @@ define([
     function _getUpdatedChampData(champData) {
       // deal with images
       if (EXCEPTION_DATA.hasOwnProperty(champData['name'])) {
-        champData = array_replace_recursive(champData, EXCEPTION_DATA[champData['name']]);
+        champData = _array_replace_recursive(champData, EXCEPTION_DATA[champData['name']]);
       }
       return champData;
     }
@@ -238,7 +214,6 @@ define([
       return parsedParticipantRunes;
     }
 
-
     function _parseItemsData(participantItems) {
       let itemsHasCDrId = dataHandler.getAllItemsHasCDrId();
       let itemsId = participantItems.map((item) => item['itemID'].toString());
@@ -247,43 +222,43 @@ define([
     }
 
     // used similarly to the one in php
-    function array_replace_recursive(arr) {
+    function _array_replace_recursive(arr) {
 
-      var i = 0
-      var p = ''
-      var argl = arguments.length
-      var retObj
+      var i = 0;
+      var p = '';
+      var argl = arguments.length;
+      var retObj;
 
       if (argl < 2) {
-        throw new Error('There should be at least 2 arguments passed to array_replace_recursive()')
+        throw new Error('There should be at least 2 arguments passed to array_replace_recursive()');
       }
 
       // Although docs state that the arguments are passed in by reference,
       // it seems they are not altered, but rather the copy that is returned
       // So we make a copy here, instead of acting on arr itself
       if (Object.prototype.toString.call(arr) === '[object Array]') {
-        retObj = []
+        retObj = [];
         for (p in arr) {
-          retObj.push(arr[p])
+          retObj.push(arr[p]);
         }
       } else {
-        retObj = {}
+        retObj = {};
         for (p in arr) {
-          retObj[p] = arr[p]
+          retObj[p] = arr[p];
         }
       }
 
       for (i = 1; i < argl; i++) {
         for (p in arguments[i]) {
           if (retObj[p] && typeof retObj[p] === 'object') {
-            retObj[p] = array_replace_recursive(retObj[p], arguments[i][p])
+            retObj[p] = array_replace_recursive(retObj[p], arguments[i][p]);
           } else {
-            retObj[p] = arguments[i][p]
+            retObj[p] = arguments[i][p];
           }
         }
       }
 
-      return retObj
+      return retObj;
     }
 
     return {
