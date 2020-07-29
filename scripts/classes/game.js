@@ -9,23 +9,23 @@ define([
      * @param {redTeam, blueTeam, events} data 
      */
     constructor(data) {
-      // teams' participants
-      this.redTeam = data['redTeam'].map(participant => new Participant(participant)).sort(this._sortTeam);
-      this.blueTeam = data['blueTeam'].map(participant => new Participant(participant)).sort(this._sortTeam);
+      // sorted teams' participants
+      this._redTeam = data['redTeam'].map(participant => new Participant(participant)).sort(this._sortTeam);
+      this._blueTeam = data['blueTeam'].map(participant => new Participant(participant)).sort(this._sortTeam);
     }
 
     update(data) {
       this._updateEvents(data['events']);
-      this._updateTeam(data['redTeam'], this.redTeam);
-      this._updateTeam(data['blueTeam'], this.blueTeam);
+      this._updateTeam(data['redTeam'], this._redTeam);
+      this._updateTeam(data['blueTeam'], this._blueTeam);
     }
 
     getBlueTeam() {
-      return this.blueTeam;
+      return this._blueTeam;
     }
 
     getRedTeam() {
-      return this.redTeam;
+      return this._redTeam;
     }
 
     _updateEvents(events) {
@@ -41,7 +41,7 @@ define([
     }
 
     _updateChampionKills(events) {
-      let participants = this.blueTeam.concat(this.redTeam);
+      let participants = this._blueTeam.concat(this._redTeam);
       for (let event of events) {
         for (let partic of participants) {
           if (event['Contributors'].includes(partic.getSummonerName())) {
@@ -57,13 +57,13 @@ define([
       for (let event of events) {
         let killerName = event['KillerName'];
 
-        for (let partic of this.blueTeam) {
+        for (let partic of this._blueTeam) {
           if (partic.getSummonerName() === killerName) {
             blueCloudStacks++;
             continue;
           }
         }
-        for (let partic of this.redTeam) {
+        for (let partic of this._redTeam) {
           if (partic.getSummonerName() === killerName) {
             redCloudStacks++;
             continue;
@@ -72,10 +72,10 @@ define([
       }
 
       // update participants' cloud stacks
-      for (let partic of this.blueTeam) {
+      for (let partic of this._blueTeam) {
         partic._updateCloudStacks(blueCloudStacks);
       }
-      for (let partic of this.redTeam) {
+      for (let partic of this._redTeam) {
         partic._updateCloudStacks(redCloudStacks);
       }
 
@@ -86,7 +86,8 @@ define([
       for (let participant of team) {
         let participantId = participant.getId();
         for (let participantInput of inputTeam) {
-          let participantInputId = participantInput.hasOwnProperty('cellId') ? participantInput['cellId'] : participantInput['summonerName'];
+          let participantInputId = participantInput.hasOwnProperty('cellId') ? 
+           participantInput['cellId'] : participantInput['summonerName'];
 
           if (participantId === participantInputId) {
             participant.update(participantInput);
@@ -95,6 +96,7 @@ define([
       }
     }
 
+    // sort team members depending on cellId number or their position
     _sortTeam(participantOne, participantTwo) {
       const positionOrder = ['TOP', 'JUNGLE', 'MIDDLE', 'BOTTOM', 'UTILITY'];
 
@@ -108,7 +110,6 @@ define([
         return participantOne.getCellId() > participantTwo.getCellId() ? 1 : -1;
       }
     }
-
   }
 
   return Game;

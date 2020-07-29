@@ -17,7 +17,7 @@ define([],
 
         function _updateTeam(team, color) {
             for (let participant of team) {
-                // Update champion
+                // update champion
                 $(`table[partic-id="${participant.getId()}"] .champ-icon`)
                     .attr('src', participant.getChampionIcon())
                     .attr('alt', participant.getChampionName());
@@ -26,14 +26,14 @@ define([],
                 $(`table[partic-id="${participant.getId()}"] .cooldown-reduction`)
                     .text(participant.getAbilitiesCDr());
 
-                // Champ Abilities
+                // champ Abilities
                 $(`table[partic-id="${participant.getId()}"] .cooldowns-abilities`).remove();
                 if (participant.getChampionAbilities().length !== 0 &&
                     $(`table[partic-id="${participant.getId()}"] .cooldowns-abilities`).length === 0) {
                     $(`table[partic-id="${participant.getId()}"]`).append(_createAbilities(participant, color));
                 }
 
-                // Update spells
+                // update spells
                 $(`table[partic-id="${participant.getId()}"] div.spell-1 img`)
                     .attr('src', participant.getSummonerSpellImage(0))
                     .attr('alt', participant.getSummonerSpellName(0));
@@ -43,7 +43,6 @@ define([],
                 $(`table[partic-id="${participant.getId()}"] div.spell-1 p span`)
                     .text(participant.getSummonerSpellCooldown(0));
 
-                // Update spells
                 $(`table[partic-id="${participant.getId()}"] div.spell-2 img`)
                     .attr('src', participant.getSummonerSpellImage(1))
                     .attr('alt', participant.getSummonerSpellName(1));
@@ -52,7 +51,6 @@ define([],
                     .attr('spell-name', participant.getSummonerSpellName(1))
                 $(`table[partic-id="${participant.getId()}"] div.spell-2 p span`)
                     .text(participant.getSummonerSpellCooldown(1));
-
             }
         }
 
@@ -63,7 +61,7 @@ define([],
         }
 
         function _createTeam(team, color) {
-            // Start team element
+            // start team element
             let el =
                 `<div id="team-${color}" class="team row justify-content-center mx-auto team-${color}">`
             for (let participant of team) {
@@ -73,7 +71,6 @@ define([],
             el += `</div>`
             return el;
         }
-        // TODO: make exception for aphelios
         function _createAbilities(participant, teamColor) {
             let el =
                 `<tr class="cooldowns-abilities" ><td class="row-cooldowns p-0" colspan=4>
@@ -85,14 +82,14 @@ define([],
                 <th class="p-0">
                     <div class='ability-img-container d-flex'>
                         <img class="ability-icon" src="${ability['icon']}" alt="${ability['name']}" ability="${key}" `;
-                // Add description for abilities that has cooldown reduction effect
+                // add description for abilities that has cooldown reduction effect
                 if (ability['cdrType'] != '') {
                     el +=
                         ` data-toggle="tooltip" data - html=true title = "${ability['description']}"/>`
                 } else {
                     el += `/>`
                 }
-                // Aphelios exception
+                // aphelios exception
                 if (ability.hasOwnProperty('icon1')) {
                     el += `<img class="ability-icon" src="${ability['icon1']}" alt="${ability['name1']}" ability="${key}"/> `;
                 }
@@ -158,10 +155,8 @@ define([],
         }
 
         function _createRunes(participant) {
-            // console.log(participant.getRunes());
             let el = ''
             for (let [key, rune] of Object.entries(participant.getRunes())) {
-                // console.log(rune);
                 el += `<img class="rune-icon ml-1" src="${rune.image}" alt="${rune.name}" data-toggle="tooltip" data-html="true" title="" data-original-title="${rune.description}">`
             }
 
