@@ -206,9 +206,10 @@ define([
 
       for (let runeId of neededRuneIds) {
         let rune = dataHandler.getRuneById(runeId);
-        parsedParticipantRunes[runeId] = rune;
+        parsedParticipantRunes[rune.name] = rune;
+        // console.log(rune);
         if (runeId == 5007) {
-          parsedParticipantRunes[runeId].image = '../../img/' + rune.image;
+          parsedParticipantRunes[rune.name].image = '../../img/' + rune.image;
         }
       }
       return parsedParticipantRunes;

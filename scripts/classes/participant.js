@@ -2,11 +2,11 @@ define([
 ], function (
 ) {
   const RUNES_ENUM = {
-    UltimateHunter: 8106,
-    CooldownReduction: 5007,
-    IngeniousHunter: 8134,
-    Transcendence: 8210,
-    CosmicInsight: 8347,
+    UltimateHunter: 'UltimateHunter',
+    CooldownReduction: 'CooldownReduction',
+    IngeniousHunter: 'IngeniousHunter',
+    Transcendence: 'Transcendence',
+    CosmicInsight: 'CosmicInsight',
   };
 
   class Participant {
@@ -98,6 +98,10 @@ define([
       return this.runes;
     }
 
+    getItems() {
+      return this.items;
+    }
+
     getSpellsCDr() {
       return this.cdReduction;
     }
@@ -108,6 +112,14 @@ define([
 
     getUltimateCDr() {
       return this.ultCdRed;
+    }
+
+    getUniqueKillsCount() {
+      return this.uniqueKills.length;
+    }
+
+    getCloudStacks() {
+      return this.cloudDrakeStacks;
     }
 
     getSummonerSpellName(index) {

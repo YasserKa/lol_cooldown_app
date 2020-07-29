@@ -17,14 +17,27 @@ define([],
 
         function _updateTeam(team, color) {
             for (let participant of team) {
+                console.log(participant.getItems());
                 // update champion
                 $(`table[partic-id="${participant.getId()}"] .champ-icon`)
                     .attr('src', participant.getChampionIcon())
                     .attr('alt', participant.getChampionName());
-
+                
                 // cooldownReduction
-                $(`table[partic-id="${participant.getId()}"] .cooldown-reduction`)
+                $(`table[partic-id="${participant.getId()}"] p.ability-cdr`)
                     .text(participant.getAbilitiesCDr());
+                if (participant.getUniqueKillsCount() > 0) {
+                    $(`table[partic-id="${participant.getId()}"] p.kill-count`)
+                        .text(participant.getUniqueKillsCount());
+                }
+                if (participant.getCloudStacks() > 0) {
+                $(`table[partic-id="${participant.getId()}"] p.cloud-stacks`)
+                    .text(participant.getCloudStacks());
+                }
+                if (participant.getUltimateCDr() > 0) {
+                    $(`table[partic-id="${participant.getId()}"] p.ultimate-cdr`)
+                        .text(participant.getUltimateCDr());
+                }
 
                 // champ Abilities
                 $(`table[partic-id="${participant.getId()}"] .cooldowns-abilities`).remove();
@@ -129,13 +142,13 @@ define([],
                 <th class="${teamColor}" colspan=4></th>
             </tr>
               <tr class=" champ-header" >
-                <td class="cooldown-reduction">
-                0
-                </td>
                 <td class="cell champ p-0" rowspan=1>
-                    <img class="grip" src="../../img/grip-${teamColor}.png" />
                     <img class="champ-icon" src="${participant.getChampionIcon()}" alt="${participant.getChampionName()}">
                 </td>
+                <td class="cell items">`+
+                _createItems(participant)
+                +
+                `</td>
                 <td class="cell runes">`+
                 _createRunes(participant)
                 +
@@ -154,11 +167,49 @@ define([],
             return el;
         }
 
+        function _createItems(participant) {
+            let el = '';
+            let items = participant.getItems();
+                console.log(items);
+            for (let item of items) {
+                console.log(item);
+                el += `<img class="item-icon ml-1" src="${item.icon}" alt="${item.name}">`;
+            }
+            return el;
+        }
+
         function _createRunes(participant) {
-            let el = ''
-            for (let [key, rune] of Object.entries(participant.getRunes())) {
+            let el = '<div>'
+            let runes = participant.getRunes();
+            let cloudStacks = participant.getCloudStacks();
+
+            // normal abilities
+            for (let [key, rune] of Object.entries(runes)) {
+                if (key === 'UltimateHunter' || key === 'IngeniousHunter') {
+                    continue;
+                }
                 el += `<img class="rune-icon ml-1" src="${rune.image}" alt="${rune.name}" data-toggle="tooltip" data-html="true" title="" data-original-title="${rune.description}">`
             }
+            el += `<p class="ability-cdr">${participant.getAbilitiesCDr()}</p>`
+            el += '</div>'
+
+            // ultimate
+            el += '<div>'
+            if (runes.hasOwnProperty('UltimateHunter')) {
+                let rune = runes.UltimateHunter;
+                el += `<p class="kill-count"> ${participant.getUniqueKillsCount()}</p>
+                   <img class="rune-icon ml-1" src="${rune.image}" alt="${rune.name}" data-toggle="tooltip" data-html="true" title="" data-original-title="${rune.description}">`
+            }
+
+            if (cloudStacks > 0) {
+                el += `<p class="cloud-stacks">${cloudStacks}</p><img class="buff ml-1" src="../../img/cloud_buff.png" alt="cloud_buff">`
+            }
+
+            if (cloudStacks > 0 || runes.hasOwnProperty('UltimateHunter')) {
+                el += `<p class="ultimate-cdr">${participant.getUltimateCDr()}</p>`
+            }
+
+            el += '</div>'
 
             return el;
         }

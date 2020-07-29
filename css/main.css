@@ -4,11 +4,6 @@ html, body {
     min-width: 750px;
 }
 
-nav {
-    height: 50px;
-    background-color: #f8f9fa!important;
-}
-
 .hourglass-img,
 .discord-img {
     height:40px;
@@ -76,7 +71,6 @@ footer {
 
 /* Match Page */
 img.cdr-boot,
-.buff,
 img.grip {
     cursor: pointer;
 }
@@ -103,17 +97,6 @@ table.champ {
     justify-content: space-between;
     background-color: #F3F5F8;
     box-shadow: 0px 0px 6px #999;
-}
-
-/* Cloud drake buff */
-.buff-container {
-    width: fit-content;
-    margin: auto;
-}
-.buff {
-    display: block;
-    margin: 20%;
-    opacity: 0.5;
 }
 
 img.ability-icon,
@@ -144,8 +127,12 @@ img.spell-icon {
     transform: translate(-50%, -50%);
 }
 
-img.rune-icon  {
+img.rune-icon,
+img.item-icon,
+.buff  {
     height: 1.5vh;
+    border-radius: 90px;
+    /* float: left; */
     min-height: 18px
 }
 
@@ -162,12 +149,12 @@ img[alt="statmodscdrscaling"] {
     background-color: black;
 }
 
-
 .cell.runes {
     min-height: 8vh;
+    font-size: 0.7em;
 }
-img.rune-icon {
-    float: left;
+.runes p {
+    display: inline;
 }
 
 .cdr-boot,
