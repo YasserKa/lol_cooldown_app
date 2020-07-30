@@ -17,7 +17,6 @@ define([],
 
         function _updateTeam(team, color) {
             for (let participant of team) {
-                console.log(participant.getItems());
                 // update champion
                 $(`table[partic-id="${participant.getId()}"] .champ-icon`)
                     .attr('src', participant.getChampionIcon())
@@ -84,6 +83,34 @@ define([],
             el += `</div>`
             return el;
         }
+
+        function _createParticipant(participant, teamColor) {
+            let el =
+                `<table class="champ" partic-id="${participant.getId()}">
+            <tbody><tr>
+                <th class="${teamColor}" colspan=4></th>
+            </tr>
+              <tr class=" champ-header" >
+                <td class="cell champ p-0" rowspan=1>
+                    <img class="champ-icon" src="${participant.getChampionIcon()}" alt="${participant.getChampionName()}">
+                </td> 
+                <td class="cell cooldown-reduction-cell">`+
+                _createCdRedCell(participant)
+                +
+                `</td>
+                <td class="cell spells p-0">
+                    <div class="spell-1">
+                        <img class="spell-icon" src="${participant.getSummonerSpellImage(0)}" alt="${participant.getSummonerSpellImage(0)}">
+                        <p class="cooldown" spell="0" spell-name="${participant.getSummonerSpellName(0)}"><span>${participant.getSummonerSpellCooldown(0)}</span><small></small></p>
+                    </div>
+                    <div class="spell-2">
+                        <img class="spell-icon" src="${participant.getSummonerSpellImage(1)}" alt="${participant.getSummonerSpellImage(1)}">
+                        <p class="cooldown" spell="0" spell-name="${participant.getSummonerSpellName(1)}"><span>${participant.getSummonerSpellCooldown(1)}</span><small></small></p>
+                    </div>
+                </td>
+            </tr> </tbdoy></table>`;
+            return el;
+        }
         function _createAbilities(participant, teamColor) {
             let el =
                 `<tr class="cooldowns-abilities" ><td class="row-cooldowns p-0" colspan=4>
@@ -135,66 +162,47 @@ define([],
         }
 
 
-        function _createParticipant(participant, teamColor) {
-            let el =
-                `<table class="champ" partic-id="${participant.getId()}">
-            <tbody><tr>
-                <th class="${teamColor}" colspan=4></th>
-            </tr>
-              <tr class=" champ-header" >
-                <td class="cell champ p-0" rowspan=1>
-                    <img class="champ-icon" src="${participant.getChampionIcon()}" alt="${participant.getChampionName()}">
-                </td>
-                <td class="cell items">`+
-                _createItems(participant)
-                +
-                `</td>
-                <td class="cell runes">`+
-                _createRunes(participant)
-                +
-                `</td>
-                <td class="cell spells p-0">
-                    <div class="spell-1">
-                        <img class="spell-icon" src="${participant.getSummonerSpellImage(0)}" alt="${participant.getSummonerSpellImage(0)}">
-                        <p class="cooldown" spell="0" spell-name="${participant.getSummonerSpellName(0)}"><span>${participant.getSummonerSpellCooldown(0)}</span><small></small></p>
-                    </div>
-                    <div class="spell-2">
-                        <img class="spell-icon" src="${participant.getSummonerSpellImage(1)}" alt="${participant.getSummonerSpellImage(1)}">
-                        <p class="cooldown" spell="0" spell-name="${participant.getSummonerSpellName(1)}"><span>${participant.getSummonerSpellCooldown(1)}</span><small></small></p>
-                    </div>
-                </td>
-            </tr> </tbdoy></table>`;
-            return el;
-        }
 
-        function _createItems(participant) {
+        function _createCdRedCell(participant) {
             let el = '';
-            let items = participant.getItems();
-                console.log(items);
-            for (let item of items) {
-                console.log(item);
-                el += `<img class="item-icon ml-1" src="${item.icon}" alt="${item.name}">`;
-            }
-            return el;
-        }
-
-        function _createRunes(participant) {
-            let el = '<div>'
             let runes = participant.getRunes();
             let cloudStacks = participant.getCloudStacks();
 
-            // normal abilities
+            let items = participant.getItems();
+
+            el += '<div class="abilities-cdr">'
+            // items
+            el += '<div class="items">'
+            for (let [index, item] of Object.entries(items)) {
+                el += `<img class="item-icon ml-1"`;
+                if (index != 0) {
+                    el += `style=" position: absolute;left:${index*50}%"`;
+                }
+                el += `src="${item.icon}" alt="${item.name}">`;
+            }
+            el += '</div>'
+
+            // normal abilities runes
+            el += '<div class="runes">'
+            let index = 0;
             for (let [key, rune] of Object.entries(runes)) {
                 if (key === 'UltimateHunter' || key === 'IngeniousHunter') {
                     continue;
                 }
-                el += `<img class="rune-icon ml-1" src="${rune.image}" alt="${rune.name}" data-toggle="tooltip" data-html="true" title="" data-original-title="${rune.description}">`
+                el += `<img class="rune-icon ml-1"`;
+                if (index != 0) {
+                    el += `style=" position: absolute;left:${index*50}%"`;
+                } 
+                el += `src="${rune.image}" alt="${rune.name}" data-toggle="tooltip" data-html="true" title="" data-original-title="${rune.description}">`
+
+                index++;
             }
+            el += '</div>'
             el += `<p class="ability-cdr">${participant.getAbilitiesCDr()}</p>`
             el += '</div>'
 
             // ultimate
-            el += '<div>'
+            el += '<div class="ultimate-cdr">'
             if (runes.hasOwnProperty('UltimateHunter')) {
                 let rune = runes.UltimateHunter;
                 el += `<p class="kill-count"> ${participant.getUniqueKillsCount()}</p>

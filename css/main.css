@@ -1,109 +1,61 @@
-/* General */
-html, body {
-    height: 100%;
-    min-width: 750px;
-}
-
-.hourglass-img,
-.discord-img {
-    height:40px;
-}
-
-.settings-img {
-    height:30px;
-    cursor: pointer;
-}
-
-.navbar-brand,
-.navbar-brand:hover {
-    color: cornflowerblue;
-}
-
-.container-fluid {
-    min-height: calc(100vh - 105px);
-}
-
-footer {
-    height: 55px;
-}
-
-body  {
-    background-color: #EFEFEF;
-}
-
 p {
-    margin: auto
-}
-
-footer {
-    background: aliceblue;
-    font-size: 12px;
-    color: #A0A0A0
-}
-
-/* Main Page */
-.bannerArea {
-    background-image: url(/banner.jpg);
-    margin-bottom: 20px;
-    box-shadow: inset 0px 0px 10px rgba(0, 0, 0, 0.4);
-    height: 1080px;
-    background-position-y: top;
-    background-position-x: center;
-    background-size: cover;
-    position: relative;
-}
-
-.demo {
-    font-size: small;
-}
-
-.search-form {
-    background-color: #fff;
-    position: relative;
-    flex-grow: 1;
-    min-width: 20vw;
-    margin: 0 auto;
-    min-height: 20vh;
-    position: absolute;
-    top: 25%;
-    box-shadow: inset 0px 0px 10px rgba(0, 0, 0, 0.4);
-}
-
-/* Match Page */
-img.cdr-boot,
-img.grip {
-    cursor: pointer;
-}
-
-#teams-details {
     margin: auto;
-}
-.team {
-    display: flex;
 }
 
 th.blue {
-    background-color:blue;
+    background-color: #45A9F1;
 }
+
 th.red {
-    background-color:red;
+    background-color: #FF5859;
 }
 
 table.champ {
     margin: 0.5vw;
-    display: flex;
-    flex-direction: row;
-    flex-wrap: wrap;
-    justify-content: space-between;
     background-color: #F3F5F8;
     box-shadow: 0px 0px 6px #999;
 }
 
+td.cell.champ {
+    width: 30px;
+} 
+img.champ-icon {
+    width: 100%;
+}
+
+.abilities-cdr {
+    display: flex;
+}
+
+.items,
+.runes {
+    position: relative;
+}
+
+/* .runes {
+    margin-left: 10px;
+} */
+
+.abilities-cdr,
+.ultimate-cdr {
+    height: 1px;
+    /* margin-left: 30px; */
+} 
+
+img.rune-icon,
+img.item-icon,
+.buff  {
+    height: 1.5vh;
+    height: 1.5vh;
+    border-radius: 90px;
+    min-height: 18px
+}
+
 img.ability-icon,
 img.spell-icon {
-    height: 3vh;
-    min-height: 25px;
+    height: 10px;
 }
+
 .spell-overlay  {
     height: 3vh;
     width: 3vh;
@@ -127,33 +79,17 @@ img.spell-icon {
     transform: translate(-50%, -50%);
 }
 
-img.rune-icon,
-img.item-icon,
-.buff  {
-    height: 1.5vh;
-    border-radius: 90px;
-    /* float: left; */
-    min-height: 18px
-}
-
-img.grip {
-    height:2.5vh;
-    min-height: 20px;
-}
-img.champ-icon {
-    height: 4vh;
-    min-height: 35px;
-}
 img[alt="statmodscdrscaling"] {
     border-radius: 90px;
     background-color: black;
 }
 
-.cell.runes {
+.cell.cooldown-reduction-cell {
     min-height: 8vh;
     font-size: 0.7em;
 }
-.runes p {
+
+.cooldown-reduction-cell p {
     display: inline;
 }
 
@@ -257,7 +193,6 @@ div.ability-img-container {
     border-right: solid red;
 }
 
-
 .cooldowns > p.cooldown {
     display: inline;
     font-size: 0.9em;
@@ -273,7 +208,6 @@ div.ability-img-container {
 }
 p.cooldown {
     padding: inherit;
-    /* position: relative; */
 }
 .cooldowns p:nth-child(odd) {
     background-color: white;
@@ -299,18 +233,4 @@ p.cooldown {
 
 p small:not(:empty) {
     font-size: 0.7em;
-    /* height: 2vh; */
-    /* position: absolute; */
-    /* border-radius: 50%; */
-    /* top: -20%; */
-    /* left: 60%; */
-    /* width:10px;height:10px */
-}
-
-
-/**********************
- *  DISABLING BOOSTRAP  FOCUS
- **********************/
-.focus {
-    box-shadow: none !important;
 }
