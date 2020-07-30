@@ -1,0 +1,63 @@
+/* General */
+body.dark nav {
+    background-color: #172636 !important;
+}
+
+body.dark .modal-content {
+    background-color: #172636;
+    /* color: white; */
+}
+body.dark .close {
+    color: white;
+}
+
+body.dark .text {
+    fill: white;
+}
+body.dark, body.dark footer {
+    color: white;
+    background-color: #2d3848;
+}
+
+/* Main Page */
+body.dark .bannerArea {
+    background-image: url(/dark.jpg);
+}
+
+body.dark input#summonerName {
+    background-color: #303947;
+    border: 0px;
+    color: #898e96;
+}
+
+body.dark .btn-primary {
+    background-color: #2aa3cc;
+    border: none;
+    color: black;
+}
+
+body.dark .btn-primary:not(:disabled):not(.disabled).active {
+    background-color: #66c1df;
+    border: none;
+    color: black;
+}
+
+body.dark .search-form {
+    background-color: #3a4556;
+    box-shadow: none;
+}
+
+/* Match Page */
+
+body.dark table.champ {
+    background-color: #3A4556;
+    color: white;
+    box-shadow: none;
+}
+
+body.dark .cooldowns p:nth-child(odd) {
+    background-color: #353d4f;
+}
+body.dark .cooldowns p:nth-child(even) {
+    background-color: #2e3447;
+}
