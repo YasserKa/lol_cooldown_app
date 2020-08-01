@@ -83,10 +83,10 @@ define([],
                 <tr>
                     <th class="${teamColor}" colspan=4></th>
                 </tr>
-                <tr class=" champ-header">
+                <tr class="champ-header">
                     <td class="cell champ p-0" colspan=4>
                         <img class="champ-icon" src="${participant.getChampionIcon()}" alt="${participant.getChampionName()}">
-                        <div class="spells-cdr-cell d-inline-flex"></div>
+                        <div class="cdr spells-cdr-cell d-inline-flex"></div>
                         <div class="cell spells p-0">
                             <div class="spell-1">
                                 <img class="spell-icon" src="${participant.getSummonerSpellImage(0)}" alt="${participant.getSummonerSpellImage(0)}">
@@ -205,7 +205,7 @@ define([],
         }
 
         function _createCdRedCell(participant) {
-            let el = `<tr class="abilities-cdr-cell">`;
+            let el = `<tr class="cdr abilities-cdr-cell">`;
             let runes = participant.getRunes();
             let cloudStacks = participant.getCloudStacks();
 
@@ -245,7 +245,7 @@ define([],
             el += '</td></tr>'
 
             // ultimate
-            el += '<tr class="ultimate-cdr-cell">'
+            el += '<tr class="cdr ultimate-cdr-cell">'
 
             el += '<td class="text-center"><div class="d-inline-flex">'
             if (runes.hasOwnProperty('UltimateHunter')) {

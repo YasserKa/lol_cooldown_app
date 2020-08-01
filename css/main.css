@@ -29,21 +29,25 @@ img.champ-icon {
     margin: 5px;
 }
 
-.items {
-    width: 100px;
+/** cdr elements **/
+.cdr p {
+    color: #8A8F94;
 }
-.items > img,
-.runes > img {
+
+.cdr img {
+    height: 20px;
+    width: 20px;
+    border-radius: 90px;
+    border: solid 1px #8A8F94;
     vertical-align: top;
 }
 
+.items {
+    width: 100px;
+}
 .runes {
     width: 60px;
 }
-
-/* .runes {
-    margin-left: 30px;
-} */
 
 .items,
 .runes,
@@ -52,14 +56,15 @@ img.champ-icon {
     position: relative;
 }
 
-/* .spells-cdr-cell {
-    display: inline;
-} */
-
 .spells-cdr-value {
     margin-left: 10px;
 }
 
+img[alt="statmodscdrscaling"] {
+    background-color: black;
+}
+
+/** spells **/
 div.spells {
     display: flex;
     font-size: 0.7em;
@@ -67,31 +72,9 @@ div.spells {
     text-align: center;
 }
 
-img.rune-icon,
-img.item-icon,
-.buff  {
-    height: 20px;
-    border-radius: 90px;
-    border: solid 1px #8A8F94;
-}
-
-img.spell-icon {
+.spells img {
     height:20px;
 }
-
-img.ability-icon {
-    height: 25px;
-}
-
-img[alt="statmodscdrscaling"] {
-    border-radius: 90px;
-    background-color: black;
-}
-
-.cooldown-reduction-cell p {
-    display: inline;
-}
-
 
 /** ABILITIES **/
 
@@ -101,50 +84,38 @@ img[alt="statmodscdrscaling"] {
     text-align:center;
 }
 
+img.ability-icon {
+    height: 25px;
+}
+
 .abilities td {
     width:100%;
 }
+
 div.ability-img-container {
     position: relative;
     top: 0;
     margin:auto;
     width: fit-content;
 }
+
 .ability-icon {
     position: relative;
     top: 0;
     left: 0;
 }
-.ability-icon.active {
-    border-left: solid blue;
-}
+
 .info {
     position: absolute;
     left: 80%;
     height: 1.5vh;
 }
-.info-attribution {
-    height: 1.5vh;
-}
-
-.indication {
-    position: absolute;
-    top: 0%;
-    height: 100%;
-    display:none;
-}
 
 .cooldowns > p.cooldown {
     display: inline;
     font-size: 0.9em;
-}
-
-.cooldowns {
     background-color: #FFF;
     text-align: center;
-}
-p.cooldown {
-    padding: inherit;
 }
 
 .cooldowns:first-child:nth-last-child(1) p {
