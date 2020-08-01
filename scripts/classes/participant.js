@@ -3,7 +3,7 @@ define([
 ) {
   const RUNES_ENUM = {
     UltimateHunter: 'UltimateHunter',
-    CooldownReduction: 'CooldownReduction',
+    CooldownReduction: 'statmodscdrscaling',
     IngeniousHunter: 'IngeniousHunter',
     Transcendence: 'Transcendence',
     CosmicInsight: 'CosmicInsight',
