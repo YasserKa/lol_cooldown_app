@@ -20,6 +20,13 @@ define([
       this._updateTeam(data['blueTeam'], this._blueTeam);
     }
 
+    isInGame() {
+      if (this._blueTeam.length > 0) {
+        return this._blueTeam[0].getSummonerName() !== null;
+      }
+      return this._redTeam[0].getSummonerName() !== null;
+    }
+
     getBlueTeam() {
       return this._blueTeam;
     }

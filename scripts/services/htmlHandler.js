@@ -4,6 +4,7 @@ define([],
         function initializeView(game) {
             $(".game-details .team").remove();
             _createGame(game);
+            _updateView(game);
         }
 
         function update(game) {
@@ -13,6 +14,9 @@ define([],
         function _updateView(game) {
             _updateTeam(game.getBlueTeam(), 'blue');
             _updateTeam(game.getRedTeam(), 'red');
+            if (game.isInGame()) {
+                $('.cdr').css('display', 'table-row');
+            }
         }
 
         function _updateTeam(team, color) {
@@ -86,7 +90,8 @@ define([],
                 <tr class="champ-header">
                     <td class="cell champ p-0" colspan=4>
                         <img class="champ-icon" src="${participant.getChampionIcon()}" alt="${participant.getChampionName()}">
-                        <div class="cdr spells-cdr-cell d-inline-flex"></div>
+                        <div class="spells-cdr-holder d-inline">
+                        </div>
                         <div class="cell spells p-0">
                             <div class="spell-1">
                                 <img class="spell-icon" src="${participant.getSummonerSpellImage(0)}" alt="${participant.getSummonerSpellImage(0)}">
@@ -158,11 +163,18 @@ define([],
             let abilitiesCdrEl = _getNumberElement(participant.getUltimateCDr());
             let ultCdrEl = _getNumberElement(participant.getAbilitiesCDr());
 
-            $(`table[partic-id="${participant.getId()}"] p.ability-cdr-value`)
-                .text(abilitiesCdrEl);
-
-            $(`table[partic-id="${participant.getId()}"] .spells-cdr-cell`)
+            $(`table[partic-id="${participant.getId()}"] .cdr`).remove();
+            $(`table[partic-id="${participant.getId()}"]`).append(_createCdRedCell(participant));
+            $(`table[partic-id="${participant.getId()}"] .spells-cdr-holder`)
                 .html(_createSpellCdRedCell(participant));
+            if (participant.getUltimateCDr() > 0) {
+                $(`table[partic-id="${participant.getId()}"] p.ultimate-cdr-value`)
+                    .html(ultCdrEl);
+            }
+
+            $(`table[partic-id="${participant.getId()}"] p.ability-cdr-value`)
+                .html(abilitiesCdrEl);
+
 
             if (participant.getUniqueKillsCount() > 0) {
                 $(`table[partic-id="${participant.getId()}"] p.kill-count-value`)
@@ -172,23 +184,16 @@ define([],
                 $(`table[partic-id="${participant.getId()}"] p.cloud-stacks-value`)
                     .text(participant.getCloudStacks());
             }
-            if (participant.getUltimateCDr() > 0) {
-                $(`table[partic-id="${participant.getId()}"] p.ultimate-cdr-value`)
-                    .text(ultCdrEl);
-            }
-            $(`table[partic-id="${participant.getId()}"] .cooldown-reduction-cell`).remove();
-            $(`table[partic-id="${participant.getId()}"]`).append(_createCdRedCell(participant));
         }
 
         function _createSpellCdRedCell(participant) {
-            let el = '';
+            let el = '<div class="cdr spells-cdr-cell">';
             let cdRedSpells = participant.getSummonerSpellsCDr();
             if (cdRedSpells == 0) {
                 return el;
             }
             let items = participant.getItems();
             let runes = participant.getRunes();
-            console.log(runes);
             let neededItems = items.filter(item => item.name === 'Ionian Boots of Lucidity');
             let neededRune = runes.hasOwnProperty('CosmicInsight') ?  runes.CosmicInsight : false;
 
@@ -199,8 +204,9 @@ define([],
             if (neededItems.length > 0) {
                 el += `<img class="item-icon ml-1" src="${neededItems[0].icon}" alt="${neededItems[0].name}">`;
             }
-            el += `<p class="spells-cdr-value">${_getNumberElement(participant.getSummonerSpellsCDr())}</p>`
-            
+            el += `<p class="spells-cdr-value d-inline">${_getNumberElement(participant.getSummonerSpellsCDr())}</p>`;
+            el += '</div>';
+
             return el;
         }
 
@@ -255,18 +261,13 @@ define([],
             }
             el += '</div></td>'
 
-            // cloudStacks = 1;
             el += '<td class="text-center"><div class="d-inline-flex">'
-            if (cloudStacks > 0) {
-                el += `<p class="cloud-stacks-value">${cloudStacks}</p><img class="buff ml-1" src="../../img/cloud_buff.png" alt="cloud_buff">`
-            }
+            el += `<p class="cloud-stacks-value">${cloudStacks}</p><img class="buff ml-1" src="../../img/cloud_buff.png" alt="cloud_buff">`
             el += '</div></td>'
 
             el += '<td>'
-            if (cloudStacks > 0 || runes.hasOwnProperty('UltimateHunter')) {
-                let ultCdrEl = _getNumberElement(participant.getUltimateCDr());
-                el += `<p class="ultimate-cdr-value">${ultCdrEl}</p></td>`
-            }
+            let ultCdrEl = _getNumberElement(participant.getUltimateCDr());
+            el += `<p class="ultimate-cdr-value">${ultCdrEl}</p></td>`
             el += '</td>'
 
             el += `</tr>`;

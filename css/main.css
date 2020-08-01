@@ -20,9 +20,9 @@ table.champ {
 }
 
 /** champ icon **/
-td.cell.champ {
+/* td.cell.champ {
     width: 35px;
-} 
+}  */
 
 img.champ-icon {
     width: 35px;
@@ -32,6 +32,10 @@ img.champ-icon {
 /** cdr elements **/
 .cdr p {
     color: #8A8F94;
+}
+
+.cdr {
+    display:none;
 }
 
 .cdr img {
