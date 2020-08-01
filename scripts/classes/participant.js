@@ -14,6 +14,7 @@ define([
       this.uniqueKills = [];
       this.cdRed = 0;
       this.ultCdRed = 0;
+      this.spellsCdRed = 0;
       this.cloudDrakeStacks = 0;
 
       this.originalAbilities = data['champion']['abilities'];
@@ -114,6 +115,10 @@ define([
       return this.ultCdRed;
     }
 
+    getSummonerSpellsCDr() {
+      return this.spellsCdRed;
+    }
+
     getUniqueKillsCount() {
       return this.uniqueKills.length;
     }
@@ -139,9 +144,15 @@ define([
       // TODO: add it to runes.json
       const levelCdRed = [1, 1.53, 2.06, 2.59, 3.12, 3.65, 4.18, 4.71, 5.24, 5.76, 6.29, 6.82, 7.35, 7.88, 8.41, 8.94, 9.47, 10];
       let cdRed = 0;
+      let itemsUsed = [];
 
       for (let item of this.items) {
-        cdRed += item['cooldownReduction'];
+        // add unique cooldowns one time
+        if (!itemsUsed.includes(item.name)) {
+          cdRed += item.uniqueCooldownReduction;
+        }
+        itemsUsed.push(item.name);
+        cdRed += item.cooldownReduction;
       }
 
       if (this._hasRune(RUNES_ENUM.CooldownReduction)) {
@@ -170,6 +181,28 @@ define([
       }
       let addedUltcdRed = (100 - this.cdRed) * (runesUltCdRed / 100);
       this.ultCdRed = this.cdRed + addedUltcdRed;
+
+      // Spells Cooldown Reduction
+      let spellsCdRed = 0;
+      let hasCdrBoots = this.items.filter(value => value.name === 'Ionian Boots of Lucidity').length > 0;
+
+        // Max cdRed is 45%
+        // if (map == 'Howling Abyss')
+        //     cdRed += 40;
+        if (hasCdrBoots) {
+          spellsCdRed += 10;
+        }
+        if (this._hasRune(RUNES_ENUM.CosmicInsight)) {
+          spellsCdRed += 5;
+        }
+        // if (this.hasFiveCdrRune) {
+        //     if (map == 'Howling Abyss')
+        //         cdRed += ((100 - cdRed) * 0.05);
+        //     else
+        //         cdRed += 5
+        // }
+
+        this.spellsCdRed = spellsCdRed;
     }
 
     _updateAbilitiesCd() {
@@ -208,6 +241,8 @@ define([
     }
 
     _updateSpellsCd() {
+      let spellCdRed = 0;
+
       for (let key of Object.keys(this.originalSpells)) {
         // not assigned yet
         let cooldown = this.originalSpells[key]['cooldown'];
@@ -219,24 +254,8 @@ define([
           // formula from https://leagueoflegends.fandom.com/wiki/Teleport 
           cooldown = 430.588 - 10.588 * this.level;
         }
-        let cdRed = 0;
 
-        if (this._hasRune(RUNES_ENUM.CosmicInsight)) {
-          cdRed += 5;
-        }
-        // Max cdRed is 45%
-        // if (map == 'Howling Abyss')
-        //     cdRed += 40;
-        // if (this.hasCdrBoots)
-        //     cdRed += 10;
-        // if (this.hasFiveCdrRune) {
-        //     if (map == 'Howling Abyss')
-        //         cdRed += ((100 - cdRed) * 0.05);
-        //     else
-        //         cdRed += 5
-        // }
-
-        let newCd = cooldown - (cooldown * (cdRed) / 100)
+        let newCd = cooldown - (cooldown * (this.spellsCdRed) / 100)
         let roundedCd = Math.round(newCd * 2) / 2;
         this.currentSpells[key]['cooldown'] = roundedCd;
       }

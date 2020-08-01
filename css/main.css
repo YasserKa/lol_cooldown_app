@@ -1,7 +1,9 @@
+/** general **/
 p {
     margin: auto;
 }
 
+/** champ card header **/
 th.blue {
     background-color: #45A9F1;
 }
@@ -10,73 +12,75 @@ th.red {
     background-color: #FF5859;
 }
 
+/** champ card **/
 table.champ {
-    margin: 0.5vw;
+    margin: 3px;
     background-color: #F3F5F8;
     box-shadow: 0px 0px 6px #999;
 }
 
+/** champ icon **/
 td.cell.champ {
-    width: 30px;
+    width: 35px;
 } 
+
 img.champ-icon {
-    width: 100%;
+    width: 35px;
+    margin: 5px;
 }
 
-.abilities-cdr {
-    display: flex;
+.items {
+    width: 100px;
+}
+.items > img,
+.runes > img {
+    vertical-align: top;
 }
 
-.items,
 .runes {
-    position: relative;
+    width: 60px;
 }
 
 /* .runes {
-    margin-left: 10px;
+    margin-left: 30px;
 } */
 
-.abilities-cdr,
-.ultimate-cdr {
-    height: 1px;
-    /* margin-left: 30px; */
-} 
+.items,
+.runes,
+.abilities-cdr-cell > td,
+.ultimate-cdr-cell > td{
+    position: relative;
+}
+
+/* .spells-cdr-cell {
+    display: inline;
+} */
+
+.spells-cdr-value {
+    margin-left: 10px;
+}
+
+div.spells {
+    display: flex;
+    font-size: 0.7em;
+    float: right;
+    text-align: center;
+}
 
 img.rune-icon,
 img.item-icon,
 .buff  {
-    height: 1.5vh;
-    height: 1.5vh;
+    height: 20px;
     border-radius: 90px;
-    min-height: 18px
+    border: solid 1px #8A8F94;
 }
 
-img.ability-icon,
 img.spell-icon {
-    height: 10px;
+    height:20px;
 }
 
-.spell-overlay  {
-    height: 3vh;
-    width: 3vh;
-    min-height: 25px;
-    min-width: 25px;
-    position: absolute;
-    top: 0;
-    left: 0;
-    background: rgba(0, 0, 0, 0.5);
-    color: white;
-    opacity: 0;
-    cursor: pointer;
-}
-
-.spell-overlay > p {
-    margin: 0;
-    position: absolute;
-    top: 60%;
-    left: 50%;
-    -ms-transform: translate(-50%, -50%);
-    transform: translate(-50%, -50%);
+img.ability-icon {
+    height: 25px;
 }
 
 img[alt="statmodscdrscaling"] {
@@ -84,76 +88,19 @@ img[alt="statmodscdrscaling"] {
     background-color: black;
 }
 
-.cell.cooldown-reduction-cell {
-    min-height: 8vh;
-    font-size: 0.7em;
-}
-
 .cooldown-reduction-cell p {
     display: inline;
 }
 
-.cdr-boot,
-.aram-aura {
-    height: 2vh;
-    position: absolute;
-    border-radius: 50%;
-    top: -20%;
-    min-height: 19.7px;
-}
-.cdr-boot {
-    left: -20%;
-    filter: grayscale(100%);
-    z-index: 1;
-}
-.aram-aura {
-    left: 15%;
-}
 
-.cdr-boot.active {
-    filter: grayscale(0%);
-}
-
-td.spells {
-    display: flex
-}
-.spells > div {
-    position: relative;
-}
-
-.spells {
-    font-size: 0.7em;
-    float:right;
-    text-align: center;
-}
-
-td.cooldown-reduction {
-    text-align: center;
-}
-div.cooldown-reduction {
-    text-align: center;
-}
-
-.cooldown-reduction .btn-red {
-    background-color: lightsalmon;
-}
-.cooldown-reduction .btn-red.active {
-    background-color: indianred;
-}
-
-.cooldown-reduction .btn-blue {
-    background-color: powderblue;
-}
-.cooldown-reduction .btn-blue.active {
-    background-color: cornflowerblue;
-}
+/** ABILITIES **/
 
 .abilities {
     margin: 0px;
-    /* width:100%; */
     width:200px;
     text-align:center;
 }
+
 .abilities td {
     width:100%;
 }
@@ -186,35 +133,20 @@ div.ability-img-container {
     height: 100%;
     display:none;
 }
-.indication.blue {
-    border-right: solid blue;
-}
-.indication.red {
-    border-right: solid red;
-}
 
 .cooldowns > p.cooldown {
     display: inline;
     font-size: 0.9em;
-    /* padding-right: 0.5vw; */
 }
 
 .cooldowns {
-    /* min-width: max-width; */
-    /* margin: auto; */
-    /* flex: 0 1 100%; */
     background-color: #FFF;
     text-align: center;
 }
 p.cooldown {
     padding: inherit;
 }
-.cooldowns p:nth-child(odd) {
-    background-color: white;
-}
-.cooldowns p:nth-child(even) {
-    background-color: gainsboro;
-}
+
 .cooldowns:first-child:nth-last-child(1) p {
     width: 100%;
 }

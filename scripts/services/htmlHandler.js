@@ -17,26 +17,15 @@ define([],
 
         function _updateTeam(team, color) {
             for (let participant of team) {
+                let firstSpellCooldownEl = _getNumberElement(participant.getSummonerSpellCooldown(0));
+                let secondSpellCooldownEl = _getNumberElement(participant.getSummonerSpellCooldown(1));
                 // update champion
                 $(`table[partic-id="${participant.getId()}"] .champ-icon`)
                     .attr('src', participant.getChampionIcon())
                     .attr('alt', participant.getChampionName());
                 
                 // cooldownReduction
-                $(`table[partic-id="${participant.getId()}"] p.ability-cdr`)
-                    .text(participant.getAbilitiesCDr());
-                if (participant.getUniqueKillsCount() > 0) {
-                    $(`table[partic-id="${participant.getId()}"] p.kill-count`)
-                        .text(participant.getUniqueKillsCount());
-                }
-                if (participant.getCloudStacks() > 0) {
-                $(`table[partic-id="${participant.getId()}"] p.cloud-stacks`)
-                    .text(participant.getCloudStacks());
-                }
-                if (participant.getUltimateCDr() > 0) {
-                    $(`table[partic-id="${participant.getId()}"] p.ultimate-cdr`)
-                        .text(participant.getUltimateCDr());
-                }
+                _updateCooldownReduction(participant);
 
                 // champ Abilities
                 $(`table[partic-id="${participant.getId()}"] .cooldowns-abilities`).remove();
@@ -52,8 +41,8 @@ define([],
 
                 $(`table[partic-id="${participant.getId()}"] div.spell-1 p`)
                     .attr('spell-name', participant.getSummonerSpellName(0))
-                $(`table[partic-id="${participant.getId()}"] div.spell-1 p span`)
-                    .text(participant.getSummonerSpellCooldown(0));
+                $(`table[partic-id="${participant.getId()}"] div.spell-1 p`)
+                    .html(firstSpellCooldownEl);
 
                 $(`table[partic-id="${participant.getId()}"] div.spell-2 img`)
                     .attr('src', participant.getSummonerSpellImage(1))
@@ -61,8 +50,8 @@ define([],
 
                 $(`table[partic-id="${participant.getId()}"] div.spell-2 p`)
                     .attr('spell-name', participant.getSummonerSpellName(1))
-                $(`table[partic-id="${participant.getId()}"] div.spell-2 p span`)
-                    .text(participant.getSummonerSpellCooldown(1));
+                $(`table[partic-id="${participant.getId()}"] div.spell-2 p`)
+                    .html(secondSpellCooldownEl);
             }
         }
 
@@ -85,30 +74,33 @@ define([],
         }
 
         function _createParticipant(participant, teamColor) {
+            let firstSpellCooldownEl = _getNumberElement(participant.getSummonerSpellCooldown(0));
+            let secondSpellCooldownEl = _getNumberElement(participant.getSummonerSpellCooldown(1));
             let el =
-                `<table class="champ" partic-id="${participant.getId()}">
-            <tbody><tr>
-                <th class="${teamColor}" colspan=4></th>
-            </tr>
-              <tr class=" champ-header" >
-                <td class="cell champ p-0" rowspan=1>
-                    <img class="champ-icon" src="${participant.getChampionIcon()}" alt="${participant.getChampionName()}">
-                </td> 
-                <td class="cell cooldown-reduction-cell">`+
-                _createCdRedCell(participant)
-                +
-                `</td>
-                <td class="cell spells p-0">
-                    <div class="spell-1">
-                        <img class="spell-icon" src="${participant.getSummonerSpellImage(0)}" alt="${participant.getSummonerSpellImage(0)}">
-                        <p class="cooldown" spell="0" spell-name="${participant.getSummonerSpellName(0)}"><span>${participant.getSummonerSpellCooldown(0)}</span><small></small></p>
-                    </div>
-                    <div class="spell-2">
-                        <img class="spell-icon" src="${participant.getSummonerSpellImage(1)}" alt="${participant.getSummonerSpellImage(1)}">
-                        <p class="cooldown" spell="0" spell-name="${participant.getSummonerSpellName(1)}"><span>${participant.getSummonerSpellCooldown(1)}</span><small></small></p>
-                    </div>
-                </td>
-            </tr> </tbdoy></table>`;
+                `
+        <table class="champ" partic-id="${participant.getId()}">
+            <tbody>
+                <tr>
+                    <th class="${teamColor}" colspan=4></th>
+                </tr>
+                <tr class=" champ-header">
+                    <td class="cell champ p-0" colspan=4>
+                        <img class="champ-icon" src="${participant.getChampionIcon()}" alt="${participant.getChampionName()}">
+                        <div class="spells-cdr-cell d-inline-flex"></div>
+                        <div class="cell spells p-0">
+                            <div class="spell-1">
+                                <img class="spell-icon" src="${participant.getSummonerSpellImage(0)}" alt="${participant.getSummonerSpellImage(0)}">
+                                <p class="cooldown" spell="0" spell-name="${participant.getSummonerSpellName(0)}">${firstSpellCooldownEl}</p>
+                            </div>
+                            <div class="spell-2">
+                                    <img class="spell-icon" src="${participant.getSummonerSpellImage(1)}" alt="${participant.getSummonerSpellImage(1)}">
+                                    <p class="cooldown" spell="0" spell-name="${participant.getSummonerSpellName(1)}">${secondSpellCooldownEl}</p>
+                            </div>
+                        </div>
+                    </td>
+                </tr>
+            </tbdoy>
+        </table>`;
             return el;
         }
         function _createAbilities(participant, teamColor) {
@@ -146,8 +138,9 @@ define([],
                   <div class="cooldowns m-0 d-flex justify-content-center" ability="${key}">`
 
                 for (let cooldown of ability['cooldowns']) {
+                    let cooldownEl = _getNumberElement(cooldown);
                     el += `<p class="m-0 cooldown">
-                          <span>${cooldown}</span><small></small>
+                    ${cooldownEl}
                       </p>`;
                     // just state one number if it's repetitive number
                     if (ability['cooldowns'].length === 1 || ability['cooldowns'][0] === ability['cooldowns'][1]) {
@@ -160,66 +153,142 @@ define([],
 
             return el;
         }
+        
+        function _updateCooldownReduction(participant) {
+            let abilitiesCdrEl = _getNumberElement(participant.getUltimateCDr());
+            let ultCdrEl = _getNumberElement(participant.getAbilitiesCDr());
 
+            $(`table[partic-id="${participant.getId()}"] p.ability-cdr-value`)
+                .text(abilitiesCdrEl);
 
+            $(`table[partic-id="${participant.getId()}"] .spells-cdr-cell`)
+                .html(_createSpellCdRedCell(participant));
+
+            if (participant.getUniqueKillsCount() > 0) {
+                $(`table[partic-id="${participant.getId()}"] p.kill-count-value`)
+                    .text(participant.getUniqueKillsCount());
+            }
+            if (participant.getCloudStacks() > 0) {
+                $(`table[partic-id="${participant.getId()}"] p.cloud-stacks-value`)
+                    .text(participant.getCloudStacks());
+            }
+            if (participant.getUltimateCDr() > 0) {
+                $(`table[partic-id="${participant.getId()}"] p.ultimate-cdr-value`)
+                    .text(ultCdrEl);
+            }
+            $(`table[partic-id="${participant.getId()}"] .cooldown-reduction-cell`).remove();
+            $(`table[partic-id="${participant.getId()}"]`).append(_createCdRedCell(participant));
+        }
+
+        function _createSpellCdRedCell(participant) {
+            let el = '';
+            let cdRedSpells = participant.getSummonerSpellsCDr();
+            if (cdRedSpells == 0) {
+                return el;
+            }
+            let items = participant.getItems();
+            let runes = participant.getRunes();
+            console.log(runes);
+            let neededItems = items.filter(item => item.name === 'Ionian Boots of Lucidity');
+            let neededRune = runes.hasOwnProperty('CosmicInsight') ?  runes.CosmicInsight : false;
+
+            if (neededRune) {
+                el += `<img class="item-icon ml-1" src="${neededRune.image}" alt="${neededRune.name}">`;
+            }
+
+            if (neededItems.length > 0) {
+                el += `<img class="item-icon ml-1" src="${neededItems[0].icon}" alt="${neededItems[0].name}">`;
+            }
+            el += `<p class="spells-cdr-value">${_getNumberElement(participant.getSummonerSpellsCDr())}</p>`
+            
+            return el;
+        }
 
         function _createCdRedCell(participant) {
-            let el = '';
+            let el = `<tr class="abilities-cdr-cell">`;
             let runes = participant.getRunes();
             let cloudStacks = participant.getCloudStacks();
 
             let items = participant.getItems();
 
-            el += '<div class="abilities-cdr">'
+            el += '<td class="items">'
             // items
-            el += '<div class="items">'
             for (let [index, item] of Object.entries(items)) {
                 el += `<img class="item-icon ml-1"`;
                 if (index != 0) {
-                    el += `style=" position: absolute;left:${index*50}%"`;
+                    el += `style=" position: absolute;left:${index * 15}px"`;
                 }
                 el += `src="${item.icon}" alt="${item.name}">`;
             }
-            el += '</div>'
+            el += '</td>'
 
             // normal abilities runes
-            el += '<div class="runes">'
+            el += '<td class="runes">'
             let index = 0;
             for (let [key, rune] of Object.entries(runes)) {
                 if (key === 'UltimateHunter' || key === 'IngeniousHunter') {
                     continue;
                 }
                 el += `<img class="rune-icon ml-1"`;
-                if (index != 0) {
-                    el += `style=" position: absolute;left:${index*50}%"`;
-                } 
+                if (index != 0)  {
+                    el += `style=" position: absolute;left:${index * 15}px"`;
+                }
                 el += `src="${rune.image}" alt="${rune.name}" data-toggle="tooltip" data-html="true" title="" data-original-title="${rune.description}">`
+
 
                 index++;
             }
-            el += '</div>'
-            el += `<p class="ability-cdr">${participant.getAbilitiesCDr()}</p>`
-            el += '</div>'
+            el += '</td>';
+            el += '<td>';
+            let abilitiesCdrEl = _getNumberElement(participant.getAbilitiesCDr());
+            el += `<p class="ability-cdr-value text-center">${abilitiesCdrEl}</p>`
+            el += '</td></tr>'
 
             // ultimate
-            el += '<div class="ultimate-cdr">'
+            el += '<tr class="ultimate-cdr-cell">'
+
+            el += '<td class="text-center"><div class="d-inline-flex">'
             if (runes.hasOwnProperty('UltimateHunter')) {
                 let rune = runes.UltimateHunter;
-                el += `<p class="kill-count"> ${participant.getUniqueKillsCount()}</p>
+                el += `<p class="kill-count-value"> ${participant.getUniqueKillsCount()}</p>
                    <img class="rune-icon ml-1" src="${rune.image}" alt="${rune.name}" data-toggle="tooltip" data-html="true" title="" data-original-title="${rune.description}">`
             }
+            el += '</div></td>'
 
+            // cloudStacks = 1;
+            el += '<td class="text-center"><div class="d-inline-flex">'
             if (cloudStacks > 0) {
-                el += `<p class="cloud-stacks">${cloudStacks}</p><img class="buff ml-1" src="../../img/cloud_buff.png" alt="cloud_buff">`
+                el += `<p class="cloud-stacks-value">${cloudStacks}</p><img class="buff ml-1" src="../../img/cloud_buff.png" alt="cloud_buff">`
             }
+            el += '</div></td>'
 
+            el += '<td>'
             if (cloudStacks > 0 || runes.hasOwnProperty('UltimateHunter')) {
-                el += `<p class="ultimate-cdr">${participant.getUltimateCDr()}</p>`
+                let ultCdrEl = _getNumberElement(participant.getUltimateCDr());
+                el += `<p class="ultimate-cdr-value">${ultCdrEl}</p></td>`
             }
+            el += '</td>'
 
-            el += '</div>'
+            el += `</tr>`;
 
             return el;
+        }
+
+
+        function _getNumberElement(number) {
+
+            number = (number).toString();
+            if (number == '-') {
+                return `<span>-</span>`;
+            }
+
+            let indexOfDot = number.indexOf('.');
+            if (indexOfDot === -1) {
+                return `<span>${number}</span>`
+            }
+            let beforeDot = number.substring(0, indexOfDot);
+            let afterDot = number.substring(indexOfDot + 1);
+            return `<span>${beforeDot}</span><small>.${afterDot}</small>`;
         }
 
         return {
