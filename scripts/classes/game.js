@@ -80,10 +80,10 @@ define([
 
       // update participants' cloud stacks
       for (let partic of this._blueTeam) {
-        partic._updateCloudStacks(blueCloudStacks);
+        partic.updateCloudStacks(blueCloudStacks);
       }
       for (let partic of this._redTeam) {
-        partic._updateCloudStacks(redCloudStacks);
+        partic.updateCloudStacks(redCloudStacks);
       }
 
     }

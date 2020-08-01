@@ -60,7 +60,7 @@ define([
       if (!this.uniqueKills.includes(name)) {
         this.uniqueKills.push(name);
       }
-      this.updateAbilitiesCd();
+      this._updateAbilitiesCd();
     }
 
     setSummonerName(summonerName) {
@@ -181,6 +181,7 @@ define([
       }
       let addedUltcdRed = (100 - this.cdRed) * (runesUltCdRed / 100);
       this.ultCdRed = this.cdRed + addedUltcdRed;
+      this.ultCdRed = Number(this.ultCdRed.toFixed(2));
 
       // Spells Cooldown Reduction
       let spellsCdRed = 0;
