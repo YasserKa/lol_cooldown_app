@@ -160,30 +160,10 @@ define([],
         }
         
         function _updateCooldownReduction(participant) {
-            let abilitiesCdrEl = _getNumberElement(participant.getUltimateCDr());
-            let ultCdrEl = _getNumberElement(participant.getAbilitiesCDr());
-
             $(`table[partic-id="${participant.getId()}"] .cdr`).remove();
             $(`table[partic-id="${participant.getId()}"]`).append(_createCdRedCell(participant));
             $(`table[partic-id="${participant.getId()}"] .spells-cdr-holder`)
                 .html(_createSpellCdRedCell(participant));
-            if (participant.getUltimateCDr() > 0) {
-                $(`table[partic-id="${participant.getId()}"] p.ultimate-cdr-value`)
-                    .html(ultCdrEl);
-            }
-
-            $(`table[partic-id="${participant.getId()}"] p.ability-cdr-value`)
-                .html(abilitiesCdrEl);
-
-
-            if (participant.getUniqueKillsCount() > 0) {
-                $(`table[partic-id="${participant.getId()}"] p.kill-count-value`)
-                    .text(participant.getUniqueKillsCount());
-            }
-            if (participant.getCloudStacks() > 0) {
-                $(`table[partic-id="${participant.getId()}"] p.cloud-stacks-value`)
-                    .text(participant.getCloudStacks());
-            }
         }
 
         function _createSpellCdRedCell(participant) {
