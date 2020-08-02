@@ -104,8 +104,10 @@ define([
 
         champData = _getUpdatedChampData(champData);
 
-        let spell1 = participant.spell1Id === 0 ? DEFAULT_SPELL_DATA : dataHandler.getSpellById(participant.spell1Id);
-        let spell2 = participant.spell2Id === 0 ? DEFAULT_SPELL_DATA : dataHandler.getSpellById(participant.spell2Id);
+        let spell1 = dataHandler.getSpellById(participant.spell1Id);
+        let spell2 = dataHandler.getSpellById(participant.spell2Id);
+        spell1 = typeof spell1 === 'undefined' ? DEFAULT_SPELL_DATA : spell1;
+        spell2 = typeof spell2 === 'undefined' ? DEFAULT_SPELL_DATA : spell2;
 
         let spellsData = [
           spell1,
