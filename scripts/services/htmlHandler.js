@@ -68,7 +68,7 @@ define([],
         function _createTeam(team, color) {
             // start team element
             let el =
-                `<div id="team-${color}" class="team row justify-content-center mx-auto team-${color}">`
+                `<div id="team-${color}" class="team row justify-content-center mx-auto mt-2 team-${color}">`
             for (let participant of team) {
                 el += _createParticipant(participant, color);
             }
