@@ -1,33 +1,44 @@
-define([],
-    function () {
+define([
+      "../../scripts/services/settings.js",
+],
+    function (
+        Settings
+    ) {
 
         function initializeView(game) {
             $(".game-details .team").remove();
             _createGame(game);
-            _updateView(game);
+            update(game);
         }
 
         function update(game) {
-            _updateView(game);
+            if (game === null) {
+                _updateView(_currentGame);
+            } else {
+                _updateView(game);
+                _currentGame = game;
+            }
         }
 
         function _updateView(game) {
             _updateTeam(game.getBlueTeam(), 'blue');
             _updateTeam(game.getRedTeam(), 'red');
-            if (game.isInGame()) {
+            if (game.isInGame() && Settings.getSetting('cooldownReductionDisplay')) {
                 $('.cdr').css('display', 'table-row');
             }
         }
 
         function _updateTeam(team, color) {
             for (let participant of team) {
-                let firstSpellCooldownEl = _getNumberElement(participant.getSummonerSpellCooldown(0));
-                let secondSpellCooldownEl = _getNumberElement(participant.getSummonerSpellCooldown(1));
+                let firstSpellCooldownEl = _getNumberElement(
+                _getParsedCooldown(participant.getSummonerSpellCooldown(0)));
+                let secondSpellCooldownEl = _getNumberElement(
+                _getParsedCooldown(participant.getSummonerSpellCooldown(1)));
                 // update champion
                 $(`table[partic-id="${participant.getId()}"] .champ-icon`)
                     .attr('src', participant.getChampionIcon())
                     .attr('alt', participant.getChampionName());
-                
+
                 // cooldownReduction
                 _updateCooldownReduction(participant);
 
@@ -78,8 +89,10 @@ define([],
         }
 
         function _createParticipant(participant, teamColor) {
-            let firstSpellCooldownEl = _getNumberElement(participant.getSummonerSpellCooldown(0));
-            let secondSpellCooldownEl = _getNumberElement(participant.getSummonerSpellCooldown(1));
+            let firstSpellCooldownEl = _getNumberElement(
+               _getParsedCooldown(participant.getSummonerSpellCooldown(0)));
+            let secondSpellCooldownEl = _getNumberElement(
+               _getParsedCooldown(participant.getSummonerSpellCooldown(1)));
             let el =
                 `
         <table class="champ" partic-id="${participant.getId()}">
@@ -143,7 +156,7 @@ define([],
                   <div class="cooldowns m-0 d-flex justify-content-center" ability="${key}">`
 
                 for (let cooldown of ability['cooldowns']) {
-                    let cooldownEl = _getNumberElement(cooldown);
+                    let cooldownEl = _getNumberElement(_getParsedCooldown(cooldown));
                     el += `<p class="m-0 cooldown">
                     ${cooldownEl}
                       </p>`;
@@ -158,7 +171,7 @@ define([],
 
             return el;
         }
-        
+
         function _updateCooldownReduction(participant) {
             $(`table[partic-id="${participant.getId()}"] .cdr`).remove();
             $(`table[partic-id="${participant.getId()}"]`).append(_createCdRedCell(participant));
@@ -175,7 +188,7 @@ define([],
             let items = participant.getItems();
             let runes = participant.getRunes();
             let neededItems = items.filter(item => item.name === 'Ionian Boots of Lucidity');
-            let neededRune = runes.hasOwnProperty('CosmicInsight') ?  runes.CosmicInsight : false;
+            let neededRune = runes.hasOwnProperty('CosmicInsight') ? runes.CosmicInsight : false;
 
             if (neededRune) {
                 el += `<img class="item-icon ml-1" src="${neededRune.image}" alt="${neededRune.name}">`;
@@ -216,7 +229,7 @@ define([],
                     continue;
                 }
                 el += `<img class="rune-icon ml-1"`;
-                if (index != 0)  {
+                if (index != 0) {
                     el += `style=" position: absolute;left:${index * 15}px"`;
                 }
                 el += `src="${rune.image}" alt="${rune.name}" data-toggle="tooltip" data-html="true" title="" data-original-title="${rune.description}">`
@@ -253,6 +266,25 @@ define([],
             el += `</tr>`;
 
             return el;
+        }
+
+        function _getParsedCooldown(cooldown) {
+            // passives with no CD uses dash (-)
+            if (cooldown == null)
+                return null;
+
+            if (Settings.getSetting('cooldownDisplay') == 'minutes' && cooldown > 60) {
+                var minutes = Math.floor(cooldown / 60);
+                var seconds = cooldown - minutes * 60;
+
+                cooldown = (minutes).toString() + ':';
+                // Make it 00 or 00.5 instead of 0 0.5
+                if (Math.floor(seconds) < 10) {
+                    cooldown += '0'
+                }
+                cooldown += (seconds).toString();
+            }
+            return cooldown.toString();
         }
 
 

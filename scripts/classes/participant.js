@@ -240,8 +240,6 @@ define([
     }
 
     _updateSpellsCd() {
-      let spellCdRed = 0;
-
       for (let key of Object.keys(this.originalSpells)) {
         // not assigned yet
         let cooldown = this.originalSpells[key]['cooldown'];
@@ -255,7 +253,7 @@ define([
         }
 
         let newCd = cooldown - (cooldown * (this.spellsCdRed) / 100)
-        let roundedCd = Math.round(newCd * 2) / 2;
+        let roundedCd = Math.round(newCd);
         this.currentSpells[key]['cooldown'] = roundedCd;
       }
     }

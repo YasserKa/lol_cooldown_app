@@ -68,6 +68,22 @@
         },
         "desktop_only": true
       },
+      "settings": {
+        "file": "windows/settings/settings.html",
+        "transparent": true,
+        "size": {
+          "width": 400,
+          "height": 600 
+        },
+        "min_size": {
+          "width": 400,
+          "height":600 
+        },
+        "max_size": {
+          "width": 400,
+          "height": 600
+        }
+      },
       "app": {
         "file": "windows/app/app.html",
         "transparent": true,

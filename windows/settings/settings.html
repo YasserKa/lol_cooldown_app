@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <script src="../../js/jquery.min.js"></script>
+  <script src="../../js/bootstrap.bundle.min.js"></script>
+  <script src="../../js/common.js"></script>
+  <link rel="stylesheet" href="../../css/bootstrap.min.css" />
+  <link rel="stylesheet" href="../../css/general.css" />
+  <link rel="stylesheet" href="../../css/header.css" />
+  <link rel="stylesheet" href="../../css/darkTheme.css" />
+  <title>Settings</title>
+</head>
+
+<body class="dark">
+  <!-- -------------------------------- Header ------------------------------- -->
+
+  <header class="app-header">
+    <img class="logo" src="../../img/hourglass.png" />
+    <h1>LoLCooldown</h1>
+    <div class="window-controls-group">
+      <button class="icon window-control window-control-close" id="exit">
+        <svg>
+          <use xlink:href="/img/header_icons.svg#window-control_close" />
+        </svg>
+      </button>
+    </div>
+    </header>
+    <main>
+      <div class="container-fluid">
+        <!-- Cooldown Display -->
+        <div class="mt-5 text-center">
+          <p class="mb-1">Cooldown Display</p>
+          <div class="btn-group btn-group-sm btn-group-toggle d-inline" data-toggle="buttons">
+            <label class="btn boarder boarder-secondary rounded-0 btn-primary">
+              <input type="radio" name="cooldown-display" id="option-seconds" autocomplete="off" value="seconds">
+              Seconds 
+            </label>
+            <label class="btn boarder boarder-secondary rounded-0 btn-primary">
+              <input type="radio" name="cooldown-display" id="option-minutes" autocomplete="off" value="minutes">
+              Minutes 
+            </label>
+          </div>
+      </div>
+      <!-- CooldownReduction Elements Display -->
+      <div class="mt-5 text-center">
+        <p class="mb-1">CooldownReduction Elements Visibility</p>
+        <div class="btn-group btn-group-sm btn-group-toggle d-inline" data-toggle="buttons">
+          <label class="btn boarder boarder-secondary rounded-0 btn-primary">
+            <input type="radio" name="cooldown-reduction-display" id="option-show" autocomplete="off" value="show">
+            Show 
+          </label>
+          <label class="btn boarder boarder-secondary rounded-0 btn-primary">
+            <input type="radio" name="cooldown-reduction-display" id="option-hide" autocomplete="off" value="hide">
+            Hide 
+          </label>
+        </div>
+      </div>
+      <!-- Show/Hide hotkey -->
+      <div class="mt-5 text-center">
+        <p class="mb-1">Show/Hide Hotkey</p>
+        <div class="p-0">
+          <button type="button" class="btn rounded-0 btn-primary" onclick="window.location.href='overwolf://settings/hotkeys#lolcooldownhotkeyoverlay';">Hotkey</button>
+        </div>
+      </div>
+    </div>
+    </main>
+    </script>
+    <script src="../../lib/require.js"></script>
+    
+    <script>
+      require(["settings-controller"], function (SettingsController) {
+        console.log(`[INIT] settings module loaded`);
+        const settingsController = new SettingsController();
+        settingsController.run();
+      }, function (error) {
+        console.log(`[INIT] failed to load in-game module ${error}`);
+      });
+    </script>
+    </body>
+    
+    </html>

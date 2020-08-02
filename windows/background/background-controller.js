@@ -17,7 +17,6 @@ define([
       this._initialized = false
       this._currentState = States.NONE;
 
-
       if (Testing.isTesting()) {
         BackgroundController._updateWindows(Testing.getState());
       } else {

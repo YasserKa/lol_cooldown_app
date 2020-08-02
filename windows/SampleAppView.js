@@ -1,9 +1,11 @@
 define([
   "../scripts/services/drag-service.js", 
   "../../scripts/services/windows-service.js",
+  "../../scripts/constants/window-names.js",
   ], function(
     DragService,
     WindowsService,
+    WindowNames,
     ) {
   class SampleAppView {
     constructor() {
@@ -12,18 +14,28 @@ define([
       this._minimizeButton = document.getElementById("minimize");
       this._header = document.getElementsByClassName("app-header")[0];
       this._version = document.getElementById("version");
+      this._settings = document.getElementById("settings");
 
       this.init();
     }
 
     init() {
+      if (this._settings !== null) {
+        this._settings.addEventListener("click", async function() {
+          // await WindowsService.restoreWindow('settings');
+          WindowsService.restore(WindowNames.SETTINGS);
+        });
+      }
+      if (this._minimizeButton !== null) {
+        this._minimizeButton.addEventListener("click", async function() {
+          await WindowsService.minimizeCurrentWindow();
+        });
+      }
+
       this._exitButton.addEventListener("click", async function() {
         await WindowsService.closeCurrentWindow();
       });
 
-      this._minimizeButton.addEventListener("click", async function() {
-        await WindowsService.minimizeCurrentWindow();
-      });
 
       // Enable dragging on this window
       overwolf.windows.getCurrentWindow(result => {

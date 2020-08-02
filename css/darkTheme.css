@@ -1,11 +1,6 @@
 /* General */
-body.dark nav {
-    background-color: #172636 !important;
-}
-
 body.dark .modal-content {
     background-color: #172636;
-    /* color: white; */
 }
 body.dark .close {
     color: white;
@@ -16,8 +11,12 @@ body.dark .text {
 }
 body.dark, body.dark footer {
     color: white;
-    background-color: #2d3848;
+    background-color: #172636;
 }
+hr {
+    background-color: white;
+}
+
 
 /* Main Page */
 body.dark .bannerArea {
@@ -28,6 +27,14 @@ body.dark input#summonerName {
     background-color: #303947;
     border: 0px;
     color: #898e96;
+}
+
+.primary {
+    background-color: #303947;
+    margin: auto;
+    padding: 10px;
+    border-radius: 5px;
+    text-align: center;
 }
 
 body.dark .btn-primary {

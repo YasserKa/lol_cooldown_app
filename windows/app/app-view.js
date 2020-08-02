@@ -16,6 +16,10 @@ define([
         super();
 
         this._update = this._update.bind(this);
+        // message sent after a change in settings to update the view
+        overwolf.windows.onMessageReceived.addListener((message)=>{
+            HtmlHandler.update(this.game);
+        });
       }
 
       _init(data) {
