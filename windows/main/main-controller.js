@@ -1,9 +1,11 @@
 define([
   '../../windows/main/main-view.js',
   "../../scripts/services/windows-service.js",
+  "../../scripts/constants/window-names.js",
 ], function (
   MainView,
   WindowsService,
+  WindowNames,
   ) {
 
   class MainController {
@@ -12,20 +14,19 @@ define([
     }
 
     run() {
-    //   overwolf.utils.getMonitorsList(async function (info) {
-    //     let display = info['displays'][0];
-    //     let height = display['height'];
-    //     let width = display['width'];
-    //     let window = await WindowsService.obtainWindow(WindowNames.MAIN);
-    //     let windowHeight = window['window']['height'];
-    //     let windowWidth = window['window']['width'];
+      overwolf.utils.getMonitorsList(async function (info) {
+        let display = info['displays'][0];
+        let height = display['height'];
+        let width = display['width'];
+        let window = await WindowsService.obtainWindow(WindowNames.MAIN);
+        let windowHeight = window['window']['height'];
+        let windowWidth = window['window']['width'];
 
-    //     let newTopPosition = 0;
-    //     let newLeftPosition = width / 2 - windowWidth / 2;
-    //     console.log(newLeftPosition);
+        let newTopPosition = (height-100)/2 - windowHeight/2;
+        let newLeftPosition = 0;
 
-    //     overwolf.windows.changePosition(WindowNames.MAIN, newLeftPosition, newTopPosition);
-    //   });
+        overwolf.windows.changePosition(WindowNames.MAIN, newLeftPosition, newTopPosition);
+      });
     }
 
   }
