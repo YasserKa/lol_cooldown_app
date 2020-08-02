@@ -100,7 +100,8 @@ define([
       for (let participant of participantsData) {
         // No champ has been picked yet
         let champId = participant['championId'] === 0 ? participant['championPickIntent'] : participant['championId'];
-        let champData = champId === 0 ? DEFAULT_CHAMP_DATA : dataHandler.getChampionById(champId);
+        let champData = dataHandler.getChampionById(champId);
+        champData = typeof champData === 'undefined' ? DEFAULT_CHAMP_DATA : champData;
 
         champData = _getUpdatedChampData(champData);
 
@@ -144,11 +145,14 @@ define([
       for (let participant of participantsData) {
         // participant['championName'] = 'Neeko';
         let champData = dataHandler.getChampionByName(participant['championName']);
+        champData = typeof champData === 'undefined' ? DEFAULT_CHAMP_DATA : champData;
 
         champData = _getUpdatedChampData(champData);
 
         let spell1 = dataHandler.getSpellByName(participant['summonerSpells']['summonerSpellOne']['displayName']);
+        spell1 = typeof spell1 === 'undefined' ? DEFAULT_SPELL_DATA : spell1;
         let spell2 = dataHandler.getSpellByName(participant['summonerSpells']['summonerSpellTwo']['displayName']);
+        spell2 = typeof spell2 === 'undefined' ? DEFAULT_SPELL_DATA : spell2;
 
         let spellsData = [
           spell1,
