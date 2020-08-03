@@ -19,9 +19,31 @@ table.champ {
     box-shadow: 0px 0px 6px #999;
 }
 
+.champ-icon-container {
+    width: 45px;
+    padding: 5px;
+    float: left;
+}
+
 img.champ-icon {
-    width: 35px;
-    margin: 5px;
+    width: 100%;
+}
+
+.spells-cdr-holder {
+    width: 100px;
+    height: 45px;
+}
+
+.spells-cdr-cell {
+    height: 45px;
+}
+
+.spells-cdr-cell img {
+    margin:auto;
+}
+
+.spells-cdr-cell > div {
+    display:inline;
 }
 
 /** cdr elements **/
@@ -33,19 +55,23 @@ img.champ-icon {
     display:none;
 }
 
+.cdr p {
+    font-size: 0.9rem;
+}
+
 .cdr img {
     height: 20px;
     width: 20px;
     border-radius: 90px;
-    border: solid 1px #8A8F94;
-    vertical-align: top;
 }
 
 .items {
     width: 100px;
+    /* display: inline-flex; */
 }
 .runes {
     width: 60px;
+    /* display: inline-flex; */
 }
 
 .items,
@@ -53,6 +79,14 @@ img.champ-icon {
 .abilities-cdr-cell > td,
 .ultimate-cdr-cell > td{
     position: relative;
+}
+
+.kill-count-container {
+    width: 100px;
+}
+
+.cloud-stacks-container {
+    width: 60px;
 }
 
 .spells-cdr-value {

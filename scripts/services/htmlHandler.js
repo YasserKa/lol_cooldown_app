@@ -102,15 +102,17 @@ define([
                 </tr>
                 <tr class="champ-header">
                     <td class="cell champ p-0" colspan=4>
+                        <div class="champ-icon-container d-inline-block">
                         <img class="champ-icon" src="${participant.getChampionIcon()}" alt="${participant.getChampionName()}">
-                        <div class="spells-cdr-holder d-inline">
                         </div>
-                        <div class="cell spells p-0">
-                            <div class="spell-1">
+                        <div class="spells-cdr-holder d-inline-block">
+                        </div>
+                        <div class="cell spells p-0 d-inline-block">
+                            <div class="spell-1 d-inline-block">
                                 <img class="spell-icon" src="${participant.getSummonerSpellImage(0)}" alt="${participant.getSummonerSpellImage(0)}">
                                 <p class="cooldown" spell="0" spell-name="${participant.getSummonerSpellName(0)}">${firstSpellCooldownEl}</p>
                             </div>
-                            <div class="spell-2">
+                            <div class="spell-2 d-inline-block">
                                     <img class="spell-icon" src="${participant.getSummonerSpellImage(1)}" alt="${participant.getSummonerSpellImage(1)}">
                                     <p class="cooldown" spell="0" spell-name="${participant.getSummonerSpellName(1)}">${secondSpellCooldownEl}</p>
                             </div>
@@ -180,7 +182,7 @@ define([
         }
 
         function _createSpellCdRedCell(participant) {
-            let el = '<div class="cdr spells-cdr-cell">';
+            let el = '<div class="cdr spells-cdr-cell d-inline-flex">';
             let cdRedSpells = participant.getSummonerSpellsCDr();
             if (cdRedSpells == 0) {
                 return el;
@@ -210,7 +212,7 @@ define([
 
             let items = participant.getItems();
 
-            el += '<td class="items">'
+            el += '<td class="items d-inline-flex">'
             // items
             for (let [index, item] of Object.entries(items)) {
                 el += `<img class="item-icon ml-1"`;
@@ -222,7 +224,7 @@ define([
             el += '</td>'
 
             // normal abilities runes
-            el += '<td class="runes">'
+            el += '<td class="runes d-inline-flex">'
             let index = 0;
             for (let [key, rune] of Object.entries(runes)) {
                 if (key === 'UltimateHunter' || key === 'IngeniousHunter') {
@@ -246,7 +248,7 @@ define([
             // ultimate
             el += '<tr class="cdr ultimate-cdr-cell">'
 
-            el += '<td class="text-center"><div class="d-inline-flex">'
+            el += '<td class="kill-count-container text-center d-inline-flex"><div class="d-inline-flex m-auto">'
             if (runes.hasOwnProperty('UltimateHunter')) {
                 let rune = runes.UltimateHunter;
                 el += `<p class="kill-count-value"> ${participant.getUniqueKillsCount()}</p>
@@ -254,7 +256,7 @@ define([
             }
             el += '</div></td>'
 
-            el += '<td class="text-center"><div class="d-inline-flex">'
+            el += '<td class="cloud-stacks-container text-center d-inline-flex"><div class="d-inline-flex m-auto">'
             el += `<p class="cloud-stacks-value">${cloudStacks}</p><img class="buff ml-1" src="../../img/cloud_buff.png" alt="cloud_buff">`
             el += '</div></td>'
 

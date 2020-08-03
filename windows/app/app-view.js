@@ -1,14 +1,13 @@
 define([
   "../SampleAppView.js", 
 "../../scripts/services/htmlHandler.js",
-"../../scripts/services/hotkeys-service.js",
 "../../scripts/classes/Game.js",
 ],
   function (
     SampleAppView,
     HtmlHandler,
-    HotkeysService,
-    Game) {
+    Game
+    ) {
     class AppView extends SampleAppView {
 
       constructor() {
