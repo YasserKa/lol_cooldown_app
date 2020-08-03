@@ -4,6 +4,7 @@ define([
   "../../scripts/services/parser.js",
   "../../scripts/services/gep-service.js",
   "../../scripts/services/client-service.js",
+  "../../scripts/services/hotkeys-service.js",
   "../../scripts/services/testing.js",
 ], function (
   AppView,
@@ -11,8 +12,9 @@ define([
   Parser,
   GepService,
   ClientService,
+  HotkeysService,
   Testing,
-  ) {
+) {
   class AppController {
 
     constructor() {
@@ -22,6 +24,7 @@ define([
       this._inChampSelectEventUpdateListener = this._inChampSelectEventUpdateListener.bind(this);
       this._registerEvents = this._registerEvents.bind(this);
       this._inGameEventUpdateListener = this._inGameEventUpdateListener.bind(this);
+      this._updateHotkey = this._updateHotkey.bind(this);
     }
 
     // add listeners to services depending on the state (in-champselect/in-game)
@@ -29,7 +32,7 @@ define([
       if (Testing.isTesting()) {
         switch (Testing.getState()) {
           case States.IN_CHAMPSELECT:
-          this._inChampSelectEventUpdateListener(Testing.getInChampSelectData());
+            this._inChampSelectEventUpdateListener(Testing.getInChampSelectData());
             break;
           case States.IN_GAME:
             this._inGameEventUpdateListener(Testing.getInGameData());
@@ -47,6 +50,10 @@ define([
         this._registerEvents(state);
 
       }
+
+      // update hotkey view and listen to changes
+      this._updateHotkey();
+      HotkeysService.addHotkeyChangeListener(this._updateHotkey);
     }
 
     async _registerEvents(state) {
@@ -99,30 +106,34 @@ define([
         this._appView.updateInChampSelect(parsedData);
       }
     }
-  }
 
-  async function _updateRunesUsingServer(callback) {
-    let summonerInfo = await ClientService.getSummonerInfo();
-    summonerInfo['summonerName'] = '#random';
-    let summonerName = encodeURIComponent(summonerInfo['summonerName']);
-    let region = encodeURIComponent(summonerInfo['region']);
-    let path = `https://www.lolcooldown.com/api/matchrunes?summonerName=${summonerName}&region=${region}`;
+    async _updateRunesUsingServer(callback) {
+      let summonerInfo = await ClientService.getSummonerInfo();
+      summonerInfo['summonerName'] = '#random';
+      let summonerName = encodeURIComponent(summonerInfo['summonerName']);
+      let region = encodeURIComponent(summonerInfo['region']);
+      let path = `https://www.lolcooldown.com/api/matchrunes?summonerName=${summonerName}&region=${region}`;
 
-    let xhr = new XMLHttpRequest();
+      let xhr = new XMLHttpRequest();
 
-    xhr.onreadystatechange = () => {
-      if (xhr.readyState === XMLHttpRequest.DONE) {
-        if (xhr.status === 200) {
-          callback(xhr.response);
-        } else {
-          callback({});
+      xhr.onreadystatechange = () => {
+        if (xhr.readyState === XMLHttpRequest.DONE) {
+          if (xhr.status === 200) {
+            callback(xhr.response);
+          } else {
+            callback({});
+          }
         }
-      }
-    };
+      };
 
-    xhr.open("GET", path, false);
-    xhr.send();
+      xhr.open("GET", path, false);
+      xhr.send();
+    }
 
+    async _updateHotkey() {
+      const hotkey = await HotkeysService.getToggleHotkey();
+      this._appView.updateHotkey(hotkey);
+    }
   }
 
 

@@ -3,12 +3,14 @@ define([
   "../../scripts/constants/window-names.js",
   "../../scripts/services/client-service.js",
   "../../scripts/services/windows-service.js",
+  "../../scripts/services/hotkeys-service.js",
   "../../scripts/services/testing.js",
 ], function (
   States,
   WindowNames,
   ClientService,
   WindowsService,
+  HotkeysService,
   Testing,
 ) {
   class BackgroundController {
@@ -16,6 +18,8 @@ define([
     static async run() {
       this._initialized = false
       this._currentState = States.NONE;
+
+      BackgroundController._registerHotkeys();
 
       if (Testing.isTesting()) {
         BackgroundController._updateWindows(Testing.getState());
@@ -54,6 +58,18 @@ define([
           break;
       }
       this._currentState = state;
+    }
+
+    static _registerHotkeys() {
+      HotkeysService.setToggleHotkey(async () => {
+        const state = await WindowsService.getWindowState(WindowNames.APP);
+        if (state === "minimized" || state === "closed") {
+          WindowsService.restore(WindowNames.APP);
+        } else if (state === "normal" || state === "maximized") {
+          WindowsService.minimize(WindowNames.APP);
+          WindowsService.close(WindowNames.SETTINGS);
+        }
+      });
     }
   }
 

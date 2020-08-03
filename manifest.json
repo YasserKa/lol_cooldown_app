@@ -36,10 +36,10 @@
       }
     ],
     "hotkeys": {
-      "sample_app_showhide": {
-        "title": "Show/Hide In-Game Window",
+      "showhide": {
+        "title": "Show/Hide Overlay",
         "action-type": "toggle",
-        "default": "Ctrl+F"
+        "default": "Ctrl+C"
       }
     },
     "game_events": [5426, 10902],
@@ -73,15 +73,7 @@
         "transparent": true,
         "size": {
           "width": 400,
-          "height": 600 
-        },
-        "min_size": {
-          "width": 400,
-          "height":600 
-        },
-        "max_size": {
-          "width": 400,
-          "height": 600
+          "height": 400 
         }
       },
       "app": {

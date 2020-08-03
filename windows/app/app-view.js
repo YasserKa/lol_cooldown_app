@@ -16,6 +16,8 @@ define([
         super();
 
         this._update = this._update.bind(this);
+        this.updateHotkey = this.updateHotkey.bind(this);
+        this._hotkey = document.getElementById("hotkey");
         // message sent after a change in settings to update the view
         overwolf.windows.onMessageReceived.addListener((message)=>{
             HtmlHandler.update(this.game);
@@ -47,6 +49,10 @@ define([
         }
         this.game.update(data);
         HtmlHandler.update(this.game);
+      }
+
+      updateHotkey(hotkey) {
+        this._hotkey.textContent = hotkey;
       }
     }
 

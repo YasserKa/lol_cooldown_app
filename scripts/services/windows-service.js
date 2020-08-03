@@ -71,7 +71,7 @@ define([
           if (state.status === 'success') {
             resolve(state.window_state_ex);
           } else {
-            reject(result);
+            reject(state);
           }
         })
       } catch (e) {
@@ -91,7 +91,7 @@ define([
         continue;
       }
 
-      await _close(openWindowName);
+      await close(openWindowName);
     }
 
     // if it doesn't exist open it
@@ -106,7 +106,7 @@ define([
    */
   async function minimizeCurrentWindow() {
     const currentWindowName = await _getCurrentWindowName();
-    await _minimize(currentWindowName);
+    await minimize(currentWindowName);
   }
 
   /**
@@ -115,7 +115,7 @@ define([
    */
   async function closeCurrentWindow() {
     const currentWindowName = await _getCurrentWindowName();
-    await _close(currentWindowName);
+    await close(currentWindowName);
   }
 
   /**
@@ -123,7 +123,7 @@ define([
    * @param name
    * @returns {Promise<any>}
    */
-  function _minimize(name) {
+  function minimize(name) {
     return new Promise(async (resolve, reject) => {
       try {
         await obtainWindow(name);
@@ -145,7 +145,7 @@ define([
    * @param windowName
    * @returns {Promise<any>}
    */
-  function _close(windowName) {
+  function close(windowName) {
     return new Promise(async (resolve, reject) => {
       try {
         overwolf.windows.close(windowName, () => {
@@ -180,6 +180,8 @@ define([
 
   return {
     restore,
+    minimize,
+    close,
     minimizeCurrentWindow,
     closeCurrentWindow,
     obtainWindow,

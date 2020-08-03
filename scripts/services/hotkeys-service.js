@@ -1,4 +1,4 @@
-define(['../constants/hotkeys-ids.js'], function (HOTKEYS) {
+define(['../../scripts/constants/hotkeys-ids.js'], function (HOTKEYS) {
 
   /**
    * get a hotkey combination by hotkey id
@@ -7,13 +7,13 @@ define(['../constants/hotkeys-ids.js'], function (HOTKEYS) {
    * @private
    */
   function _getHotkey(hotkeyId, callback) {
-    overwolf.settings.getHotKey(hotkeyId, function (result) {
-      if (!result || result.status === "error" || !result.hotkey) {
+    overwolf.settings.hotkeys.get(function (result) {
+      if (!result || result.success === "error" || !result.games[5426]) {
         setTimeout(function () {
           _getHotkey(hotkeyId, callback);
         }, 2000);
       } else {
-        callback(result.hotkey);
+        callback(result.games[5426][0].binding);
       }
     });
   }
@@ -25,8 +25,8 @@ define(['../constants/hotkeys-ids.js'], function (HOTKEYS) {
    * @private
    */
   function _setHotkey(hotkeyId, action) {
-    overwolf.settings.registerHotKey(hotkeyId, function (result) {
-      if (result.status === 'success') {
+    overwolf.settings.hotkeys.onPressed.addListener((result)=>{
+      if (result.name === HOTKEYS.TOGGLE) {
         action();
       } else {
         console.error(`[HOTKEYS SERVICE] failed to register hotkey ${hotkeyId}`);
@@ -47,7 +47,7 @@ define(['../constants/hotkeys-ids.js'], function (HOTKEYS) {
   }
 
   function addHotkeyChangeListener(listener) {
-    overwolf.settings.OnHotKeyChanged.addListener(listener);
+    overwolf.settings.hotkeys.onChanged.addListener(listener);
   }
 
   return {

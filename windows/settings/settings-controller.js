@@ -3,21 +3,26 @@ define([
   "../../scripts/services/windows-service.js",
   "../../scripts/constants/window-names.js",
   "../../scripts/services/settings.js",
-  "../../scripts/services/htmlHandler.js",
+  "../../scripts/services/hotkeys-service.js",
 ], function (
   SettingsView,
   WindowsService,
   WindowNames,
   Settings,
-  HtmlHandler,
+  HotkeysService,
   ) {
 
   class SettingsController {
     constructor() {
-      this.settingsView = new SettingsView();
+      this._settingsView = new SettingsView();
     }
 
     async run() {
+      this._updateHotkey = this._updateHotkey.bind(this);
+      // update hotkey view and listen to changes
+      this._updateHotkey();
+      HotkeysService.addHotkeyChangeListener(this._updateHotkey);
+
       // minute/second cooldown display
       let cooldownDisplay = Settings.getSetting('cooldownDisplay');
       var cooldownDisplayEl = $('input[value="' + cooldownDisplay + '"]');
@@ -38,21 +43,12 @@ define([
         Settings.setSetting('cooldownReductionDisplay', cooldownRedDisplay)
       });
 
-      overwolf.utils.getMonitorsList(async function (info) {
-        let display = info['displays'][0];
-        let height = display['height'];
-        let width = display['width'];
-        let window = await WindowsService.obtainWindow(WindowNames.SETTINGS);
-        let windowHeight = window['window']['height'];
-        let windowWidth = window['window']['width'];
-
-        let newTopPosition = (height-100)/2 - windowHeight/2;
-        let newLeftPosition = (width-100)/2 - windowWidth/2;
-
-        overwolf.windows.changePosition(WindowNames.SETTINGS, newLeftPosition, newTopPosition);
-      });
     }
 
+    async _updateHotkey() {
+      const hotkey = await HotkeysService.getToggleHotkey();
+      this._settingsView.updateHotkey(hotkey);
+    }
   }
 
   return SettingsController;
