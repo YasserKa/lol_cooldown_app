@@ -1,123 +1,96 @@
 <!DOCTYPE html>
 <html lang="en">
 
-<head>
-  <meta charset="UTF-8" />
-  <script src="../../js/jquery.min.js"></script>
-  <script src="../../js/bootstrap.bundle.min.js"></script>
-  <script src="../../js/d3.min.js"></script>
-  <script src="../../js/popper.min.js"></script>
-  <script src="../../js/Sortable.min.js"></script>
-  <script src="../../js/common.js"></script>
-  <link rel="stylesheet" href="../../css/bootstrap.min.css" />
-  <link rel="stylesheet" href="../../css/general.css" />
-  <link rel="stylesheet" href="../../css/header.css" />
-  <link rel="stylesheet" href="../../css/modal.css" />
-  <link rel="stylesheet" href="../../css/ingame.css" />
-  <link rel="stylesheet" href="../../css/darkTheme.css" />
-  <title>LoLCooldown</title>
-</head>
+  <head>
+    <meta charset="UTF-8" />
+    <script src="../../js/jquery.min.js"></script>
+    <script src="../../js/bootstrap.bundle.min.js"></script>
+    <script src="../../js/popper.min.js"></script>
+    <script src="../../js/common.js"></script>
+    <link rel="stylesheet" href="../../css/bootstrap.min.css" />
+    <link rel="stylesheet" href="../../css/general.css" />
+    <link rel="stylesheet" href="../../css/header.css" />
+    <link rel="stylesheet" href="../../css/ingame.css" />
+    <link rel="stylesheet" href="../../css/darkTheme.css" />
+    <title>LoLCooldown</title>
+  </head>
 
-<body class="dark in-game">
-  <!-- -------------------------------- Header ------------------------------- -->
+  <body class="dark in-game">
+    <!-- -------------------------------- Header ------------------------------- -->
+    <header class="app-header">
+      <img class="logo" src="../../img/hourglass.png" />
+      <div id="header-title" class="d-flex">
+        <h1 id="game-state"></h1>
+        <h1 id="hotkey-wrapper">
+          * Hotkey: <span id="hotkey"></span>
+        </h1>
+      </div>
+      <div class="window-controls-group">
+        <a class="icon window-control" id="settings">
+          <svg>
+            <use xlink:href="/img/header_icons.svg#window-control_settings" />
+          </svg>
+        </a>
+        <button class="icon window-control" id="minimize">
+          <svg>
+            <use xlink:href="/img/header_icons.svg#window-control_minimize" />
+          </svg>
+        </button>
+        <button class="icon window-control window-control-close" id="exit">
+          <svg>
+            <use xlink:href="/img/header_icons.svg#window-control_close" />
+          </svg>
+        </button>
+      </div>
+    </header>
+    <!-- --------------------------------- Main -------------------------------- -->
+    <main>
+      <div class="container-fluid">
+        <!-- Game Details -->
+        <div class="mt-2 align-center game-details">
+      </div>
+    </main>
 
-  <header class="app-header">
-    <img class="logo" src="../../img/hourglass.png" />
-    <div id="header-title" class="d-flex">
-      <h1 id="game-state">Champ Select</h1>
-      <h1 id="hotkey-wrapper">
-        * Hotkey: <span id="hotkey"></span>
-      </h1>
-    </div>
-    <div class="window-controls-group">
-      <button class="icon window-control support">
-        <svg>
-          <use xlink:href="/img/header_icons.svg#window-control_support" />
-        </svg>
-        <div class="tooltip">
-          <a target="_blank" href="https://discord.gg/v5cfBTq">Talk to us on Discord</a><br />
-          <a target="_blank" href="http://support.overwolf.com/">FAQ page at Overwolf</a>
-          <hr />
-          <h3>Social Media</h3>
-          <div class="socialIcons">
-            <a target="_blank" href="https://twitter.com/theoverwolf">
-              <img src="../../img/twitter.svg" />
-            </a>
-            <a target="_blank" href="https://www.facebook.com/Overwolf/">
-              <img src="../../img/facebook.svg" />
-            </a>
-            <a target="_blank" href="https://www.reddit.com/r/Overwolf/">
-              <img src="../../img/reddit.png" />
-            </a>
-          </div>
-        </div>
-      </button>
-      <a class="icon window-control" id="settings">
-        <svg>
-          <use xlink:href="/img/header_icons.svg#window-control_settings" />
-        </svg>
-      </a>
-      <button class="icon window-control" id="minimize">
-        <svg>
-          <use xlink:href="/img/header_icons.svg#window-control_minimize" />
-        </svg>
-      </button>
-      <button class="icon window-control window-control-close" id="exit">
-        <svg>
-          <use xlink:href="/img/header_icons.svg#window-control_close" />
-        </svg>
-      </button>
-    </div>
-  </header>
+    <script src="../../lib/require.js"></script>
 
-  <!-- --------------------------------- Main -------------------------------- -->
-  <main>
-    <div class="container-fluid">
-      <!-- Game Details -->
-      <div class="mt-2 align-center game-details">
-    </div>
-  </main>
+    <script>
+      require(["app-controller"], function (AppController) {
+        console.log(`[INIT] app module loaded`);
+        const appController = new AppController();
+        appController.run();
+      }, function (error) {
+        console.log(error)
+        console.log(`[INIT] failed to load app module ${error}`);
+      });
+    </script>
+    <!-- <script
+        src="http://content.overwolf.com/libs/ads/latest/owads.min.js"
+        async
+        onload="onOwAdReady()"
+      ></script> -->
+    <script>
+        // function onOwAdReady() {
+        //   const owAd = new OwAd(document.getElementById("ad"));
+        //   function onWindowStateChanged(state) {
+        //     if (state && state.window_name === "in_game") {
+        //       // when state changes to minimized, call removeAd()
+        //       if (state.window_state === "minimized") {
+        //         owAd.removeAd();
+        //       }
+        //       // when state changes from minimized to normal, call refreshAd()
+        //       else if (
+        //         state.window_previous_state === "minimized" &&
+        //         state.window_state === "normal"
+        //       ) {
+        //         owAd.refreshAd();
+        //       }
+        //     }
+        //   }
 
-  <script src="../../lib/require.js"></script>
-
-  <script>
-    require(["app-controller"], function (AppController) {
-      console.log(`[INIT] app module loaded`);
-      const appController = new AppController();
-      appController.run();
-    }, function (error) {
-      console.log(error)
-      console.log(`[INIT] failed to load app module ${error}`);
-    });
-  </script>
-  <!-- <script
-      src="http://content.overwolf.com/libs/ads/latest/owads.min.js"
-      async
-      onload="onOwAdReady()"
-    ></script> -->
-  <script>
-      // function onOwAdReady() {
-      //   const owAd = new OwAd(document.getElementById("ad"));
-      //   function onWindowStateChanged(state) {
-      //     if (state && state.window_name === "in_game") {
-      //       // when state changes to minimized, call removeAd()
-      //       if (state.window_state === "minimized") {
-      //         owAd.removeAd();
-      //       }
-      //       // when state changes from minimized to normal, call refreshAd()
-      //       else if (
-      //         state.window_previous_state === "minimized" &&
-      //         state.window_state === "normal"
-      //       ) {
-      //         owAd.refreshAd();
-      //       }
-      //     }
-      //   }
-
-      //   overwolf.windows.onStateChanged.removeListener(onWindowStateChanged);
-      //   overwolf.windows.onStateChanged.addListener(onWindowStateChanged);
-      // }
-  </script>
-</body>
+        //   overwolf.windows.onStateChanged.removeListener(onWindowStateChanged);
+        //   overwolf.windows.onStateChanged.addListener(onWindowStateChanged);
+        // }
+    </script>
+  </body>
 
 </html>

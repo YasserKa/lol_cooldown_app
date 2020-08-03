@@ -1,46 +1,41 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-  <meta charset="UTF-8" />
-  <script src="../../js/jquery.min.js"></script>
-  <script src="../../js/bootstrap.bundle.min.js"></script>
-  <script src="../../js/common.js"></script>
-  <link rel="stylesheet" href="../../css/bootstrap.min.css" />
-  <link rel="stylesheet" href="../../css/general.css" />
-  <link rel="stylesheet" href="../../css/header.css" />
-  <!-- <link rel="stylesheet" href="../../css/ingame.css" /> -->
-  <!-- <link rel="stylesheet" href="../../css/modal.css" /> -->
-  <!-- <link rel="stylesheet" href="../../css/main.css" /> -->
-  <link rel="stylesheet" href="../../css/darkTheme.css" />
-  <title>LoLCooldown</title>
-</head>
-
-<body class="dark">
-  <!-- -------------------------------- Header ------------------------------- -->
-
-  <header class="app-header">
-    <img class="logo" src="../../img/hourglass.png" />
-    <h1>LoLCooldown</h1>
-    <div class="window-controls-group">
-      <a target="_blank" href="https://discord.gg/wSZZDcP">
-        <img class="discord" src="../../img/discord-white.png" />
-      </a>
-      <a class="icon window-control" id="settings">
-        <svg>
-          <use xlink:href="/img/header_icons.svg#window-control_settings" />
-        </svg>
-      </a>
-      <button class="icon window-control" id="minimize">
-        <svg>
-          <use xlink:href="/img/header_icons.svg#window-control_minimize" />
-        </svg>
-      </button>
-      <button class="icon window-control window-control-close" id="exit">
-        <svg>
-          <use xlink:href="/img/header_icons.svg#window-control_close" />
-        </svg>
-      </button>
-    </div>
+  <head>
+    <meta charset="UTF-8" />
+    <script src="../../js/jquery.min.js"></script>
+    <script src="../../js/bootstrap.bundle.min.js"></script>
+    <script src="../../js/common.js"></script>
+    <link rel="stylesheet" href="../../css/bootstrap.min.css" />
+    <link rel="stylesheet" href="../../css/general.css" />
+    <link rel="stylesheet" href="../../css/header.css" />
+    <link rel="stylesheet" href="../../css/darkTheme.css" />
+    <title>LoLCooldown</title>
+  </head>
+  <body class="dark">
+    <!-- -------------------------------- Header ------------------------------- -->
+    <header class="app-header">
+      <img class="logo" src="../../img/hourglass.png" />
+      <h1>LoLCooldown</h1>
+      <div class="window-controls-group">
+        <a target="_blank" href="https://discord.gg/wSZZDcP">
+          <img class="discord" src="../../img/discord-white.png" />
+        </a>
+        <a class="icon window-control" id="settings">
+          <svg>
+            <use xlink:href="/img/header_icons.svg#window-control_settings" />
+          </svg>
+        </a>
+        <button class="icon window-control" id="minimize">
+          <svg>
+            <use xlink:href="/img/header_icons.svg#window-control_minimize" />
+          </svg>
+        </button>
+        <button class="icon window-control window-control-close" id="exit">
+          <svg>
+            <use xlink:href="/img/header_icons.svg#window-control_close" />
+          </svg>
+        </button>
+      </div>
     </header>
     <main>
       <div class="container-fluid">
@@ -58,7 +53,6 @@
         </div>
       </div>
     </main>
-    </script>
     <script src="../../lib/require.js"></script>
     
     <script>
@@ -70,6 +64,5 @@
         console.log(`[INIT] failed to load in-game module ${error}`);
       });
     </script>
-    </body>
-    
-    </html>
+  </body>
+</html>
