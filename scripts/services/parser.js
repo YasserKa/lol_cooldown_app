@@ -213,7 +213,6 @@ define([
       for (let runeId of neededRuneIds) {
         let rune = dataHandler.getRuneById(runeId);
         parsedParticipantRunes[rune.name] = rune;
-        // console.log(rune);
         if (runeId == 5007) {
           parsedParticipantRunes[rune.name].image = '../../img/' + rune.image;
         }

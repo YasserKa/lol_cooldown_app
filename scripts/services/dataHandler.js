@@ -82,6 +82,10 @@ define([
 
     function getChampionById(id) {
       _init();
+      console.log(id, _champions);
+      if (id === 0) {
+        return undefined;
+      }
       return _champions[Object.keys(_champions).find(key => _champions[key]['id'] === id)];
     }
 

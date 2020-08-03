@@ -291,11 +291,10 @@ define([
 
 
         function _getNumberElement(number) {
-
-            number = (number).toString();
             if (number == '-') {
                 return `<span>-</span>`;
             }
+            number = (number).toString();
 
             let indexOfDot = number.indexOf('.');
             if (indexOfDot === -1) {
