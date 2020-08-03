@@ -84,6 +84,11 @@ define([
   async function openWindowOnlyIfNotOpen(windowName) {
     const openWindows = await getOpenWindows();
 
+    // if it doesn't exist open it
+    if (!openWindows.hasOwnProperty(windowName)) {
+      await restore(windowName);
+    }
+
     // close windows besides background && the one needed (if opened)
     for (let openWindowName of Object.keys(openWindows)) {
       if (openWindowName === WindowNames.BACKGROUND ||
@@ -94,10 +99,6 @@ define([
       await close(openWindowName);
     }
 
-    // if it doesn't exist open it
-    if (!openWindows.hasOwnProperty(windowName)) {
-      await restore(windowName);
-    }
   }
 
   /**
@@ -105,7 +106,7 @@ define([
    * @returns {Promise<any>}
    */
   async function minimizeCurrentWindow() {
-    const currentWindowName = await _getCurrentWindowName();
+    const currentWindowName = await getCurrentWindowName();
     await minimize(currentWindowName);
   }
 
@@ -114,7 +115,7 @@ define([
    * @returns {Promise<any>}
    */
   async function closeCurrentWindow() {
-    const currentWindowName = await _getCurrentWindowName();
+    const currentWindowName = await getCurrentWindowName();
     await close(currentWindowName);
   }
 
@@ -147,8 +148,9 @@ define([
    */
   function close(windowName) {
     return new Promise(async (resolve, reject) => {
+      console.log(windowName);
       try {
-        overwolf.windows.close(windowName, () => {
+        overwolf.windows.close(windowName, async () => {
           resolve();
         });
       } catch (e) {
@@ -162,7 +164,7 @@ define([
    * get current window name
    * @returns {Promise<any>}
    */
-  function _getCurrentWindowName() {
+  function getCurrentWindowName() {
     return new Promise(async (resolve, reject) => {
       try {
         overwolf.windows.getCurrentWindow((result) => {
@@ -184,6 +186,7 @@ define([
     close,
     minimizeCurrentWindow,
     closeCurrentWindow,
+    getCurrentWindowName,
     obtainWindow,
     getOpenWindows,
     getWindowState,

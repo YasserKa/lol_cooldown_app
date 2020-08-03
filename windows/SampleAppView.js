@@ -32,8 +32,14 @@ define([
         });
       }
 
-      this._exitButton.addEventListener("click", async function() {
-        await WindowsService.closeCurrentWindow();
+      this._exitButton.addEventListener("click", async () => {
+        let windowName = await WindowsService.getCurrentWindowName();
+        // close the window only if it's settings, else close the app
+        if (windowName === WindowNames.SETTINGS) {
+          await WindowsService.closeCurrentWindow();
+        } else {
+          this._backgroundWindow.close();
+        }
       });
 
 
