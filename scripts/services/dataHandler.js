@@ -82,7 +82,6 @@ define([
 
     function getChampionById(id) {
       _init();
-      console.log(id, _champions);
       if (id === 0) {
         return undefined;
       }
