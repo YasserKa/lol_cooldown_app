@@ -52,7 +52,11 @@ img.champ-icon {
 }
 
 .cdr {
-    display:none;
+    /* display:none; */
+}
+
+.spells-cdr-cell {
+    display: inline-flex;
 }
 
 .cdr p {

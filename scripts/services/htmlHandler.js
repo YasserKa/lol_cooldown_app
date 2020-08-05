@@ -18,9 +18,7 @@ define([
         function _updateView(game) {
             _updateTeam(game.getBlueTeam(), 'blue');
             _updateTeam(game.getRedTeam(), 'red');
-            if (game.isInGame() && Settings.getSetting('cooldownReductionDisplay')) {
-                $('.cdr').css('display', 'table-row');
-            }
+
             // updating tool-top package
             tippy('[data-toggle="tooltip"]', {
                 allowHTML: true,
@@ -175,13 +173,16 @@ define([
 
         function _updateCooldownReduction(participant) {
             $(`table[partic-id="${participant.getId()}"] .cdr`).remove();
-            $(`table[partic-id="${participant.getId()}"]`).append(_createCdRedCell(participant));
-            $(`table[partic-id="${participant.getId()}"] .spells-cdr-holder`)
-                .html(_createSpellCdRedCell(participant));
+
+            if (Settings.getSetting('cooldownReductionDisplay')) {
+                $(`table[partic-id="${participant.getId()}"]`).append(_createCdRedCell(participant));
+                $(`table[partic-id="${participant.getId()}"] .spells-cdr-holder`)
+                    .html(_createSpellCdRedCell(participant));
+            }
         }
 
         function _createSpellCdRedCell(participant) {
-            let el = '<div class="cdr spells-cdr-cell d-inline-flex">';
+            let el = '<div class="cdr spells-cdr-cell">';
             let cdRedSpells = participant.getSummonerSpellsCDr();
             if (cdRedSpells == 0) {
                 return el;
