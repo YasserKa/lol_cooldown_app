@@ -105,7 +105,8 @@
     "force_browser": "user",
     "developer": {
       "enable_auto_refresh": true,
-      "reload_delay": 9999999
+      "reload_delay": 1000,
+            "filter": "*.*"
     }
   }
 }
