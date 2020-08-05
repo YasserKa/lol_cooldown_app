@@ -107,7 +107,7 @@ define([
                         </div>
                         <div class="spells-cdr-holder d-inline-block">
                         </div>
-                        <div class="cell spells p-0 d-inline-block">
+                        <div class="cell spells p-0 d-inline-flex">
                             <div class="spell-1 d-inline-block">
                                 <img class="spell-icon" src="${participant.getSummonerSpellImage(0)}" alt="${participant.getSummonerSpellImage(0)}">
                                 <p class="cooldown" spell="0" spell-name="${participant.getSummonerSpellName(0)}">${firstSpellCooldownEl}</p>
