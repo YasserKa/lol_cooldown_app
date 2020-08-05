@@ -15,7 +15,11 @@
   "permissions": [
     "Hotkeys",
     "GameInfo",
-    "FileSystem"
+    "FileSystem",
+    "Extensions",
+    "Streaming",
+    "Profile",
+    "DesktopStreaming"
   ],
   "data": {
     "game_targeting": {
@@ -48,21 +52,21 @@
       "main": {
         "file": "windows/main/main.html",
         "native_window": true,
+        "desktop_only": true,
         "transparent": true,
         "resizable": true,
         "size": {
-          "width": 400,
+          "width": 500,
           "height": 600 
         },
         "min_size": {
-          "width": 400,
+          "width": 500,
           "height":600 
         },
         "max_size": {
-          "width": 400,
+          "width": 500,
           "height": 600
-        },
-        "desktop_only": true
+        }
       },
       "settings": {
         "file": "windows/settings/settings.html",

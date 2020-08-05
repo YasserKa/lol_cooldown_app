@@ -3,10 +3,10 @@
 
   <head>
     <meta charset="UTF-8" />
-    <script src="../../js/jquery.min.js"></script>
-    <script src="../../js/bootstrap.bundle.min.js"></script>
-    <script src="../../js/popper.min.js"></script>
-    <script src="../../js/common.js"></script>
+    <script src="../../lib/jquery.min.js"></script>
+    <script src="../../lib/popper.min.js"></script>
+    <script src="../../lib/tippy-bundle.umd.min.js"></script>
+    <script src="../../lib/bootstrap.min.js"></script>
     <link rel="stylesheet" href="../../css/bootstrap.min.css" />
     <link rel="stylesheet" href="../../css/general.css" />
     <link rel="stylesheet" href="../../css/header.css" />
@@ -62,34 +62,6 @@
         console.log(error)
         console.log(`[INIT] failed to load app module ${error}`);
       });
-    </script>
-    <!-- <script
-        src="http://content.overwolf.com/libs/ads/latest/owads.min.js"
-        async
-        onload="onOwAdReady()"
-      ></script> -->
-    <script>
-        // function onOwAdReady() {
-        //   const owAd = new OwAd(document.getElementById("ad"));
-        //   function onWindowStateChanged(state) {
-        //     if (state && state.window_name === "in_game") {
-        //       // when state changes to minimized, call removeAd()
-        //       if (state.window_state === "minimized") {
-        //         owAd.removeAd();
-        //       }
-        //       // when state changes from minimized to normal, call refreshAd()
-        //       else if (
-        //         state.window_previous_state === "minimized" &&
-        //         state.window_state === "normal"
-        //       ) {
-        //         owAd.refreshAd();
-        //       }
-        //     }
-        //   }
-
-        //   overwolf.windows.onStateChanged.removeListener(onWindowStateChanged);
-        //   overwolf.windows.onStateChanged.addListener(onWindowStateChanged);
-        // }
     </script>
   </body>
 

@@ -12,12 +12,7 @@ define([
         }
 
         function update(game) {
-            if (game === null) {
-                _updateView(_currentGame);
-            } else {
-                _updateView(game);
-                _currentGame = game;
-            }
+            _updateView(game);
         }
 
         function _updateView(game) {
@@ -26,6 +21,10 @@ define([
             if (game.isInGame() && Settings.getSetting('cooldownReductionDisplay')) {
                 $('.cdr').css('display', 'table-row');
             }
+            // updating tool-top package
+            tippy('[data-toggle="tooltip"]', {
+                allowHTML: true,
+            });
         }
 
         function _updateTeam(team, color) {
@@ -137,7 +136,7 @@ define([
                 // add description for abilities that has cooldown reduction effect
                 if (ability['cdrType'] != '') {
                     el +=
-                        ` data-toggle="tooltip" data - html=true title = "${ability['description']}"/>`
+                        ` data-toggle="tooltip" data-tippy-content= "${ability['description']}"/>`
                 } else {
                     el += `/>`
                 }
@@ -148,7 +147,7 @@ define([
 
                 el += `<div class="indication ${teamColor}"></div>`;
                 if (ability['cdrType'] != '') {
-                    el += `<img class="info" src="../../img/info.svg" data-toggle="tooltip" data-html=true title="This ability decreases cooldowns" />`
+                    el += `<img class="info" src="../../img/info.svg" data-toggle="tooltip" data-tippy-content="This ability decreases cooldowns" />`
                 }
 
                 el +=
@@ -234,7 +233,7 @@ define([
                 if (index != 0) {
                     el += `style=" position: absolute;left:${index * 15}px"`;
                 }
-                el += `src="${rune.image}" alt="${rune.name}" data-toggle="tooltip" data-html="true" title="" data-original-title="${rune.description}">`
+                el += `src="${rune.image}" alt="${rune.name}" data-toggle="tooltip" data-tippy-content="${rune.description}">`
 
 
                 index++;
