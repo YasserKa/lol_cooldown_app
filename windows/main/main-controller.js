@@ -22,7 +22,7 @@ define([
         let windowHeight = window['window']['height'];
         let windowWidth = window['window']['width'];
 
-        let newTopPosition = (height-100)/2 - windowHeight/2;
+        let newTopPosition = parseInt((height-100)/2 - windowHeight/2);
         let newLeftPosition = 0;
 
         overwolf.windows.changePosition(WindowNames.MAIN, newLeftPosition, newTopPosition);
