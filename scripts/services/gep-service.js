@@ -1,20 +1,16 @@
-/**
- * Game Event Provider service
- * This will listen to events from the game provided by
- * Overwolf's Game Events Provider
- */
 define([
-
+  '../helpers/timer.js',
 ],
-  function () {
+  function (
+    Timer
+    ) {
 
     const REQUIRED_FEATURES = [
       'live_client_data'
     ];
-    const REGISTER_RETRY_TIMEOUT = 2000;
+    const REGISTER_RETRY_TIMEOUT = 3000;
     const NUMBER_OF_RETRIES = 10;
     let _isRegisteredToGEP = false;
-    let retries = 0;
 
     // get the current state of the launcher
     function getInGameInfo() {
@@ -31,13 +27,15 @@ define([
     }
 
     function registerToGEP(listener) {
+      let retries = 0;
       overwolf.games.events.setRequiredFeatures(REQUIRED_FEATURES, function (response) {
         if (response.status === 'error') { 
           console.log(`Failed to register to GEP, retrying in ${REGISTER_RETRY_TIMEOUT / 1000}s...`);
           if (retries >= NUMBER_OF_RETRIES) {
             return;
           }
-          setTimeout(registerToGEP, REGISTER_RETRY_TIMEOUT, listener);
+          Timer.wait(REGISTER_RETRY_TIMEOUT);
+          registerToGEP(listener);
           retries++;
           return;
         }
