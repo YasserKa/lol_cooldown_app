@@ -36,8 +36,10 @@ define([
                     .attr('src', participant.getChampionIcon())
                     .attr('alt', participant.getChampionName());
 
-                // cooldownReduction
-                _updateCooldownReduction(participant);
+                // cooldownReduction if in-game
+                if (participant.isInGame()) {
+                    _updateCooldownReduction(participant);
+                }
 
                 // champ Abilities
                 $(`table[partic-id="${participant.getId()}"] .cooldowns-abilities`).remove();

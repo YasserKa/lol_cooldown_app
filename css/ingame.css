@@ -51,10 +51,6 @@ img.champ-icon {
     color: #8A8F94;
 }
 
-.cdr {
-    /* display:none; */
-}
-
 .spells-cdr-cell {
     display: inline-flex;
 }
