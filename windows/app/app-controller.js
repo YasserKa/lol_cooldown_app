@@ -2,16 +2,16 @@ define([
   '../../windows/app/app-view.js',
   "../../scripts/constants/states.js",
   "../../scripts/services/parser.js",
-  "../../scripts/services/gep-service.js",
-  "../../scripts/services/client-service.js",
+  "../../scripts/services/ingame-service.js",
+  "../../scripts/services/launcher-service.js",
   "../../scripts/services/hotkeys-service.js",
   "../../scripts/services/testing.js",
 ], function (
   AppView,
   States,
   Parser,
-  GepService,
-  ClientService,
+  InGameService,
+  LauncherService,
   HotkeysService,
   Testing,
 ) {
@@ -29,6 +29,7 @@ define([
 
     // add listeners to services depending on the state (in-champselect/in-game)
     async run() {
+      return;
       if (Testing.isTesting()) {
         switch (Testing.getState()) {
           case States.IN_CHAMPSELECT:
@@ -45,8 +46,8 @@ define([
             break;
         }
       } else {
-        ClientService.updateStateChangedForAppListener(this._registerEvents);
-        const state = await ClientService.getState();
+        LauncherService.updateStateChangedForAppListener(this._registerEvents);
+        const state = await LauncherService.getState();
         this._registerEvents(state);
 
       }
@@ -59,18 +60,19 @@ define([
     async _registerEvents(state) {
       switch (state) {
         case States.IN_CHAMPSELECT:
-          ClientService.updateChampSelectChangedListener(this._inChampSelectEventUpdateListener);
-          this._inChampSelectEventUpdateListener(await ClientService.getChampSelectInfo());
+          LauncherService.updateChampSelectChangedListener(this._inChampSelectEventUpdateListener);
+          this._inChampSelectEventUpdateListener(await LauncherService.getChampSelectInfo());
           break;
         case States.IN_GAME:
-          GepService.registerToGEP(this._inGameEventUpdateListener);
-          this._inGameEventUpdateListener(await GepService.getInGameInfo());
+          InGameService.registerToGEP(this._inGameEventUpdateListener);
+          this._inGameEventUpdateListener(await InGameService.getLiveClientData());
           break;
       }
     }
 
     _inGameEventUpdateListener(data) {
       // using it from registering the function
+      console.log(data);
       if (data.hasOwnProperty('feature') && data['feature'] === 'live_client_data') {
         data = data['info']['live_client_data'];
       }
@@ -101,6 +103,7 @@ define([
     }
 
     _inChampSelectEventUpdateListener(data) {
+      console.log(data);
       if (data.hasOwnProperty('myTeam') && data['myTeam'].length > 0) {
         let parsedData = Parser.parseInChampSelectData(data);
         this._appView.updateInChampSelect(parsedData);
@@ -108,7 +111,7 @@ define([
     }
 
     async _updateRunesUsingServer(callback) {
-      let summonerInfo = await ClientService.getSummonerInfo();
+      let summonerInfo = await LauncherService.getSummonerInfo();
       summonerInfo['summonerName'] = '#random';
       let summonerName = encodeURIComponent(summonerInfo['summonerName']);
       let region = encodeURIComponent(summonerInfo['region']);

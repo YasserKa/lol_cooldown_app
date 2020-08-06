@@ -1,16 +1,18 @@
 define([
   "../../scripts/constants/states.js",
   "../../scripts/constants/window-names.js",
-  "../../scripts/services/client-service.js",
+  "../../scripts/services/launcher-service.js",
   "../../scripts/services/windows-service.js",
   "../../scripts/services/hotkeys-service.js",
+  "../../scripts/services/state-service.js",
   "../../scripts/services/testing.js",
 ], function (
   States,
   WindowNames,
-  ClientService,
+  LauncherService,
   WindowsService,
   HotkeysService,
+  StateService,
   Testing,
 ) {
   class BackgroundController {
@@ -18,21 +20,26 @@ define([
     static async run() {
       this._initialized = false
       this._currentState = States.NONE;
+      StateService.init();
+
 
       BackgroundController._registerHotkeys();
+      await this._init();
 
-      if (Testing.isTesting()) {
-        BackgroundController._updateWindows(Testing.getState());
-      } else {
-        // open the appropriate window depending on the state
-        await this._init();
-        // close/open windows upon state change
-        ClientService.updateStateChangedListener(this._onStateChanged);
-      }
+
+      StateService.addOnStateChangeListener(this._onStateChanged);
+      // if (Testing.isTesting()) {
+      //   BackgroundController._updateWindows(Testing.getState());
+      // } else {
+      //   // open the appropriate window depending on the state
+      //   await this._init();
+      //   // close/open windows upon state change
+      //   LauncherService.updateStateChangedListener(this._onStateChanged);
+      // }
     }
 
     static async _init() {
-      const state = await ClientService.getState();
+      const state = await StateService.getState();
       BackgroundController._updateWindows(state)
       this._initialized = true;
     }
