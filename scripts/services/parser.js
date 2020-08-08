@@ -69,6 +69,12 @@ define([
                     allPlayers[player]['runesReforged'] = runes;
                 }
             }
+
+            if (data.hasOwnProperty('game_data')) {
+                for (let player in allPlayers) {
+                    allPlayers[player]['gameMode'] = JSON.parse(data.game_data).gameMode;
+                }
+            }
             let allPlayersParsed = _parseInGameAllPlayersData(allPlayers);
             Object.assign(parsedData, allPlayersParsed);
         }
@@ -176,6 +182,7 @@ define([
                 'spells': spellsData,
                 'runes': _parseParticipantRunes(participant['runesReforged']),
                 'items': items,
+                'gameMode': participant['gameMode'],
             };
 
             if (participant['team'])

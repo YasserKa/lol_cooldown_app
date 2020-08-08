@@ -25,7 +25,7 @@ define([
             }
         });
         overwolf.games.onGameInfoUpdated.addListener((info) => {
-            if (info && info.isRunning) {
+            if (info && !info.isRunning) {
                 _onTerminated()
             }
         });

@@ -1,10 +1,11 @@
 define([
-    '../../windows/app/app-view.js',
+    './app-view.js',
     "../../scripts/constants/states.js",
     "../../scripts/services/parser.js",
     "../../scripts/services/launcher-service.js",
     "../../scripts/services/ingame-service.js",
     "../../scripts/services/hotkeys-service.js",
+    "../../scripts/helpers/utils.js",
     "../../scripts/services/testing.js",
 ], function (
     AppView,
@@ -13,17 +14,20 @@ define([
     LauncherService,
     InGameService,
     HotkeysService,
+    Utils,
     Testing,
 ) {
     class AppController {
 
         constructor() {
             this._appView = new AppView();
-            this._participantRunes = {};
+            this._runesUpdated = false;
+            this._participantRunes = [];
             this._mainWindow = overwolf.windows.getMainWindow();
             this._stateService = this._mainWindow.stateService;
 
             this._inChampSelectEventUpdateListener = this._inChampSelectEventUpdateListener.bind(this);
+            this._updateRunesUsingServer = this._updateRunesUsingServer.bind(this);
             this._inGameEventUpdateListener = this._inGameEventUpdateListener.bind(this);
             this._updateHotkey = this._updateHotkey.bind(this);
         }
@@ -48,8 +52,13 @@ define([
             } else {
                 this._stateService.addListener(this._stateService.LISTENERS.CHAMP_SELECT, this._inChampSelectEventUpdateListener);
                 this._stateService.addListener(this._stateService.LISTENERS.IN_GAME, this._inGameEventUpdateListener);
-                this._inChampSelectEventUpdateListener(await LauncherService.getChampSelectInfo());
-                this._inGameEventUpdateListener(await InGameService.getLiveClientData());
+
+                let state = await this._stateService.getState();
+                if (state === States.IN_CHAMPSELECT) {
+                    this._inChampSelectEventUpdateListener(await LauncherService.getChampSelectInfo());
+                } else if (state === States.IN_GAME) {
+                    this._inGameEventUpdateListener(await InGameService.getLiveClientData());
+                }
             }
 
             // update hotkey view and listen to changes
@@ -57,19 +66,25 @@ define([
             HotkeysService.addHotkeyChangeListener(this._updateHotkey);
         }
 
-
+             // "{"gameMode":"CLASSIC","gameTime":111.05522155761719,"mapName":"Map11","mapNumber":11,"mapTerrain":"Default"}"
+        // {"gameMode":"ARAM","gameTime":40.9216194152832,"mapName":"Map12","mapNumber":12,"mapTerrain":"Default"}
+        // {"gameMode":"NEXUSBLITZ","gameTime":23.90056610107422,"mapName":"Map21","mapNumber":21,"mapTerrain":"Default"}
         _inGameEventUpdateListener(data) {
             // attributes to parse
-            if (!data.hasOwnProperty('all_players') && !data.hasOwnProperty('events')) {
+            console.log(data);
+
+            if (!data || (!data.hasOwnProperty('all_players') && !data.hasOwnProperty('events'))) {
                 return;
             }
 
             if (!Testing.isTesting()) {
-                // if (Object.keys(this._participantRunes).length === 0) {
-                //   _updateRunesUsingServer((participantRunes) => {
-                //     this._participantRunes = JSON.parse(participantRunes);
-                //   });
+                // if (this._runesUpdated) {
+                //     this._updateRunesUsingServer((participantRunes) => {
+                //         this._participantRunes = JSON.parse(participantRunes);
+                //         this._runesUpdated = true;
+                //     });
                 // }
+                data.participantRunes = this._participantRunes;
                 data.participantRunes = {
                     'Clumsy Gamer': {
                         perkIds: [5007, 8106, 8134, 8210, 8347],
@@ -96,22 +111,9 @@ define([
             summonerInfo['summonerName'] = '#random';
             let summonerName = encodeURIComponent(summonerInfo['summonerName']);
             let region = encodeURIComponent(summonerInfo['region']);
-            let path = `https://www.lolcooldown.com/api/matchrunes?summonerName=${summonerName}&region=${region}`;
+            let url = `https://www.lolcooldown.com/api/matchrunes?summonerName=${summonerName}&region=${region}`;
 
-            let xhr = new XMLHttpRequest();
-
-            xhr.onreadystatechange = () => {
-                if (xhr.readyState === XMLHttpRequest.DONE) {
-                    if (xhr.status === 200) {
-                        callback(xhr.response);
-                    } else {
-                        callback({});
-                    }
-                }
-            };
-
-            xhr.open("GET", path, false);
-            xhr.send();
+            Utils.makeXMLHttpRequest(url, callback)
         }
 
         async _updateHotkey() {

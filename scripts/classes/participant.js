@@ -20,6 +20,7 @@ define([], function() {
             this.currentAbilities = JSON.parse(JSON.stringify(this.originalAbilities));
             this.originalSpells = data['spells'];
             this.currentSpells = JSON.parse(JSON.stringify(this.originalSpells));
+            this.gameMode = data.gameMode
 
             this.position = data['position'];
             this.cellId = data.hasOwnProperty('cellId') ? data['cellId'] : null;
@@ -106,6 +107,10 @@ define([], function() {
             return this.cdReduction;
         }
 
+        isSpellsCDrMode() {
+            return this.gameMode == 'ARAM' || this.gameMode == 'NEXUSBLITZ';
+        }
+
         getAbilitiesCDr() {
             return this.cdRed;
         }
@@ -189,20 +194,16 @@ define([], function() {
             let hasCdrBoots = this.items.filter(value => value.name === 'Ionian Boots of Lucidity').length > 0;
 
             // Max cdRed is 45%
-            // if (map == 'Howling Abyss')
-            //     cdRed += 40;
-            if (hasCdrBoots) {
+            if (this.isSpellsCDrMode())
+                spellsCdRed += 40;
+            if (hasCdrBoots)
                 spellsCdRed += 10;
-            }
             if (this._hasRune(RUNES_ENUM.CosmicInsight)) {
-                spellsCdRed += 5;
+                if (this.isSpellsCDrMode())
+                    spellsCdRed += ((100 - spellsCdRed) * 0.05);
+                else
+                    cdRed += 5
             }
-            // if (this.hasFiveCdrRune) {
-            //     if (map == 'Howling Abyss')
-            //         cdRed += ((100 - cdRed) * 0.05);
-            //     else
-            //         cdRed += 5
-            // }
 
             this.spellsCdRed = spellsCdRed;
         }

@@ -190,16 +190,22 @@ define([
         }
         let items = participant.getItems();
         let runes = participant.getRunes();
+        let isSpellsCDrMode = participant.isSpellsCDrMode();
         let neededItems = items.filter(item => item.name === 'Ionian Boots of Lucidity');
         let neededRune = runes.hasOwnProperty('CosmicInsight') ? runes.CosmicInsight : false;
+
+        if (neededItems.length > 0) {
+            el += `<img class="item-icon ml-1" src="${neededItems[0].icon}" alt="${neededItems[0].name}">`;
+        }
 
         if (neededRune) {
             el += `<img class="item-icon ml-1" src="${neededRune.image}" alt="${neededRune.name}" data-toggle="tooltip" data-tippy-content="${neededRune.description}">`
         }
 
-        if (neededItems.length > 0) {
-            el += `<img class="item-icon ml-1" src="${neededItems[0].icon}" alt="${neededItems[0].name}">`;
+        if (isSpellsCDrMode) {
+            el += `<img class="item-icon ml-1" src="../../img/howling_abyss.png" alt="" data-tippy-content="+40% Summoner Spell CDR">`;
         }
+
         el += `<p class="spells-cdr-value d-inline">${_getNumberElement(participant.getSummonerSpellsCDr())}</p>`;
         el += '</div>';
 

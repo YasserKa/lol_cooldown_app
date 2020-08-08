@@ -1,8 +1,10 @@
 define([
-  "../../scripts/services/testing.js",
+  "./testing.js",
+  "../helpers/utils.js",
 ],
   function (
     Testing,
+    Utils,
     ) {
 
     let _initialized = false;
@@ -17,7 +19,7 @@ define([
     function _init() {
       if (_initialized)
         return;
-      
+
       _updateDataIfNeeded();
 
       _champions = _data['champions'];
@@ -54,30 +56,16 @@ define([
 
     function _getLastDateUpdated(callback) {
       let url = 'https://www.lolcooldown.com/api/lastdateupdated';
-      _makeXMLHttpRequest(url, callback);
+      Utils.makeXMLHttpRequest(url, callback);
     }
 
     function _updateDataUsingServer() {
       console.log('updating data from server');
       let url = 'https://www.lolcooldown.com/api/data';
-      _makeXMLHttpRequest(url, (data) => {
+      Utils.makeXMLHttpRequest(url, (data) => {
         localStorage.setItem("data", data);
         _data = JSON.parse(data);
       });
-    }
-
-    function _makeXMLHttpRequest(url, callback) {
-      let xhr = new XMLHttpRequest();
-
-      xhr.onreadystatechange = () => {
-        if (xhr.readyState === XMLHttpRequest.DONE) {
-          if (xhr.status === 201) {
-            callback(xhr.response);
-          }
-        }
-      };
-      xhr.open("GET", url, false);
-      xhr.send();
     }
 
     function getChampionById(id) {
