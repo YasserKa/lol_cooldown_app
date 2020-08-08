@@ -202,7 +202,7 @@ define([], function() {
                 if (this.isSpellsCDrMode())
                     spellsCdRed += ((100 - spellsCdRed) * 0.05);
                 else
-                    cdRed += 5
+                    spellsCdRed += 5
             }
 
             this.spellsCdRed = spellsCdRed;
