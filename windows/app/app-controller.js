@@ -34,6 +34,15 @@ define([
 
         // add listeners to services depending on the state (in-champselect/in-game)
         async run() {
+            // send window below LoL
+            overwolf.windows.setPosition({
+                "relativeTo": {
+                    "processName": "LeagueClientUx",
+                    "windowTitle": "League of Legends"
+                },
+                "insertAbove": false,
+            }, () => {});
+
             if (Testing.isTesting()) {
                 switch (Testing.getState()) {
                     case States.IN_CHAMPSELECT:
@@ -66,12 +75,8 @@ define([
             HotkeysService.addHotkeyChangeListener(this._updateHotkey);
         }
 
-             // "{"gameMode":"CLASSIC","gameTime":111.05522155761719,"mapName":"Map11","mapNumber":11,"mapTerrain":"Default"}"
-        // {"gameMode":"ARAM","gameTime":40.9216194152832,"mapName":"Map12","mapNumber":12,"mapTerrain":"Default"}
-        // {"gameMode":"NEXUSBLITZ","gameTime":23.90056610107422,"mapName":"Map21","mapNumber":21,"mapTerrain":"Default"}
         _inGameEventUpdateListener(data) {
             // attributes to parse
-            console.log(data);
 
             if (!data || (!data.hasOwnProperty('all_players') && !data.hasOwnProperty('events'))) {
                 return;
