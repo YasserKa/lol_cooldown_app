@@ -148,7 +148,6 @@ define([
    */
   function close(windowName) {
     return new Promise(async (resolve, reject) => {
-      console.log(windowName);
       try {
         overwolf.windows.close(windowName, async () => {
           resolve();

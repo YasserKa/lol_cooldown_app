@@ -4,7 +4,7 @@
   <meta charset="UTF-8" />
   <script src="../../lib/jquery.min.js"></script>
   <script src="../../lib/bootstrap.bundle.min.js"></script>
-  <script src="../../lib/common.js"></script>
+  <script src="../../js/common.js"></script>
   <link rel="stylesheet" href="../../css/bootstrap.min.css" />
   <link rel="stylesheet" href="../../css/general.css" />
   <link rel="stylesheet" href="../../css/header.css" />
@@ -13,8 +13,7 @@
 </head>
 
 <body class="dark">
-  <!-- -------------------------------- Header ------------------------------- -->
-
+  <!------ Header ------!>
   <header class="app-header">
     <img class="logo" src="../../img/hourglass.png" />
     <h1>LoLCooldown</h1>
@@ -34,11 +33,11 @@
           <div class="btn-group btn-group-sm btn-group-toggle d-inline" data-toggle="buttons">
             <label class="btn boarder boarder-secondary rounded-0 btn-primary">
               <input type="radio" name="cooldown-display" id="option-seconds" autocomplete="off" value="seconds">
-              Seconds 
+              Seconds
             </label>
             <label class="btn boarder boarder-secondary rounded-0 btn-primary">
               <input type="radio" name="cooldown-display" id="option-minutes" autocomplete="off" value="minutes">
-              Minutes 
+              Minutes
             </label>
           </div>
       </div>
@@ -48,11 +47,11 @@
         <div class="btn-group btn-group-sm btn-group-toggle d-inline" data-toggle="buttons">
           <label class="btn boarder boarder-secondary rounded-0 btn-primary">
             <input type="radio" name="cooldown-reduction-display" id="option-show" autocomplete="off" value="show">
-            Show 
+            Show
           </label>
           <label class="btn boarder boarder-secondary rounded-0 btn-primary">
             <input type="radio" name="cooldown-reduction-display" id="option-hide" autocomplete="off" value="hide">
-            Hide 
+            Hide
           </label>
         </div>
       </div>
@@ -67,7 +66,7 @@
     </main>
     </script>
     <script src="../../lib/require.js"></script>
-    
+
     <script>
       require(["settings-controller"], function (SettingsController) {
         console.log(`[INIT] settings module loaded`);
@@ -78,5 +77,5 @@
       });
     </script>
     </body>
-    
+
     </html>

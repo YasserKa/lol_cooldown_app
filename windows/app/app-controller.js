@@ -1,144 +1,125 @@
 define([
-  '../../windows/app/app-view.js',
-  "../../scripts/constants/states.js",
-  "../../scripts/services/parser.js",
-  "../../scripts/services/ingame-service.js",
-  "../../scripts/services/launcher-service.js",
-  "../../scripts/services/hotkeys-service.js",
-  "../../scripts/services/testing.js",
+    '../../windows/app/app-view.js',
+    "../../scripts/constants/states.js",
+    "../../scripts/services/parser.js",
+    "../../scripts/services/launcher-service.js",
+    "../../scripts/services/ingame-service.js",
+    "../../scripts/services/hotkeys-service.js",
+    "../../scripts/services/testing.js",
 ], function (
-  AppView,
-  States,
-  Parser,
-  InGameService,
-  LauncherService,
-  HotkeysService,
-  Testing,
+    AppView,
+    States,
+    Parser,
+    LauncherService,
+    InGameService,
+    HotkeysService,
+    Testing,
 ) {
-  class AppController {
+    class AppController {
 
-    constructor() {
-      this._appView = new AppView();
-      this._participantRunes = {};
+        constructor() {
+            this._appView = new AppView();
+            this._participantRunes = {};
+            this._mainWindow = overwolf.windows.getMainWindow();
+            this._stateService = this._mainWindow.stateService;
 
-      this._inChampSelectEventUpdateListener = this._inChampSelectEventUpdateListener.bind(this);
-      this._registerEvents = this._registerEvents.bind(this);
-      this._inGameEventUpdateListener = this._inGameEventUpdateListener.bind(this);
-      this._updateHotkey = this._updateHotkey.bind(this);
-    }
-
-    // add listeners to services depending on the state (in-champselect/in-game)
-    async run() {
-      return;
-      if (Testing.isTesting()) {
-        switch (Testing.getState()) {
-          case States.IN_CHAMPSELECT:
-            this._inChampSelectEventUpdateListener(Testing.getInChampSelectData());
-            break;
-          case States.IN_GAME:
-            this._inGameEventUpdateListener(Testing.getInGameData());
-            break;
-          case States.CHAMPSELECT_TO_GAME:
-            this._inChampSelectEventUpdateListener(Testing.getInChampSelectData());
-            setTimeout(() => {
-              this._inGameEventUpdateListener(Testing.getInGameData());
-            }, 2000);
-            break;
+            this._inChampSelectEventUpdateListener = this._inChampSelectEventUpdateListener.bind(this);
+            this._inGameEventUpdateListener = this._inGameEventUpdateListener.bind(this);
+            this._updateHotkey = this._updateHotkey.bind(this);
         }
-      } else {
-        LauncherService.updateStateChangedForAppListener(this._registerEvents);
-        const state = await LauncherService.getState();
-        this._registerEvents(state);
 
-      }
+        // add listeners to services depending on the state (in-champselect/in-game)
+        async run() {
+            if (Testing.isTesting()) {
+                switch (Testing.getState()) {
+                    case States.IN_CHAMPSELECT:
+                        this._inChampSelectEventUpdateListener(Testing.getInChampSelectData());
+                        break;
+                    case States.IN_GAME:
+                        this._inGameEventUpdateListener(Testing.getInGameData());
+                        break;
+                    case States.CHAMPSELECT_TO_GAME:
+                        this._inChampSelectEventUpdateListener(Testing.getInChampSelectData());
+                        setTimeout(() => {
+                            this._inGameEventUpdateListener(Testing.getInGameData());
+                        }, 2000);
+                        break;
+                }
+            } else {
+                this._stateService.addListener(this._stateService.LISTENERS.CHAMP_SELECT, this._inChampSelectEventUpdateListener);
+                this._stateService.addListener(this._stateService.LISTENERS.IN_GAME, this._inGameEventUpdateListener);
+                this._inChampSelectEventUpdateListener(await LauncherService.getChampSelectInfo());
+                this._inGameEventUpdateListener(await InGameService.getLiveClientData());
+            }
 
-      // update hotkey view and listen to changes
-      this._updateHotkey();
-      HotkeysService.addHotkeyChangeListener(this._updateHotkey);
-    }
-
-    async _registerEvents(state) {
-      switch (state) {
-        case States.IN_CHAMPSELECT:
-          LauncherService.updateChampSelectChangedListener(this._inChampSelectEventUpdateListener);
-          this._inChampSelectEventUpdateListener(await LauncherService.getChampSelectInfo());
-          break;
-        case States.IN_GAME:
-          InGameService.registerToGEP(this._inGameEventUpdateListener);
-          this._inGameEventUpdateListener(await InGameService.getLiveClientData());
-          break;
-      }
-    }
-
-    _inGameEventUpdateListener(data) {
-      // using it from registering the function
-      console.log(data);
-      if (data.hasOwnProperty('feature') && data['feature'] === 'live_client_data') {
-        data = data['info']['live_client_data'];
-      }
-
-      // attributes to parse
-      if (!data.hasOwnProperty('all_players') && !data.hasOwnProperty('events')) {
-        return;
-      }
-
-      if (!Testing.isTesting()) {
-        // if (Object.keys(this._participantRunes).length === 0) {
-        //   _updateRunesUsingServer((participantRunes) => {
-        //     this._participantRunes = JSON.parse(participantRunes);
-        //   });
-        // }
-        data.participantRunes = {
-          'Clumsy Gamer': {
-            perkIds: [5007, 8106, 8134, 8210, 8347],
-            perkStyle: 8000,
-            perkSubStyle: 8200,
-          }
-        };
-      }
-
-      let parsedData = Parser.parseInGameData(data);
-
-      this._appView.updateInGame(parsedData);
-    }
-
-    _inChampSelectEventUpdateListener(data) {
-      console.log(data);
-      if (data.hasOwnProperty('myTeam') && data['myTeam'].length > 0) {
-        let parsedData = Parser.parseInChampSelectData(data);
-        this._appView.updateInChampSelect(parsedData);
-      }
-    }
-
-    async _updateRunesUsingServer(callback) {
-      let summonerInfo = await LauncherService.getSummonerInfo();
-      summonerInfo['summonerName'] = '#random';
-      let summonerName = encodeURIComponent(summonerInfo['summonerName']);
-      let region = encodeURIComponent(summonerInfo['region']);
-      let path = `https://www.lolcooldown.com/api/matchrunes?summonerName=${summonerName}&region=${region}`;
-
-      let xhr = new XMLHttpRequest();
-
-      xhr.onreadystatechange = () => {
-        if (xhr.readyState === XMLHttpRequest.DONE) {
-          if (xhr.status === 200) {
-            callback(xhr.response);
-          } else {
-            callback({});
-          }
+            // update hotkey view and listen to changes
+            this._updateHotkey();
+            HotkeysService.addHotkeyChangeListener(this._updateHotkey);
         }
-      };
 
-      xhr.open("GET", path, false);
-      xhr.send();
+
+        _inGameEventUpdateListener(data) {
+            // attributes to parse
+            if (!data.hasOwnProperty('all_players') && !data.hasOwnProperty('events')) {
+                return;
+            }
+
+            if (!Testing.isTesting()) {
+                // if (Object.keys(this._participantRunes).length === 0) {
+                //   _updateRunesUsingServer((participantRunes) => {
+                //     this._participantRunes = JSON.parse(participantRunes);
+                //   });
+                // }
+                data.participantRunes = {
+                    'Clumsy Gamer': {
+                        perkIds: [5007, 8106, 8134, 8210, 8347],
+                        perkStyle: 8000,
+                        perkSubStyle: 8200,
+                    }
+                };
+            }
+
+            let parsedData = Parser.parseInGameData(data);
+
+            this._appView.updateInGame(parsedData);
+        }
+
+        _inChampSelectEventUpdateListener(data) {
+            if (data.hasOwnProperty('myTeam') && data.myTeam.length > 0) {
+                let parsedData = Parser.parseInChampSelectData(data);
+                this._appView.updateInChampSelect(parsedData);
+            }
+        }
+
+        async _updateRunesUsingServer(callback) {
+            let summonerInfo = await LauncherService.getSummonerInfo();
+            summonerInfo['summonerName'] = '#random';
+            let summonerName = encodeURIComponent(summonerInfo['summonerName']);
+            let region = encodeURIComponent(summonerInfo['region']);
+            let path = `https://www.lolcooldown.com/api/matchrunes?summonerName=${summonerName}&region=${region}`;
+
+            let xhr = new XMLHttpRequest();
+
+            xhr.onreadystatechange = () => {
+                if (xhr.readyState === XMLHttpRequest.DONE) {
+                    if (xhr.status === 200) {
+                        callback(xhr.response);
+                    } else {
+                        callback({});
+                    }
+                }
+            };
+
+            xhr.open("GET", path, false);
+            xhr.send();
+        }
+
+        async _updateHotkey() {
+            const hotkey = await HotkeysService.getToggleHotkey();
+            this._appView.updateHotkey(hotkey);
+        }
     }
 
-    async _updateHotkey() {
-      const hotkey = await HotkeysService.getToggleHotkey();
-      this._appView.updateHotkey(hotkey);
-    }
-  }
 
-
-  return AppController;
+    return AppController;
 });

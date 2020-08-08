@@ -36,6 +36,7 @@ img.champ-icon {
 
 .spells-cdr-cell {
     height: 45px;
+    float: right;
 }
 
 .spells-cdr-cell img {

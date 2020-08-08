@@ -27,7 +27,7 @@ define([
                 'spell1Id': 4,
                 'spell2Id': 12,
                 'team': 1,
-            },  
+            },
             {
                 'championId': 5,
                 'cellId': 3,
@@ -36,7 +36,7 @@ define([
                 'spell1Id': 4,
                 'spell2Id': 12,
                 'team': 1,
-            }, 
+            },
             {
                 'championId': 10,
                 'cellId': 0,
@@ -45,7 +45,7 @@ define([
                 'spell1Id': 4,
                 'spell2Id': 12,
                 'team': 1,
-            }, 
+            },
             {
                 'championId': 2,
                 'cellId': 3,
@@ -54,7 +54,7 @@ define([
                 'spell1Id': 4,
                 'spell2Id': 12,
                 'team': 2,
-            }, 
+            },
             {
                 'championId': 2,
                 'cellId': 3,
@@ -63,7 +63,7 @@ define([
                 'spell1Id': 4,
                 'spell2Id': 12,
                 'team': 2,
-            }, 
+            },
             {
                 'championId': 2,
                 'cellId': 3,
@@ -72,7 +72,7 @@ define([
                 'spell1Id': 4,
                 'spell2Id': 12,
                 'team': 2,
-            }, 
+            },
         ];
             let testData = {
                 'myTeam': myTeam,
@@ -96,7 +96,7 @@ define([
                         },
                     },
                     'items': [
-                        {'itemID': 3110}, 
+                        {'itemID': 3110},
                         {'itemID': 3114}
                     ],
                     'team': 'ORDER',
@@ -115,7 +115,7 @@ define([
                         },
                     },
                     'items': [
-                        {'itemID': 3110}, 
+                        {'itemID': 3110},
                         {'itemID': 3114}
                     ],
                     'team': 'ORDER',
@@ -134,7 +134,7 @@ define([
                         },
                     },
                     'items': [
-                        {'itemID': 3110}, 
+                        {'itemID': 3110},
                         {'itemID': 3114}
                     ],
                     'team': 'ORDER',
@@ -156,7 +156,7 @@ define([
                     ],
                     'team': 'ORDER',
                 },
-                { 
+                {
                     'summonerName': 'blue20',
                     'championName': 'Olaf',
                     'position': '',
@@ -170,13 +170,13 @@ define([
                         },
                     },
                     'items': [
-                        {'itemID': 3285}, 
-                        {'itemID': 3285}, 
-                        {'itemID': 3158}, 
+                        {'itemID': 3285},
+                        {'itemID': 3285},
+                        {'itemID': 3158},
                     ],
                     'team': 'ORDER',
                 },
-                { 
+                {
                     'summonerName': 'red1',
                     'championName': 'Olaf',
                     'position': '',
@@ -190,12 +190,12 @@ define([
                         },
                     },
                     'items': [
-                        {'itemID': 3110}, 
+                        {'itemID': 3110},
                         {'itemID': 3114}
                     ],
                     'team': 'CHAOS',
                 },
-                
+
             ];
             let runes = {
                 // 'blue1': {
@@ -216,13 +216,8 @@ define([
             };
 
             testData = {
-                'feature': 'live_client_data',
-                'info': {
-                    'live_client_data': {
-                        'all_players': JSON.stringify(players),
-                        'participantRunes': runes,
-                    }
-                }
+                'all_players': JSON.stringify(players),
+                'participantRunes': runes,
             }
         return testData;
     }

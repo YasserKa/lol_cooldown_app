@@ -1,5 +1,5 @@
 define([
-    './launcher-service.js',
+    './launcher-service',
     './ingame-service.js',
     '../constants/states.js',
 ], function (
@@ -8,13 +8,20 @@ define([
     States,
 ) {
 
-    let currentState = States.NONE;
+    const LISTENERS = {
+        STATE_CHANGE: 'state_change',
+        CHAMP_SELECT: 'champ_select',
+        IN_GAME: 'in_game',
+    }
+
     let _currentInChampSelectData = {};
+    let _listeners = {};
 
     function init() {
         LauncherService.init();
         InGameService.init();
-        LauncherService.addListener(onLauncherInfoUpdate);
+        LauncherService.updateListener(_onLauncherInfoUpdate);
+        InGameService.updateListener(_onInGameInfoUpdate);
     }
 
     async function getState() {
@@ -27,37 +34,26 @@ define([
         return _getState(await LauncherService.getPhase());
     }
 
-    function _getState(flow) {
-        let state = States.NONE;
-        console.log(flow);
-        switch (flow) {
-            case 'ChampSelect':
-                state = States.IN_CHAMPSELECT;
-                break;
-            case 'GameStart':
-            case 'InProgress':
-            case 'Reconnect':
-                return;
-            default:
-                state = States.IDLE;
-                break;
+    function addListener(key, listener) {
+        _listeners[key] = listener;
+    }
+
+
+    // on game update
+    function _onInGameInfoUpdate(info) {
+        if (info && info.feature === 'live_client_data') {
+            if (_listeners.hasOwnProperty(LISTENERS.IN_GAME)) {
+                _listeners[LISTENERS.IN_GAME](info.info.live_client_data);
+            }
         }
-        console.log(state);
-        return state;
     }
 
-    function addOnStateChangeListener(listener) {
-        _stateChangedListeners.push(listener);
-    }
-    _stateChangedListeners = [];
-
-    function onLauncherInfoUpdate(info) {
+    // on launcher state & champselect update
+    function _onLauncherInfoUpdate(info) {
         if (info.feature === 'game_flow') {
-            console.log('here');
-            let state = _getState(flow);
-            for (listener of _stateChangedListeners) {
-                console.log(state);
-                listener(state);
+            let state = _getState(info.info.game_flow.phase);
+            if (_listeners.hasOwnProperty(LISTENERS.STATE_CHANGE)) {
+                _listeners[LISTENERS.STATE_CHANGE](state);
             }
         } else if (info.feature === 'champ_select') {
 
@@ -74,32 +70,34 @@ define([
 
             _currentInChampSelectData = teamData;
 
-            for (listener of _champSelectListeners) {
-                listener(data);
+            if (_listeners.hasOwnProperty(LISTENERS.CHAMP_SELECT)) {
+                _listeners[LISTENERS.CHAMP_SELECT](teamData);
             }
         }
     }
 
-    let _champSelectListeners = [];
-    let _inGameListeners = [];
-    function addChampSelectListener(listener) {
-        _champSelectListeners.push(listener);
+    function _getState(flow) {
+        let state = States.NONE;
+        switch (flow) {
+            case 'ChampSelect':
+                state = States.IN_CHAMPSELECT;
+                break;
+            case 'GameStart':
+            case 'InProgress':
+            case 'Reconnect':
+                return;
+            default:
+                state = States.IDLE;
+                break;
+        }
+        return state;
     }
 
-    function addInGameListener(listener) {
-        _inGameListeners.push(listener);
-    }
-
-    function onGameStarted() {
-
-    }
 
     return {
         init,
-        onLauncherInfoUpdate,
+        LISTENERS,
         getState,
-        addChampSelectListener,
-        addInGameListener,
-        addOnStateChangeListener,
+        addListener,
     }
 });

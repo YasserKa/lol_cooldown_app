@@ -1,9 +1,8 @@
 define([
-  "../../scripts/constants/window-names.js",
-],
-  function (
-      WindowNames
-    ) {
+    "../../scripts/constants/window-names.js",
+], function (
+    WindowNames
+) {
 
     const DEFAULT_SETTINGS = {
         cooldownDisplay: 'minutes',
@@ -25,12 +24,17 @@ define([
     }
 
     function _update() {
-      _settings = JSON.parse(localStorage.getItem("settings"));
-      _settings = _settings === null ? DEFAULT_SETTINGS : _settings;
+        // background-controller is giving error that localStorage is null for
+        // an unknown reason
+        if (localStorage === null) {
+            return;
+        }
+        _settings = JSON.parse(localStorage.getItem("settings"));
+        _settings = _settings === null ? DEFAULT_SETTINGS : _settings;
     }
 
     return {
         setSetting,
         getSetting,
     }
-  });
+});

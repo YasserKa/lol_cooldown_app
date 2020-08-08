@@ -1,274 +1,281 @@
 define([
-  "../../scripts/services/dataHandler.js",
-],
-  function (
+    "../../scripts/services/dataHandler.js",
+], function (
     dataHandler,
-  ) {
+) {
 
     const EXCEPTION_DATA = {
-      'Sett': {
-        'abilities': {
-          'P': {
-            'icon': '../../img/sett/sett_p.png',
-          }
+        'Sett': {
+            'abilities': {
+                'P': {
+                    'icon': '../../img/sett/sett_p.png',
+                }
+            }
+        },
+        'Qiyana': {
+            'abilities': {
+                'Q': {
+                    'icon': '../../img/qiyana/qiyana_q.png',
+                }
+            }
+        },
+        'Aphelios': {
+            'abilities': {
+                'Q': {
+                    'icon': '../../img/aphelios/moonshot.png',
+                    'icon1': '../../img/aphelios/onslaught.png',
+                },
+                'W': {
+                    'icon': '../../img/aphelios/binding_eclipse.png',
+                },
+                'E': {
+                    'icon': '../../img/aphelios/duskwave.png',
+                    'icon1': '../../img/aphelios/sentry.png',
+                },
+            }
         }
-      },
-      'Qiyana': {
-        'abilities': {
-          'Q': {
-            'icon': '../../img/qiyana/qiyana_q.png',
-          }
-        }
-      },
-      'Aphelios': {
-        'abilities': {
-          'Q': {
-            'icon': '../../img/aphelios/moonshot.png',
-            'icon1': '../../img/aphelios/onslaught.png',
-          },
-          'W': {
-            'icon': '../../img/aphelios/binding_eclipse.png',
-          },
-          'E': {
-            'icon': '../../img/aphelios/duskwave.png',
-            'icon1': '../../img/aphelios/sentry.png',
-          },
-        }
-      }
     };
 
     const DEFAULT_CHAMP_DATA = {
-      'abilities': [],
-      'name': 'no-champ',
-      'icon': '../../img/howling_abyss.png',
+        'abilities': [],
+        'name': 'no-champ',
+        'icon': '../../img/howling_abyss.png',
     };
     const DEFAULT_SPELL_DATA = {
-          'cooldown': '-',
-          'image': '../../img/howling_abyss.png',
-          'name': 'dummy',
-          'description': 'dummy',
+        'cooldown': '-',
+        'image': '../../img/howling_abyss.png',
+        'name': 'dummy',
+        'description': 'dummy',
     }
 
     function parseInGameData(data) {
-      let parsedData = {
-        'redTeam': [],
-        'blueTeam': [],
-        'events': [],
-      };
+        let parsedData = {
+            'redTeam': [],
+            'blueTeam': [],
+            'events': [],
+        };
 
-      if (data.hasOwnProperty('all_players')) {
-        let allPlayers = JSON.parse(data['all_players']);
+        if (data.hasOwnProperty('all_players')) {
+            let allPlayers = JSON.parse(data['all_players']);
 
-        // assign runes to participants
-        if (data.hasOwnProperty('participantRunes')) {
-          for (let player in allPlayers) {
-            let summonerName = allPlayers[player]['summonerName'];
-            let runes = [];
-            if (data['participantRunes'].hasOwnProperty(summonerName)) {
-              runes = data['participantRunes'][summonerName]['perkIds'];
+            // assign runes to participants
+            if (data.hasOwnProperty('participantRunes')) {
+                for (let player in allPlayers) {
+                    let summonerName = allPlayers[player]['summonerName'];
+                    let runes = [];
+                    if (data['participantRunes'].hasOwnProperty(summonerName)) {
+                        runes = data['participantRunes'][summonerName]['perkIds'];
+                    }
+                    allPlayers[player]['runesReforged'] = runes;
+                }
             }
-            allPlayers[player]['runesReforged'] = runes;
-          }
+            let allPlayersParsed = _parseInGameAllPlayersData(allPlayers);
+            Object.assign(parsedData, allPlayersParsed);
         }
-        let allPlayersParsed = _parseInGameAllPlayersData(allPlayers);
-        Object.assign(parsedData, allPlayersParsed);
-      }
 
-      if (data.hasOwnProperty('events')) {
-        let events = JSON.parse(data['events'])['Events'];
-        let eventsParsed = _parseInGameEvents(events);
-        parsedData['events'] = eventsParsed;
-      }
+        if (data.hasOwnProperty('events')) {
+            let events = JSON.parse(data['events'])['Events'];
+            let eventsParsed = _parseInGameEvents(events);
+            parsedData['events'] = eventsParsed;
+        }
 
-      return parsedData;
+        return parsedData;
     }
 
     function _getUpdatedChampData(champData) {
-      // deal with images
-      if (EXCEPTION_DATA.hasOwnProperty(champData['name'])) {
-        champData = _array_replace_recursive(champData, EXCEPTION_DATA[champData['name']]);
-      }
-      return champData;
+        // deal with images
+        if (EXCEPTION_DATA.hasOwnProperty(champData['name'])) {
+            champData = _array_replace_recursive(champData, EXCEPTION_DATA[champData['name']]);
+        }
+        return champData;
     }
 
     function parseInChampSelectData(data) {
-      let participantsData = data['myTeam'].concat(data['theirTeam']);
+        let participantsData = data['myTeam'].concat(data['theirTeam']);
 
-      let blueTeam = [];
-      let redTeam = [];
+        let blueTeam = [];
+        let redTeam = [];
 
-      for (let participant of participantsData) {
-        // No champ has been picked yet
-        let champId = participant['championId'] === 0 ? participant['championPickIntent'] : participant['championId'];
-        let champData = dataHandler.getChampionById(champId);
-        champData = typeof champData === 'undefined' ? DEFAULT_CHAMP_DATA : champData;
+        for (let participant of participantsData) {
+            // No champ has been picked yet
+            let champId = participant['championId'] === 0 ? participant['championPickIntent'] : participant['championId'];
+            let champData = dataHandler.getChampionById(champId);
+            champData = typeof champData === 'undefined' ? DEFAULT_CHAMP_DATA : champData;
 
-        champData = _getUpdatedChampData(champData);
+            champData = _getUpdatedChampData(champData);
 
-        let spell1 = dataHandler.getSpellById(participant.spell1Id);
-        let spell2 = dataHandler.getSpellById(participant.spell2Id);
-        spell1 = typeof spell1 === 'undefined' ? DEFAULT_SPELL_DATA : spell1;
-        spell2 = typeof spell2 === 'undefined' ? DEFAULT_SPELL_DATA : spell2;
+            let spell1 = dataHandler.getSpellById(participant.spell1Id);
+            let spell2 = dataHandler.getSpellById(participant.spell2Id);
+            spell1 = typeof spell1 === 'undefined' ? DEFAULT_SPELL_DATA : spell1;
+            spell2 = typeof spell2 === 'undefined' ? DEFAULT_SPELL_DATA : spell2;
 
-        let spellsData = [
-          spell1,
-          spell2
-        ];
+            let spellsData = [
+                spell1,
+                spell2
+            ];
 
-        let parsedData = {
-          'cellId': participant['cellId'],
-          'champion': champData,
-          'position': participant['assignedPosition'],
-          'level': 1,
-          'spells': spellsData,
-          'runes': [],
-          'items': [],
-        };
+            let parsedData = {
+                'cellId': participant['cellId'],
+                'champion': champData,
+                'position': participant['assignedPosition'],
+                'level': 1,
+                'spells': spellsData,
+                'runes': [],
+                'items': [],
+            };
 
-        if (participant['team'] === 1) {
-          blueTeam.push(parsedData);
-        } else if (participant['team'] === 2) {
-          redTeam.push(parsedData);
+            if (participant['team'] === 1) {
+                blueTeam.push(parsedData);
+            } else if (participant['team'] === 2) {
+                redTeam.push(parsedData);
+            }
         }
-      }
-      return {
-        'blueTeam': blueTeam,
-        'redTeam': redTeam,
-        'events': [],
-      }
+        return {
+            'blueTeam': blueTeam,
+            'redTeam': redTeam,
+            'events': [],
+        }
     }
 
     function _parseInGameAllPlayersData(participantsData) {
-      let blueTeam = [];
-      let redTeam = [];
+        let blueTeam = [];
+        let redTeam = [];
 
-      for (let participant of participantsData) {
-        // participant['championName'] = 'Neeko';
-        let champData = dataHandler.getChampionByName(participant['championName']);
-        champData = typeof champData === 'undefined' ? DEFAULT_CHAMP_DATA : champData;
+        for (let participant of participantsData) {
+            // participant['championName'] = 'Neeko';
+            let champData = dataHandler.getChampionByName(participant['championName']);
+            champData = typeof champData === 'undefined' ? DEFAULT_CHAMP_DATA : champData;
 
-        champData = _getUpdatedChampData(champData);
+            champData = _getUpdatedChampData(champData);
 
-        let spell1 = dataHandler.getSpellByName(participant['summonerSpells']['summonerSpellOne']['displayName']);
-        spell1 = typeof spell1 === 'undefined' ? DEFAULT_SPELL_DATA : spell1;
-        let spell2 = dataHandler.getSpellByName(participant['summonerSpells']['summonerSpellTwo']['displayName']);
-        spell2 = typeof spell2 === 'undefined' ? DEFAULT_SPELL_DATA : spell2;
+            let summonerSpells = participant.summonerSpells;
+            let spell1 = undefined;
+            let spell2 = undefined;
 
-        let spellsData = [
-          spell1,
-          spell2
-        ];
+            if (Object.keys(summonerSpells).length > 0) {
+                spell1 = dataHandler.getSpellByName(summonerSpells.summonerSpellOne.displayName);
+                spell2 = dataHandler.getSpellByName(summonerSpells.summonerSpellTwo.displayName);
+            }
 
-        let items = _parseItemsData(participant['items']);
+            spell1 = typeof spell1 === 'undefined' ? DEFAULT_SPELL_DATA : spell1;
+            spell2 = typeof spell2 === 'undefined' ? DEFAULT_SPELL_DATA : spell2;
 
-        let parsedData = {
-          'summonerName': participant['summonerName'],
-          'champion': champData,
-          'position': participant['position'],
-          'level': participant['level'],
-          'spells': spellsData,
-          'runes': _parseParticipantRunes(participant['runesReforged']),
-          'items': items,
-        };
 
-        if (participant['team'])
-          if (participant['team'] === "ORDER") {
-            blueTeam.push(parsedData);
-          } else if (participant['team'] === "CHAOS") {
-            redTeam.push(parsedData);
-          }
-      }
+            let spellsData = [
+                spell1,
+                spell2
+            ];
 
-      return {
-        'blueTeam': blueTeam,
-        'redTeam': redTeam,
-      }
+            let items = _parseItemsData(participant['items']);
+
+            let parsedData = {
+                'summonerName': participant['summonerName'],
+                'champion': champData,
+                'position': participant['position'],
+                'level': participant['level'],
+                'spells': spellsData,
+                'runes': _parseParticipantRunes(participant['runesReforged']),
+                'items': items,
+            };
+
+            if (participant['team'])
+                if (participant['team'] === "ORDER") {
+                    blueTeam.push(parsedData);
+                } else if (participant['team'] === "CHAOS") {
+                    redTeam.push(parsedData);
+                }
+        }
+
+        return {
+            'blueTeam': blueTeam,
+            'redTeam': redTeam,
+        }
     }
 
     function _parseInGameEvents(events) {
-      let parsedEvents = [];
-      for (event of events) {
-        if (event['EventName'] === 'ChampionKill') {
-          parsedEvents.push({
-            'EventName': 'ChampionKill',
-            'Contributors': [...event['Assisters'], event['KillerName']],
-            'VictimName': event['VictimName'],
-          });
+        let parsedEvents = [];
+        for (event of events) {
+            if (event['EventName'] === 'ChampionKill') {
+                parsedEvents.push({
+                    'EventName': 'ChampionKill',
+                    'Contributors': [...event['Assisters'], event['KillerName']],
+                    'VictimName': event['VictimName'],
+                });
+            }
+            if (event['EventName'] === 'DragonKill' && event['DragonType'] === 'Air') {
+                parsedEvents.push({
+                    'EventName': 'DragonKill',
+                    'KillerName': event['KillerName'],
+                });
+            }
         }
-        if (event['EventName'] === 'DragonKill' && event['DragonType'] === 'Air') {
-          parsedEvents.push({
-            'EventName': 'DragonKill',
-            'KillerName': event['KillerName'],
-          });
-        }
-      }
-      return parsedEvents;
+        return parsedEvents;
     }
 
     function _parseParticipantRunes(participantRunes) {
-      let parsedParticipantRunes = {};
+        let parsedParticipantRunes = {};
 
-      let neededRuneIds = participantRunes.filter(value => dataHandler.getRunesNeeded().includes(value.toString()));
+        let neededRuneIds = participantRunes.filter(value => dataHandler.getRunesNeeded().includes(value.toString()));
 
-      for (let runeId of neededRuneIds) {
-        let rune = dataHandler.getRuneById(runeId);
-        parsedParticipantRunes[rune.name] = rune;
-        if (runeId == 5007) {
-          parsedParticipantRunes[rune.name].image = '../../img/' + rune.image;
+        for (let runeId of neededRuneIds) {
+            let rune = dataHandler.getRuneById(runeId);
+            parsedParticipantRunes[rune.name] = rune;
+            if (runeId == 5007) {
+                parsedParticipantRunes[rune.name].image = '../../img/' + rune.image;
+            }
         }
-      }
-      return parsedParticipantRunes;
+        return parsedParticipantRunes;
     }
 
     function _parseItemsData(participantItems) {
-      let itemsHasCDrId = dataHandler.getAllItemsHasCDrId();
-      let itemsId = participantItems.map((item) => item['itemID'].toString());
-      let neededItemsId = itemsId.filter(itemId => itemsHasCDrId.includes(itemId));
-      return neededItemsId.map((itemId) => dataHandler.getItemById(itemId));
+        let itemsHasCDrId = dataHandler.getAllItemsHasCDrId();
+        let itemsId = participantItems.map((item) => item['itemID'].toString());
+        let neededItemsId = itemsId.filter(itemId => itemsHasCDrId.includes(itemId));
+        return neededItemsId.map((itemId) => dataHandler.getItemById(itemId));
     }
 
     // used similarly to the one in php
     function _array_replace_recursive(arr) {
 
-      var i = 0;
-      var p = '';
-      var argl = arguments.length;
-      var retObj;
+        var i = 0;
+        var p = '';
+        var argl = arguments.length;
+        var retObj;
 
-      if (argl < 2) {
-        throw new Error('There should be at least 2 arguments passed to array_replace_recursive()');
-      }
-
-      // Although docs state that the arguments are passed in by reference,
-      // it seems they are not altered, but rather the copy that is returned
-      // So we make a copy here, instead of acting on arr itself
-      if (Object.prototype.toString.call(arr) === '[object Array]') {
-        retObj = [];
-        for (p in arr) {
-          retObj.push(arr[p]);
+        if (argl < 2) {
+            throw new Error('There should be at least 2 arguments passed to array_replace_recursive()');
         }
-      } else {
-        retObj = {};
-        for (p in arr) {
-          retObj[p] = arr[p];
-        }
-      }
 
-      for (i = 1; i < argl; i++) {
-        for (p in arguments[i]) {
-          if (retObj[p] && typeof retObj[p] === 'object') {
-            retObj[p] = array_replace_recursive(retObj[p], arguments[i][p]);
-          } else {
-            retObj[p] = arguments[i][p];
-          }
+        // Although docs state that the arguments are passed in by reference,
+        // it seems they are not altered, but rather the copy that is returned
+        // So we make a copy here, instead of acting on arr itself
+        if (Object.prototype.toString.call(arr) === '[object Array]') {
+            retObj = [];
+            for (p in arr) {
+                retObj.push(arr[p]);
+            }
+        } else {
+            retObj = {};
+            for (p in arr) {
+                retObj[p] = arr[p];
+            }
         }
-      }
 
-      return retObj;
+        for (i = 1; i < argl; i++) {
+            for (p in arguments[i]) {
+                if (retObj[p] && typeof retObj[p] === 'object') {
+                    retObj[p] = array_replace_recursive(retObj[p], arguments[i][p]);
+                } else {
+                    retObj[p] = arguments[i][p];
+                }
+            }
+        }
+
+        return retObj;
     }
 
     return {
-      parseInChampSelectData,
-      parseInGameData,
+        parseInChampSelectData,
+        parseInGameData,
     }
-  });
+});

@@ -35,7 +35,7 @@ define(['../../scripts/constants/hotkeys-ids.js'], function (HOTKEYS) {
   }
 
   function getToggleHotkey() {
-    return new Promise((resolve, reject) => {
+    return new Promise((resolve) => {
       _getHotkey(HOTKEYS.TOGGLE, function (result) {
         resolve(result);
       });
