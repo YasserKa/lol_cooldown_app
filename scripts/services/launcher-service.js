@@ -1,7 +1,9 @@
 define([
     "../helpers/utils.js",
+    "../constants/states.js",
 ], function (
     Utils,
+    States,
 ) {
     // features for launcher to subscribe to
     const REQUIRED_LAUNCHER_FEATURES = [
@@ -11,21 +13,45 @@ define([
 
     const LAUNCHER_ID = 10902;
     const REGISTER_RETRY_TIMEOUT = 2000;
+    const NUMBER_OF_RETRIES = 10;
+
     let _listener = null;
 
-    function init() {
-        if (_getRunningLauncherInfo()) {
-            _onLaunched();
+    async function init() {
+        if (await _getRunningLauncherInfo()) {
+            await _onLaunched();
         }
 
-        overwolf.games.launchers.onLaunched.addListener(_onLaunched);
+        overwolf.games.launchers.onLaunched.addListener(async () => {
+            await _onLaunched();
+        });
         overwolf.games.launchers.onTerminated.addListener(_onTerminated);
     }
 
-    async function getPhase() {
+    async function getState() {
         let launcherInfo = await _getLauncherInfo();
-        return launcherInfo.res.game_flow.phase;
+        return _getState(launcherInfo.res.game_flow.phase);
     }
+
+    function _getState(flow) {
+        let state = States.NONE;
+        switch (flow) {
+            case 'ChampSelect':
+                state = States.IN_CHAMPSELECT;
+                break;
+            case 'GameStart':
+            case 'InProgress':
+            case 'Reconnect':
+                state = States.IN_GAME;
+                break;
+            default:
+                state = States.IDLE;
+                break;
+        }
+        return state;
+    }
+
+
 
     async function getSummonerInfo() {
         let launcherInfo = await _getLauncherInfo();
@@ -38,22 +64,19 @@ define([
         return JSON.parse(launcherInfo.res.champ_select.raw);
     }
 
-
-    // subscribe to features in LoL's launcher
-    function _setRequiredFeautres() {
-        return new Promise(resolve => {
-            overwolf.games.launchers.events.setRequiredFeatures(LAUNCHER_ID, REQUIRED_LAUNCHER_FEATURES,
-                async function (event) {
-                    if (event.status == "error") {
-                        await Utils.sleep(REGISTER_RETRY_TIMEOUT);
-                        await _setRequiredFeautres();
-                        return;
-                    }
-                    console.info("Service Registered: CLIENT");
-                    resolve();
-                }
-            );
-        });
+    async function _setRequiredFeatures() {
+        let retries = 1;
+        while (retries < NUMBER_OF_RETRIES) {
+            let result = await new Promise(resolve => {
+                overwolf.games.launchers.events.setRequiredFeatures(LAUNCHER_ID, REQUIRED_LAUNCHER_FEATURES, resolve)
+            });
+            if (result.status == "error") {
+                await Utils.sleep(REGISTER_RETRY_TIMEOUT);
+                retries++;
+                continue;
+            }
+            return (result.supportedFeatures.length > 0);
+        }
     }
 
     // get the current state of the launcher
@@ -68,10 +91,10 @@ define([
     }
 
 
-    function _onLaunched() {
+    async function _onLaunched() {
         _unRegisterEvents();
         _registerEvents();
-        _setRequiredFeautres();
+        await _setRequiredFeatures();
     }
 
     function _onTerminated() {
@@ -81,10 +104,10 @@ define([
     function _getRunningLauncherInfo() {
         return new Promise(resolve => {
             overwolf.games.launchers.getRunningLaunchersInfo((info) => {
-                if (!info || !info.launchers[0] || info.classId !== LAUNCHER_ID) {
-                    return resolve(false);
+                if (!info || !info.launchers[0] || info.launchers[0].classId !== LAUNCHER_ID) {
+                    resolve(false);
                 }
-                return resolve(info.launchers[0]);
+                resolve(info.launchers[0]);
             });
         });
     }
@@ -109,7 +132,7 @@ define([
 
     return {
         init,
-        getPhase,
+        getState,
         getSummonerInfo,
         getChampSelectInfo,
         updateListener,

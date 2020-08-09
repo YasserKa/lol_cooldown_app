@@ -3,7 +3,11 @@ define([
 ], function (
     dataHandler,
 ) {
-
+ // Uncaught (in promise) ReferenceError: array_replace_recursive is not defined
+ //    at _array_replace_recursive (overwolf-extension://gfdpfbccfjejilgmmpolhankgnnbkcliolepbapc/scripts/services/parser.js:274)
+ //    at _getUpdatedChampData (overwolf-extension://gfdpfbccfjejilgmmpolhankgnnbkcliolepbapc/scripts/services/parser.js:94)
+ //    at Object.parseInChampSelectData (overwolf-extension://gfdpfbccfjejilgmmpolhankgnnbkcliolepbapc/scripts/services/parser.js:111)
+ //    at AppController._inChampSelectEventUpdateListener (overwolf-extension://gfdpfbccfjejilgmmpolhankgnnbkcliolepbapc/windows/app/app-controller.js:115)
     const EXCEPTION_DATA = {
         'Sett': {
             'abilities': {
@@ -97,6 +101,7 @@ define([
     }
 
     function parseInChampSelectData(data) {
+        console.log(data);
         let participantsData = data['myTeam'].concat(data['theirTeam']);
 
         let blueTeam = [];
@@ -271,7 +276,7 @@ define([
         for (i = 1; i < argl; i++) {
             for (p in arguments[i]) {
                 if (retObj[p] && typeof retObj[p] === 'object') {
-                    retObj[p] = array_replace_recursive(retObj[p], arguments[i][p]);
+                    retObj[p] = _array_replace_recursive(retObj[p], arguments[i][p]);
                 } else {
                     retObj[p] = arguments[i][p];
                 }

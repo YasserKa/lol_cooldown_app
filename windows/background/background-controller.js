@@ -18,8 +18,6 @@ define([
         static async run() {
             // saving stateService instance for app-controller
             window.stateService = StateService;
-            // window.settings = Settings;
-            StateService.init();
 
             this._registerHotkeys();
 
@@ -27,17 +25,13 @@ define([
             if (Testing.isTesting()) {
                 BackgroundController._updateWindows(Testing.getState());
             } else {
-                // open the appropriate window depending on the state
-                await this._init();
                 // close/open windows upon state change
                 StateService.addListener(StateService.LISTENERS.STATE_CHANGE, this._onStateChanged);
+                await StateService.init();
+                this._onStateChanged(await StateService.getState());
             }
         }
 
-        static async _init() {
-            const state = await StateService.getState();
-            BackgroundController._updateWindows(state)
-        }
 
         // on client state change (idle/in-champselect/in-game)
         static _onStateChanged(state) {

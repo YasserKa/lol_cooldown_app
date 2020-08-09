@@ -25,7 +25,9 @@ define([
             this._participantRunes = [];
             this._mainWindow = overwolf.windows.getMainWindow();
             this._stateService = this._mainWindow.stateService;
+            this._stateService = this._mainWindow.stateService;
 
+            this._onStateUpdate = this._onStateUpdate.bind(this);
             this._inChampSelectEventUpdateListener = this._inChampSelectEventUpdateListener.bind(this);
             this._updateRunesUsingServer = this._updateRunesUsingServer.bind(this);
             this._inGameEventUpdateListener = this._inGameEventUpdateListener.bind(this);
@@ -34,6 +36,7 @@ define([
 
         // add listeners to services depending on the state (in-champselect/in-game)
         async run() {
+            let gameInfo = await InGameService.getInGameInfo();
             // send window below LoL
             overwolf.windows.setPosition({
                 "relativeTo": {
@@ -62,12 +65,8 @@ define([
                 this._stateService.addListener(this._stateService.LISTENERS.CHAMP_SELECT, this._inChampSelectEventUpdateListener);
                 this._stateService.addListener(this._stateService.LISTENERS.IN_GAME, this._inGameEventUpdateListener);
 
-                let state = await this._stateService.getState();
-                if (state === States.IN_CHAMPSELECT) {
-                    this._inChampSelectEventUpdateListener(await LauncherService.getChampSelectInfo());
-                } else if (state === States.IN_GAME) {
-                    this._inGameEventUpdateListener(await InGameService.getLiveClientData());
-                }
+                this._stateService.addListener(this._stateService.LISTENERS.GAME_START, await this._onStateUpdate);
+                await this._onStateUpdate()
             }
 
             // update hotkey view and listen to changes
@@ -75,20 +74,34 @@ define([
             HotkeysService.addHotkeyChangeListener(this._updateHotkey);
         }
 
-        _inGameEventUpdateListener(data) {
-            // attributes to parse
+        async _onStateUpdate() {
+            let state = await this._stateService.getState();
+            console.log(state);
+            if (state === States.IN_CHAMPSELECT) {
+                this._inChampSelectEventUpdateListener(await LauncherService.getChampSelectInfo());
+            } else if (state === States.IN_GAME) {
+                this._inGameEventUpdateListener(await InGameService.getLiveClientData());
+            }
+        }
 
+        async _inGameEventUpdateListener(data) {
+            // attributes to parse
             if (!data || (!data.hasOwnProperty('all_players') && !data.hasOwnProperty('events'))) {
                 return;
             }
 
             if (!Testing.isTesting()) {
-                // if (this._runesUpdated) {
-                //     this._updateRunesUsingServer((participantRunes) => {
-                //         this._participantRunes = JSON.parse(participantRunes);
-                //         this._runesUpdated = true;
-                //     });
-                // }
+                if (!this._runesUpdated) {
+                    // await this._updateRunesUsingServer((participantRunes) => {
+                    //     this._participantRunes = participantRunes;
+                    //     // this._participantRunes['Clumsy Gamer'] = {
+                    //     //         perkIds: [5007, 8106, 8134, 8210, 8347],
+                    //     //         perkStyle: 8000,
+                    //     //         perkSubStyle: 8200,
+                    //     // };
+                    //     this._runesUpdated = true;
+                    // }, data);
+                }
                 data.participantRunes = this._participantRunes;
                 data.participantRunes = {
                     'Clumsy Gamer': {
@@ -111,14 +124,16 @@ define([
             }
         }
 
-        async _updateRunesUsingServer(callback) {
-            let summonerInfo = await LauncherService.getSummonerInfo();
-            summonerInfo['summonerName'] = '#random';
-            let summonerName = encodeURIComponent(summonerInfo['summonerName']);
-            let region = encodeURIComponent(summonerInfo['region']);
+        async _updateRunesUsingServer(callback, data) {
+            let gameInfo = await InGameService.getInGameInfo();
+            let region = gameInfo.res.summoner_info.region;
+            let summonerName = JSON.parse(data.active_player).summonerName;
+            // summonerName = '#random';
+            summonerName = encodeURIComponent(summonerName);
+            region = encodeURIComponent(region);
             let url = `https://www.lolcooldown.com/api/matchrunes?summonerName=${summonerName}&region=${region}`;
 
-            Utils.makeXMLHttpRequest(url, callback)
+            await Utils.makeRequest(url, callback)
         }
 
         async _updateHotkey() {

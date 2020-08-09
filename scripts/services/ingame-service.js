@@ -1,7 +1,9 @@
 define([
     '../helpers/utils.js',
+    '../constants/states',
 ], function (
-    Utils
+    Utils,
+    States,
 ) {
 
     const REQUIRED_FEATURES = [
@@ -11,17 +13,19 @@ define([
     const REGISTER_RETRY_TIMEOUT = 3000;
     const NUMBER_OF_RETRIES = 10;
     const GAME_ID = 5426;
+
     let _retries = 0;
     let _listener = null;
+    let _onStartListener = null;
 
     async function init() {
         if (await isLoLGameRunning()) {
-            _onLaunched();
+            await _onLaunched();
         }
 
         overwolf.games.onGameLaunched.addListener(async () => {
             if (await isLoLGameRunning()) {
-                _onLaunched();
+                await _onLaunched();
             }
         });
         overwolf.games.onGameInfoUpdated.addListener((info) => {
@@ -45,6 +49,11 @@ define([
         let gameInfo = await _getInGameInfo();
         return gameInfo.res.live_client_data;
     }
+    async function getInGameInfo() {
+        let gameInfo = await _getInGameInfo();
+        console.log(gameInfo);
+        return gameInfo;
+    }
 
     function _getInGameInfo() {
         return new Promise(resolve => {
@@ -56,24 +65,22 @@ define([
         });
     }
 
-    async function _setRequiredFeatures(listener) {
-        return new Promise(resolve => {
-            overwolf.games.events.setRequiredFeatures(REQUIRED_FEATURES,
-                async function (response) {
-                    if (response.status === 'error') {
-                        if (_retries < NUMBER_OF_RETRIES) {
-                            await Utils.sleep(REGISTER_RETRY_TIMEOUT);
-                            _setRequiredFeatures(listener);
-                            _retries++;
-                            resolve();
-                        }
-                    } else {
-                        console.info("Service Registered: GAME");
-                        resolve();
-                    }
+    async function _setRequiredFeatures() {
+        let retries = 1;
+        while (retries < NUMBER_OF_RETRIES) {
+            let result = await new Promise(resolve => {
+                overwolf.games.events.setRequiredFeatures(REQUIRED_FEATURES, resolve)
+            });
+            if (result.status === 'error') {
+                if (_retries < NUMBER_OF_RETRIES) {
+                    await Utils.sleep(REGISTER_RETRY_TIMEOUT);
+                    _retries++;
+                    continue;
                 }
-            );
-        });
+            }
+            console.info("Service Registered: INGAME");
+            return true;
+        }
     }
 
     function _getRunningGameInfo() {
@@ -88,6 +95,8 @@ define([
         _unRegisterEvents();
         _registerEvents();
         await _setRequiredFeatures();
+        if (_onStartListener !== null)
+            _onStartListener();
     }
 
     function _onTerminated() {
@@ -108,11 +117,17 @@ define([
         }
     }
 
+    function updateOnStartListener(listener) {
+        _onStartListener = listener;
+    }
+
 
     return {
         init,
         getLiveClientData,
-        updateListener,
+        getInGameInfo,
         isLoLGameRunning,
+        updateListener,
+        updateOnStartListener,
     }
 });

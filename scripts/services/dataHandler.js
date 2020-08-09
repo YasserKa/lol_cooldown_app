@@ -36,9 +36,6 @@ define([
       // 2- Update if data modified is outdated
       // 3- make a call just to check the version
     function _updateDataIfNeeded() {
-        if (localStorage === null) {
-            return;
-        }
       _data = JSON.parse(localStorage.getItem("data"));
       if (Testing.isTesting()) {
         return;
@@ -48,7 +45,7 @@ define([
         _updateDataUsingServer();
       } else {
         _getLastDateUpdated(data => {
-          let dateAtServer = new Date(JSON.parse(data).lastDateUpdated);
+          let dateAtServer = new Date(data.lastDateUpdated);
           let dateAtClient = new Date(_data.lastDateUpdated);
           if (dateAtServer > dateAtClient) {
             _updateDataUsingServer();
@@ -57,17 +54,17 @@ define([
       }
     }
 
-    function _getLastDateUpdated(callback) {
+    async function _getLastDateUpdated(callback) {
       let url = 'https://www.lolcooldown.com/api/lastdateupdated';
-      Utils.makeXMLHttpRequest(url, callback);
+      await Utils.makeRequest(url, callback);
     }
 
-    function _updateDataUsingServer() {
-      console.log('updating data from server');
+    async function _updateDataUsingServer() {
+      console.info('updating data from server');
       let url = 'https://www.lolcooldown.com/api/data';
-      Utils.makeXMLHttpRequest(url, (data) => {
-        localStorage.setItem("data", data);
-        _data = JSON.parse(data);
+      await Utils.makeRequest(url, (data) => {
+        localStorage.setItem("data", JSON.stringify(data));
+        _data = data;
       });
     }
 

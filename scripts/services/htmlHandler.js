@@ -215,6 +215,7 @@ define([
     function _createCdRedCell(participant) {
         let el = `<tr class="cdr abilities-cdr-cell">`;
         let runes = participant.getRunes();
+        console.log(runes);
         let cloudStacks = participant.getCloudStacks();
         // in clash & aram there's no cloud drake
         let isSpellsCDrMode = participant.isSpellsCDrMode();

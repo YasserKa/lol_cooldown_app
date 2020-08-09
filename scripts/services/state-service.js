@@ -10,6 +10,7 @@ define([
 
     const LISTENERS = {
         STATE_CHANGE: 'state_change',
+        GAME_START: 'game_start',
         CHAMP_SELECT: 'champ_select',
         IN_GAME: 'in_game',
     }
@@ -17,11 +18,12 @@ define([
     let _currentInChampSelectData = {};
     let _listeners = {};
 
-    function init() {
-        LauncherService.init();
-        InGameService.init();
+    async function init() {
         LauncherService.updateListener(_onLauncherInfoUpdate);
         InGameService.updateListener(_onInGameInfoUpdate);
+        InGameService.updateOnStartListener(_onGameStart);
+        await LauncherService.init();
+        await InGameService.init();
     }
 
     async function getState() {
@@ -31,7 +33,7 @@ define([
         }
 
         // else the client in champ_select or idle
-        return _getState(await LauncherService.getPhase());
+        return await LauncherService.getState();
     }
 
     function addListener(key, listener) {
@@ -48,10 +50,17 @@ define([
         }
     }
 
+    function _onGameStart() {
+        if (_listeners.hasOwnProperty(LISTENERS.GAME_START)) {
+            _listeners[LISTENERS.GAME_START]();
+        }
+    }
+
     // on launcher state & champselect update
-    function _onLauncherInfoUpdate(info) {
+    async function _onLauncherInfoUpdate(info) {
+        console.log(info);
         if (info.feature === 'game_flow') {
-            let state = _getState(info.info.game_flow.phase);
+            let state = await LauncherService.getState();
             if (_listeners.hasOwnProperty(LISTENERS.STATE_CHANGE)) {
                 _listeners[LISTENERS.STATE_CHANGE](state);
             }
@@ -75,24 +84,6 @@ define([
             }
         }
     }
-
-    function _getState(flow) {
-        let state = States.NONE;
-        switch (flow) {
-            case 'ChampSelect':
-                state = States.IN_CHAMPSELECT;
-                break;
-            case 'GameStart':
-            case 'InProgress':
-            case 'Reconnect':
-                return;
-            default:
-                state = States.IDLE;
-                break;
-        }
-        return state;
-    }
-
 
     return {
         init,

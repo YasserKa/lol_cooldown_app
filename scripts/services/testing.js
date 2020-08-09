@@ -21,24 +21,6 @@ define([
     function getInChampSelectData() {
             let myTeam = [{
                 'championId': 1,
-                'cellId': 1,
-                'champPickIntent': 0,
-                'assignedPosition': '',
-                'spell1Id': 4,
-                'spell2Id': 12,
-                'team': 1,
-            },
-            {
-                'championId': 5,
-                'cellId': 3,
-                'champPickIntent': 0,
-                'assignedPosition': '',
-                'spell1Id': 4,
-                'spell2Id': 12,
-                'team': 1,
-            },
-            {
-                'championId': 10,
                 'cellId': 0,
                 'champPickIntent': 0,
                 'assignedPosition': '',
@@ -47,13 +29,22 @@ define([
                 'team': 1,
             },
             {
-                'championId': 2,
-                'cellId': 3,
-                'chammpPickIntent': 0,
-                'assigngedPosition': '',
+                'championId': 5,
+                'cellId': 1,
+                'champPickIntent': 0,
+                'assignedPosition': '',
                 'spell1Id': 4,
                 'spell2Id': 12,
-                'team': 2,
+                'team': 1,
+            },
+            {
+                'championId': 8,
+                'cellId': 2,
+                'champPickIntent': 0,
+                'assignedPosition': '',
+                'spell1Id': 4,
+                'spell2Id': 12,
+                'team': 1,
             },
             {
                 'championId': 2,
@@ -65,8 +56,17 @@ define([
                 'team': 2,
             },
             {
-                'championId': 2,
-                'cellId': 3,
+                'championId': 12,
+                'cellId': 4,
+                'chammpPickIntent': 0,
+                'assigngedPosition': '',
+                'spell1Id': 4,
+                'spell2Id': 12,
+                'team': 2,
+            },
+            {
+                'championId': 5,
+                'cellId': 5,
                 'chammpPickIntent': 0,
                 'assigngedPosition': '',
                 'spell1Id': 4,
@@ -101,100 +101,100 @@ define([
                     ],
                     'team': 'ORDER',
                 },
-                {
-                    'summonerName': 'blue5',
-                    'championName': 'Jhin',
-                    'position': '',
-                    'level': 1,
-                    'summonerSpells': {
-                        'summonerSpellOne': {
-                            'displayName': 'Ignite',
-                        },
-                        'summonerSpellTwo': {
-                            'displayName': 'Flash',
-                        },
-                    },
-                    'items': [
-                        {'itemID': 3110},
-                        {'itemID': 3114}
-                    ],
-                    'team': 'ORDER',
-                },
-                {
-                    'summonerName': 'blue1',
-                    'championName': 'Vayne',
-                    'position': '',
-                    'level': 1,
-                    'summonerSpells': {
-                        'summonerSpellOne': {
-                            'displayName': 'Ignite',
-                        },
-                        'summonerSpellTwo': {
-                            'displayName': 'Flash',
-                        },
-                    },
-                    'items': [
-                        {'itemID': 3110},
-                        {'itemID': 3114}
-                    ],
-                    'team': 'ORDER',
-                },
-                {
-                    'summonerName': 'blue10',
-                    'championName': 'Annie',
-                    'position': '',
-                    'level': 1,
-                    'summonerSpells': {
-                        'summonerSpellOne': {
-                            'displayName': 'Ignite',
-                        },
-                        'summonerSpellTwo': {
-                            'displayName': 'Flash',
-                        },
-                    },
-                    'items': [
-                    ],
-                    'team': 'ORDER',
-                },
-                {
-                    'summonerName': 'blue20',
-                    'championName': 'Olaf',
-                    'position': '',
-                    'level': 1,
-                    'summonerSpells': {
-                        'summonerSpellOne': {
-                            'displayName': 'Flash',
-                        },
-                        'summonerSpellTwo': {
-                            'displayName': 'Ghost',
-                        },
-                    },
-                    'items': [
-                        {'itemID': 3285},
-                        {'itemID': 3285},
-                        {'itemID': 3158},
-                    ],
-                    'team': 'ORDER',
-                },
-                {
-                    'summonerName': 'red1',
-                    'championName': 'Olaf',
-                    'position': '',
-                    'level': 1,
-                    'summonerSpells': {
-                        'summonerSpellOne': {
-                            'displayName': 'Teleport',
-                        },
-                        'summonerSpellTwo': {
-                            'displayName': 'Flash',
-                        },
-                    },
-                    'items': [
-                        {'itemID': 3110},
-                        {'itemID': 3114}
-                    ],
-                    'team': 'CHAOS',
-                },
+                // {
+                //     'summonerName': 'blue5',
+                //     'championName': 'Jhin',
+                //     'position': '',
+                //     'level': 1,
+                //     'summonerSpells': {
+                //         'summonerSpellOne': {
+                //             'displayName': 'Ignite',
+                //         },
+                //         'summonerSpellTwo': {
+                //             'displayName': 'Flash',
+                //         },
+                //     },
+                //     'items': [
+                //         {'itemID': 3110},
+                //         {'itemID': 3114}
+                //     ],
+                //     'team': 'ORDER',
+                // },
+                // {
+                //     'summonerName': 'blue1',
+                //     'championName': 'Vayne',
+                //     'position': '',
+                //     'level': 1,
+                //     'summonerSpells': {
+                //         'summonerSpellOne': {
+                //             'displayName': 'Ignite',
+                //         },
+                //         'summonerSpellTwo': {
+                //             'displayName': 'Flash',
+                //         },
+                //     },
+                //     'items': [
+                //         {'itemID': 3110},
+                //         {'itemID': 3114}
+                //     ],
+                //     'team': 'ORDER',
+                // },
+                // {
+                //     'summonerName': 'blue10',
+                //     'championName': 'Annie',
+                //     'position': '',
+                //     'level': 1,
+                //     'summonerSpells': {
+                //         'summonerSpellOne': {
+                //             'displayName': 'Ignite',
+                //         },
+                //         'summonerSpellTwo': {
+                //             'displayName': 'Flash',
+                //         },
+                //     },
+                //     'items': [
+                //     ],
+                //     'team': 'ORDER',
+                // },
+                // {
+                //     'summonerName': 'blue20',
+                //     'championName': 'Olaf',
+                //     'position': '',
+                //     'level': 1,
+                //     'summonerSpells': {
+                //         'summonerSpellOne': {
+                //             'displayName': 'Flash',
+                //         },
+                //         'summonerSpellTwo': {
+                //             'displayName': 'Ghost',
+                //         },
+                //     },
+                //     'items': [
+                //         {'itemID': 3285},
+                //         {'itemID': 3285},
+                //         {'itemID': 3158},
+                //     ],
+                //     'team': 'ORDER',
+                // },
+                // {
+                //     'summonerName': 'red1',
+                //     'championName': 'Olaf',
+                //     'position': '',
+                //     'level': 1,
+                //     'summonerSpells': {
+                //         'summonerSpellOne': {
+                //             'displayName': 'Teleport',
+                //         },
+                //         'summonerSpellTwo': {
+                //             'displayName': 'Flash',
+                //         },
+                //     },
+                //     'items': [
+                //         {'itemID': 3110},
+                //         {'itemID': 3114}
+                //     ],
+                //     'team': 'CHAOS',
+                // },
 
             ];
             let runes = {
