@@ -54,7 +54,6 @@
         "native_window": true,
         "desktop_only": true,
         "transparent": true,
-        "resizable": true,
         "size": {
           "width": 500,
           "height": 600
@@ -79,7 +78,6 @@
       "app": {
         "file": "windows/app/app.html",
         "transparent": true,
-        "resizable": true,
         "size": {
           "width": 1212,
           "height": 699
