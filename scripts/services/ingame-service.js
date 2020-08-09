@@ -1,9 +1,7 @@
 define([
     '../helpers/utils.js',
-    '../constants/states',
 ], function (
     Utils,
-    States,
 ) {
 
     const REQUIRED_FEATURES = [

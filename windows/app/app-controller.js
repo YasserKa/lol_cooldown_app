@@ -1,6 +1,8 @@
 define([
     './app-view.js',
     "../../scripts/constants/states.js",
+    "../../scripts/constants/window-names.js",
+    "../../scripts/services/windows-service.js",
     "../../scripts/services/parser.js",
     "../../scripts/services/launcher-service.js",
     "../../scripts/services/ingame-service.js",
@@ -10,6 +12,8 @@ define([
 ], function (
     AppView,
     States,
+    WindowNames,
+    WindowService,
     Parser,
     LauncherService,
     InGameService,
@@ -25,6 +29,7 @@ define([
             this._participantRunes = [];
             this._mainWindow = overwolf.windows.getMainWindow();
             this._stateService = this._mainWindow.stateService;
+            this.inGameInitialized = false;
 
             this._onStateUpdate = this._onStateUpdate.bind(this);
             this._inChampSelectEventUpdateListener = this._inChampSelectEventUpdateListener.bind(this);
@@ -73,10 +78,17 @@ define([
 
         async _onStateUpdate() {
             let state = await this._stateService.getState();
-            if (state === States.IN_CHAMPSELECT) {
-                this._inChampSelectEventUpdateListener(await LauncherService.getChampSelectInfo());
-            } else if (state === States.IN_GAME) {
-                this._inGameEventUpdateListener(await InGameService.getLiveClientData());
+            switch (state) {
+                case States.IN_CHAMPSELECT:
+                    this._inChampSelectEventUpdateListener(await LauncherService.getChampSelectInfo());
+                    break;
+                case States.RECONNECT:
+                    // hide the window when there's no data intialized(not in
+                    // champselect previously)
+                    overwolf.windows.hide(WindowNames.APP);
+                case States.IN_GAME:
+                    this._inGameEventUpdateListener(await InGameService.getLiveClientData());
+                    break;
             }
         }
 
@@ -84,6 +96,11 @@ define([
             // attributes to parse
             if (!data || (!data.hasOwnProperty('all_players') && !data.hasOwnProperty('events'))) {
                 return;
+            }
+
+            // unhide the window
+            if (!this.inGameInitialized) {
+                WindowService.restore(WindowNames.APP);
             }
 
             if (!Testing.isTesting()) {
@@ -111,6 +128,7 @@ define([
             let parsedData = Parser.parseInGameData(data);
 
             this._appView.updateInGame(parsedData);
+            this.inGameInitialized = true;
         }
 
         _inChampSelectEventUpdateListener(data) {
