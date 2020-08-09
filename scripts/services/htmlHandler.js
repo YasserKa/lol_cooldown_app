@@ -216,6 +216,8 @@ define([
         let el = `<tr class="cdr abilities-cdr-cell">`;
         let runes = participant.getRunes();
         let cloudStacks = participant.getCloudStacks();
+        // in clash & aram there's no cloud drake
+        let isSpellsCDrMode = participant.isSpellsCDrMode();
 
         let items = participant.getItems();
 
@@ -263,9 +265,11 @@ define([
         }
         el += '</div></td>'
 
-        el += '<td class="cloud-stacks-container text-center d-inline-flex"><div class="d-inline-flex m-auto">'
-        el += `<p class="cloud-stacks-value">${cloudStacks}</p><img class="buff ml-1" src="../../img/cloud_buff.png" alt="cloud_buff">`
-        el += '</div></td>'
+        if (!isSpellsCDrMode) {
+            el += '<td class="cloud-stacks-container text-center d-inline-flex"><div class="d-inline-flex m-auto">'
+            el += `<p class="cloud-stacks-value">${cloudStacks}</p><img class="buff ml-1" src="../../img/cloud_buff.png" alt="cloud_buff">`
+            el += '</div></td>'
+        }
 
         el += '<td>'
         let ultCdrEl = _getNumberElement(participant.getUltimateCDr());
