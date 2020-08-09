@@ -28,7 +28,7 @@
     },
     "launch_events": [
       {
-        "event": "LaunchWithOverwolf",
+        "event": "GameLaunch",
         "event_data": {
           "game_ids": [5426, 10902]
         },
