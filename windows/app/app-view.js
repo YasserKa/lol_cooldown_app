@@ -1,5 +1,5 @@
 define([
-  "../SampleAppView.js", 
+  "../SampleAppView.js",
 "../../scripts/services/htmlHandler.js",
 "../../scripts/classes/Game.js",
 ],
@@ -20,7 +20,7 @@ define([
         this._hotkey = document.getElementById("hotkey");
         this._headerTitle = document.getElementById("header-title");
         // message sent after a change in settings to update the view
-        overwolf.windows.onMessageReceived.addListener((message)=>{
+        overwolf.windows.onMessageReceived.addListener(()=>{
             HtmlHandler.update(this.game);
         });
       }

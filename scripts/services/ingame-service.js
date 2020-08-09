@@ -51,7 +51,6 @@ define([
     }
     async function getInGameInfo() {
         let gameInfo = await _getInGameInfo();
-        console.log(gameInfo);
         return gameInfo;
     }
 
@@ -78,7 +77,6 @@ define([
                     continue;
                 }
             }
-            console.info("Service Registered: INGAME");
             console.info("Service Registered: GAME");
             return true;
         }

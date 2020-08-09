@@ -88,7 +88,6 @@ define([
         if (!openWindows.hasOwnProperty(windowName)) {
             await restore(windowName);
         }
-        console.log(windowName);
 
         // close windows besides background && the one needed (if opened)
         for (let openWindowName of Object.keys(openWindows)) {

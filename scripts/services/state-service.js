@@ -10,7 +10,6 @@ define([
 
     const LISTENERS = {
         STATE_CHANGE: 'state_change',
-        GAME_START: 'game_start',
         CHAMP_SELECT: 'champ_select',
         IN_GAME: 'in_game',
     }
@@ -21,7 +20,6 @@ define([
     async function init() {
         LauncherService.updateListener(_onLauncherInfoUpdate);
         InGameService.updateListener(_onInGameInfoUpdate);
-        InGameService.updateOnStartListener(_onGameStart);
         await LauncherService.init();
         await InGameService.init();
     }
@@ -50,15 +48,8 @@ define([
         }
     }
 
-    function _onGameStart() {
-        if (_listeners.hasOwnProperty(LISTENERS.GAME_START)) {
-            _listeners[LISTENERS.GAME_START]();
-        }
-    }
-
     // on launcher state & champselect update
     async function _onLauncherInfoUpdate(info) {
-        console.log(info);
         if (info.feature === 'game_flow') {
             let state = await LauncherService.getState();
             if (_listeners.hasOwnProperty(LISTENERS.STATE_CHANGE)) {

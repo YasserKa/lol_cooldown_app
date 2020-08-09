@@ -101,7 +101,6 @@ define([
     }
 
     function parseInChampSelectData(data) {
-        console.log(data);
         let participantsData = data['myTeam'].concat(data['theirTeam']);
 
         let blueTeam = [];

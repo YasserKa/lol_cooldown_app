@@ -26,12 +26,11 @@ define([
                 BackgroundController._updateWindows(Testing.getState());
             } else {
                 // close/open windows upon state change
-                StateService.addListener(StateService.LISTENERS.STATE_CHANGE, this._onStateChanged);
                 await StateService.init();
+                StateService.addListener(StateService.LISTENERS.STATE_CHANGE, this._onStateChanged);
                 this._onStateChanged(await StateService.getState());
             }
         }
-
 
         // on client state change (idle/in-champselect/in-game)
         static _onStateChanged(state) {

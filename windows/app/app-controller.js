@@ -63,7 +63,6 @@ define([
                 this._stateService.addListener(this._stateService.LISTENERS.CHAMP_SELECT, this._inChampSelectEventUpdateListener);
                 this._stateService.addListener(this._stateService.LISTENERS.IN_GAME, this._inGameEventUpdateListener);
 
-                this._stateService.addListener(this._stateService.LISTENERS.GAME_START, this._onStateUpdate);
                 await this._onStateUpdate()
             }
 
@@ -74,7 +73,6 @@ define([
 
         async _onStateUpdate() {
             let state = await this._stateService.getState();
-            console.log(state);
             if (state === States.IN_CHAMPSELECT) {
                 this._inChampSelectEventUpdateListener(await LauncherService.getChampSelectInfo());
             } else if (state === States.IN_GAME) {
