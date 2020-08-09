@@ -256,6 +256,11 @@ define([], function() {
                 if (cooldown === '-') {
                     continue;
                 }
+
+                // use recharge time instead of cooldown
+                if (this.originalSpells[key]['name'] == 'Smite') {
+                    cooldown = 90
+                }
                 // exception: Teleport has 2 numbers 420-240
                 if (this.originalSpells[key]['name'] == 'Teleport') {
                     // formula from https://leagueoflegends.fandom.com/wiki/Teleport
