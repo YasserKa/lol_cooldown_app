@@ -106,11 +106,11 @@ define([
 
         // sort team members depending on cellId number or their position
         _sortTeam(participantOne, participantTwo) {
-            const positionOrder = ['TOP', 'JUNGLE', 'MIDDLE', 'BOTTOM', 'UTILITY'];
+            const positionOrder = ['top', 'jungle', 'middle', 'bottom', 'utility'];
 
             if (participantOne.getPosition() !== '') {
-                return positionOrder.indexOf(participantOne.getPosition())
-                    > positionOrder.indexOf(participantTwo.getPosition()) ? 1 : -1;
+                return positionOrder.indexOf(participantOne.getPosition().toLowerCase())
+                    > positionOrder.indexOf(participantTwo.getPosition().toLowerCase()) ? 1 : -1;
             }
 
             // in champ select
