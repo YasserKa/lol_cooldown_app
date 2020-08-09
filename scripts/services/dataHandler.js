@@ -36,6 +36,9 @@ define([
       // 2- Update if data modified is outdated
       // 3- make a call just to check the version
     function _updateDataIfNeeded() {
+        if (localStorage === null) {
+            return;
+        }
       _data = JSON.parse(localStorage.getItem("data"));
       if (Testing.isTesting()) {
         return;
