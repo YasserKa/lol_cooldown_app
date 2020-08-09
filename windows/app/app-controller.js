@@ -25,7 +25,6 @@ define([
             this._participantRunes = [];
             this._mainWindow = overwolf.windows.getMainWindow();
             this._stateService = this._mainWindow.stateService;
-            this._stateService = this._mainWindow.stateService;
 
             this._onStateUpdate = this._onStateUpdate.bind(this);
             this._inChampSelectEventUpdateListener = this._inChampSelectEventUpdateListener.bind(this);
@@ -36,7 +35,6 @@ define([
 
         // add listeners to services depending on the state (in-champselect/in-game)
         async run() {
-            let gameInfo = await InGameService.getInGameInfo();
             // send window below LoL
             overwolf.windows.setPosition({
                 "relativeTo": {
@@ -65,7 +63,7 @@ define([
                 this._stateService.addListener(this._stateService.LISTENERS.CHAMP_SELECT, this._inChampSelectEventUpdateListener);
                 this._stateService.addListener(this._stateService.LISTENERS.IN_GAME, this._inGameEventUpdateListener);
 
-                this._stateService.addListener(this._stateService.LISTENERS.GAME_START, await this._onStateUpdate);
+                this._stateService.addListener(this._stateService.LISTENERS.GAME_START, this._onStateUpdate);
                 await this._onStateUpdate()
             }
 
