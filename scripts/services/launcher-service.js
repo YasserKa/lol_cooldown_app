@@ -75,6 +75,7 @@ define([
                 retries++;
                 continue;
             }
+            console.info("Service Registered: LAUNCHER");
             return (result.supportedFeatures.length > 0);
         }
     }

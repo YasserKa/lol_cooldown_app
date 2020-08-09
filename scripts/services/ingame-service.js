@@ -79,6 +79,7 @@ define([
                 }
             }
             console.info("Service Registered: INGAME");
+            console.info("Service Registered: GAME");
             return true;
         }
     }
