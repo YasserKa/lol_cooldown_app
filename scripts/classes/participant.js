@@ -211,7 +211,13 @@ define([], function() {
         _updateAbilitiesCd() {
             for (let key of Object.keys(this.originalAbilities)) {
                 let cooldowns = this.originalAbilities[key]['cooldowns'];
+                let rechargeRate = this.originalAbilities[key]['rechargeRate'];
                 let newCds = [];
+
+                // prioritize recharge rate on cooldown
+                if (rechargeRate[0] !== '-') {
+                    cooldowns = rechargeRate;
+                }
 
                 // some abilities don't have cooldown, so *-* is used
                 if (cooldowns[0] === '-') {
