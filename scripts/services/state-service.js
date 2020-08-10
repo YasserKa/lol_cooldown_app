@@ -72,6 +72,7 @@ define([
             let teamData = {
                 'myTeam': data['myTeam'],
                 'theirTeam': data['theirTeam'],
+                'actions': data['actions'] === null ? [] : data['actions'],
             }
 
             // if duplicated data ignore it

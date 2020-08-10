@@ -103,12 +103,31 @@ define([
     function parseInChampSelectData(data) {
         let participantsData = data['myTeam'].concat(data['theirTeam']);
 
+        // actions has champion picked which isn't included in participantData
+        let actions = data.actions;
+
+        for (let action of actions) {
+            // skip ban actions
+            if (action[0].type === 'ban') {
+                continue;
+            }
+            for (let particInAction of action) {
+                let cellId = particInAction.actorCellId;
+                // ignore cellId -1
+                if (cellId < 0) {
+                    continue;
+                }
+                let partic = participantsData.find(partic => partic.cellId === cellId);
+                partic.championPicked = particInAction.championId;
+            }
+        }
+
         let blueTeam = [];
         let redTeam = [];
 
         for (let participant of participantsData) {
-            // No champ has been picked yet
-            let champId = participant['championId'] === 0 ? participant['championPickIntent'] : participant['championId'];
+            let champId = participant.championPicked;
+
             let champData = dataHandler.getChampionById(champId);
             champData = typeof champData === 'undefined' ? DEFAULT_CHAMP_DATA : champData;
 
