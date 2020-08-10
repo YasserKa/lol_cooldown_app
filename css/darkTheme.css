@@ -57,14 +57,17 @@ body.dark .search-form {
 /* Match Page */
 
 body.dark table.champ {
-    background-color: #3A4556;
+    background-color: #202B43;
     color: white;
     box-shadow: none;
 }
+body.dark td {
+    color: #9EACC5;
+}
 
 body.dark .cooldowns p:nth-child(odd) {
-    background-color: #353d4f;
+    background-color: #273552;
 }
 body.dark .cooldowns p:nth-child(even) {
-    background-color: #2e3447;
+    background-color: #23304A;
 }
