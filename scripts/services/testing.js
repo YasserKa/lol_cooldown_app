@@ -84,7 +84,7 @@ define([
     function getInGameData() {
             let players = [
                 {
-                    'summonerName': 'blue1123',
+                    'summonerName': 'Clumsy Gamer',
                     'championName': 'Soraka',
                     'position': '',
                     'level': 1,

@@ -1,133 +1,133 @@
 define([
-  "./testing.js",
-  "../helpers/utils.js",
+    "./testing.js",
+    "../helpers/utils.js",
 ],
-  function (
-    Testing,
-    Utils,
+    function (
+        Testing,
+        Utils,
     ) {
 
-    let _initialized = false;
+        let _initialized = false;
 
-    let _champions = {};
-    let _items = {};
-    let _summonerSpells = {};
-    let _patchVersion = '';
-    let _runesReforged = {};
-    let _data = {};
+        let _champions = {};
+        let _items = {};
+        let _summonerSpells = {};
+        let _patchVersion = '';
+        let _runesReforged = {};
+        let _data = {};
 
-    function _init() {
-      if (_initialized)
-        return;
+        function _init() {
+            if (_initialized)
+                return;
 
-      _updateDataIfNeeded();
+            _updateDataIfNeeded();
 
-      _champions = _data['champions'];
-      _items = _data['items'];
-      _summonerSpells = _data['spells'];
-      _runesReforged = _data['runes'];
-      _patchVersion = _data['version'];
+            _champions = _data['champions'];
+            _items = _data['items'];
+            _summonerSpells = _data['spells'];
+            _runesReforged = _data['runes'];
+            _patchVersion = _data['version'];
 
-      _initialized = true;
-    }
+            _initialized = true;
+        }
 
-      // TODO:
-      // 1- Add time modified in server
-      // 2- Update if data modified is outdated
-      // 3- make a call just to check the version
-    function _updateDataIfNeeded() {
-      _data = JSON.parse(localStorage.getItem("data"));
-      if (Testing.isTesting()) {
-        return;
-      }
-      // update if it doesn't exist or outdated
-      if (_data === null) {
-        _updateDataUsingServer();
-      } else {
-        _getLastDateUpdated(data => {
-          let dateAtServer = new Date(data.lastDateUpdated);
-          let dateAtClient = new Date(_data.lastDateUpdated);
-          if (dateAtServer > dateAtClient) {
-            _updateDataUsingServer();
-          }
-        });
-      }
-    }
+        // TODO:
+        // 1- Add time modified in server
+        // 2- Update if data modified is outdated
+        // 3- make a call just to check the version
+        async function _updateDataIfNeeded() {
+            _data = JSON.parse(localStorage.getItem("data"));
+            if (Testing.isTesting()) {
+                return;
+            }
+            // update if it doesn't exist or outdated
+            if (_data === null) {
+                _updateDataUsingServer();
+            } else {
+                let lastDateUpdated = await _getLastDateUpdated();
+                let dateAtServer = new Date(lastDateUpdated);
+                let dateAtClient = new Date(_data.lastDateUpdated);
+                if (dateAtServer > dateAtClient) {
+                    _updateDataUsingServer();
+                }
+            }
+        }
 
-    async function _getLastDateUpdated(callback) {
-      let url = 'https://www.lolcooldown.com/api/lastdateupdated';
-      await Utils.makeRequest(url, callback);
-    }
+        async function _getLastDateUpdated() {
+            let url = 'https://www.lolcooldown.com/api/lastdateupdated';
+            let data = await Utils.makeRequest(url);
+            return data.lastDateUpdated;
+        }
 
-    async function _updateDataUsingServer() {
-      console.info('updating data from server');
-      let url = 'https://www.lolcooldown.com/api/data';
-      await Utils.makeRequest(url, (data) => {
-        localStorage.setItem("data", JSON.stringify(data));
-        _data = data;
-      });
-    }
+        async function _updateDataUsingServer() {
+            console.info('updating data from server');
+            let url = 'https://www.lolcooldown.com/api/data';
+            await Utils.makeRequest(url, (data) => {
+                localStorage.setItem("data", JSON.stringify(data));
+                _data = data;
+            });
+        }
 
-    function getChampionById(id) {
-      _init();
-      if (id === 0) {
-        return undefined;
-      }
-      return _champions[Object.keys(_champions).find(key => _champions[key]['id'] === id)];
-    }
+        function getChampionById(id) {
+            _init();
+            if (id === 0) {
+                return undefined;
+            }
+            return _champions[Object.keys(_champions).find(key => _champions[key]['id'] === id)];
+        }
 
-    function getChampionByName(name) {
-      _init();
-      return _champions[Object.keys(_champions).find(
-        key => _champions[key]['name'] === name)];
-    }
+        function getChampionByName(name) {
+            _init();
+            return _champions[Object.keys(_champions).find(
+                key => _champions[key]['name'] === name)];
+        }
 
-    function getItemById(id) {
-      _init();
-      return _items[id];
-    }
+        function getItemById(id) {
+            _init();
+            return _items[id];
+        }
 
-    function getAllItemsHasCDrId() {
-      return Object.keys(_items);
-    }
+        function getAllItemsHasCDrId() {
+            return Object.keys(_items);
+        }
 
-    function getSpellById(id) {
-      _init();
-      return _summonerSpells[Object.keys(_summonerSpells).find(
-        key => parseInt(_summonerSpells[key]['key']) === id)];
-    }
+        function getSpellById(id) {
+            _init();
+            return _summonerSpells[Object.keys(_summonerSpells).find(
+                key => parseInt(_summonerSpells[key]['key']) === id)];
+        }
 
-    function getSpellByName(name) {
-      _init();
-      return _summonerSpells[Object.keys(_summonerSpells).find(
-        key => _summonerSpells[key]['name'] === name)];
-    }
+        function getSpellByName(name) {
+            _init();
+            return _summonerSpells[Object.keys(_summonerSpells).find(
+                key => _summonerSpells[key]['name'] === name)];
+        }
 
-    function getRunesNeeded() {
-      _init();
-      return Object.keys(_runesReforged);
-    }
+        function getRunesNeeded() {
+            _init();
+            return Object.keys(_runesReforged);
+        }
 
-    function getRuneById(id) {
-      _init();
-      // cooldown reduction minor rune
-      return  _runesReforged[id];
-    }
+        function getRuneById(id) {
+            _init();
+            // cooldown reduction minor rune
+            return  _runesReforged[id];
+        }
 
-    function getPatchVersion() {
-      _init();
-      return _patchVersion;
-    }
+        function getPatchVersion() {
+            _init();
+            return _patchVersion;
+        }
 
-    return {
-      getChampionById,
-      getChampionByName,
-      getItemById,
-      getAllItemsHasCDrId,
-      getRuneById,
-      getRunesNeeded,
-      getSpellById,
-      getSpellByName,
-      getPatchVersion,
-    }
-  });
+        return {
+            getChampionById,
+            getChampionByName,
+            getItemById,
+            getAllItemsHasCDrId,
+            getRuneById,
+            getRunesNeeded,
+            getSpellById,
+            getSpellByName,
+            getPatchVersion,
+        }
+    });

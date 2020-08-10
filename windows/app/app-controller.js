@@ -32,8 +32,7 @@ define([
 
             this._onStateUpdate = this._onStateUpdate.bind(this);
             this._inChampSelectEventUpdateListener = this._inChampSelectEventUpdateListener.bind(this);
-            this._updateRunesUsingServer = this._updateRunesUsingServer.bind(this);
-            this._onFocusChanged = this._updateRunesUsingServer.bind(this);
+            this._getRunesUsingServer = this._getRunesUsingServer.bind(this);
             this._inGameFocusChangeListener = this._inGameFocusChangeListener.bind(this);
             this._inGameEventUpdateListener = this._inGameEventUpdateListener.bind(this);
             this._updateHotkey = this._updateHotkey.bind(this);
@@ -105,13 +104,11 @@ define([
                 return;
             }
 
+            // fetch runes from server
             if (!Testing.isTesting()) {
                 if (!this._runesUpdated) {
-                    await this._updateRunesUsingServer((participantRunes) => {
-                        console.log(participantRunes);
-                        this._participantRunes = participantRunes;
-                        this._runesUpdated = true;
-                    });
+                    this._participantRunes = await this._getRunesUsingServer();
+                    this._runesUpdated = true;
                 }
                 data.participantRunes = this._participantRunes;
             }
@@ -128,27 +125,27 @@ define([
             }
         }
 
-        async _updateRunesUsingServer(callback) {
+        async _getRunesUsingServer() {
             let gameInfo = await InGameService.getInGameInfo();
-            console.log(gameInfo);
             let region = gameInfo.res.summoner_info.region;
             let summonerName = JSON.parse(gameInfo.res.live_client_data.active_player).displayName;
+
             if (Testing.isFakeRunes()) {
             // summonerName = '#random';
-                callback({
+                return {
                     'Clumsy Gamer': {
                         perkIds: [5007, 8106, 8134, 8210, 8347],
                         perkStyle: 8000,
                         perkSubStyle: 8200,
-                    }});
-                return;
+                    }
+                };
             }
 
             summonerName = encodeURIComponent(summonerName);
             region = encodeURIComponent(region);
             let url = `https://www.lolcooldown.com/api/matchrunes?summonerName=${summonerName}&region=${region}`;
 
-            await Utils.makeRequest(url, callback)
+            return await Utils.makeRequest(url);
         }
 
         async _updateHotkey() {

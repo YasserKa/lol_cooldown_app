@@ -3,14 +3,14 @@ define([], function () {
         return new Promise(resolve => setTimeout(resolve, ms));
     }
 
-    async function makeRequest(url, callback) {
+    async function makeRequest(url) {
         const response = await fetch(url, {
             method: 'GET',
         });
 
         if (response.status === 201 || response.status === 200) {
-            callback(await response.json());
-
+            let json = await response.json();
+            return json;
         }
     }
 
