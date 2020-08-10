@@ -143,7 +143,9 @@ define([
             let gameInfo = await InGameService.getInGameInfo();
             let region = gameInfo.res.summoner_info.region;
             let summonerName = JSON.parse(data.active_player).summonerName;
-            // summonerName = '#random';
+            if (Testing.isTesting()) {
+                // summonerName = '#random';
+            }
             summonerName = encodeURIComponent(summonerName);
             region = encodeURIComponent(region);
             let url = `https://www.lolcooldown.com/api/matchrunes?summonerName=${summonerName}&region=${region}`;
