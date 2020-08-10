@@ -5,13 +5,18 @@ define([
       States
     ) {
 
-    const IS_TESTING = true;
+    const IS_TESTING = false;
     const STATE = States.IN_CHAMPSELECT;
     // const STATE = States.IN_GAME;
     // const STATE = States.CHAMPSELECT_TO_GAME;
+    const FAKE_RUNES = true;
 
     function isTesting() {
         return IS_TESTING;
+    }
+
+    function isFakeRunes() {
+        return FAKE_RUNES;
     }
 
     function getState() {
@@ -220,6 +225,7 @@ define([
 
     return {
       isTesting,
+      isFakeRunes,
       getState,
       getInChampSelectData,
       getInGameData,

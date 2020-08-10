@@ -107,24 +107,13 @@ define([
 
             if (!Testing.isTesting()) {
                 if (!this._runesUpdated) {
-                    // await this._updateRunesUsingServer((participantRunes) => {
-                    //     this._participantRunes = participantRunes;
-                    //     // this._participantRunes['Clumsy Gamer'] = {
-                    //     //         perkIds: [5007, 8106, 8134, 8210, 8347],
-                    //     //         perkStyle: 8000,
-                    //     //         perkSubStyle: 8200,
-                    //     // };
-                    //     this._runesUpdated = true;
-                    // }, data);
+                    await this._updateRunesUsingServer((participantRunes) => {
+                        console.log(participantRunes);
+                        this._participantRunes = participantRunes;
+                        this._runesUpdated = true;
+                    });
                 }
                 data.participantRunes = this._participantRunes;
-                data.participantRunes = {
-                    'Clumsy Gamer': {
-                        perkIds: [5007, 8106, 8134, 8210, 8347],
-                        perkStyle: 8000,
-                        perkSubStyle: 8200,
-                    }
-                };
             }
 
             let parsedData = Parser.parseInGameData(data);
@@ -139,13 +128,22 @@ define([
             }
         }
 
-        async _updateRunesUsingServer(callback, data) {
+        async _updateRunesUsingServer(callback) {
             let gameInfo = await InGameService.getInGameInfo();
+            console.log(gameInfo);
             let region = gameInfo.res.summoner_info.region;
-            let summonerName = JSON.parse(data.active_player).summonerName;
-            if (Testing.isTesting()) {
-                // summonerName = '#random';
+            let summonerName = JSON.parse(gameInfo.res.live_client_data.active_player).displayName;
+            if (Testing.isFakeRunes()) {
+            // summonerName = '#random';
+                callback({
+                    'Clumsy Gamer': {
+                        perkIds: [5007, 8106, 8134, 8210, 8347],
+                        perkStyle: 8000,
+                        perkSubStyle: 8200,
+                    }});
+                return;
             }
+
             summonerName = encodeURIComponent(summonerName);
             region = encodeURIComponent(region);
             let url = `https://www.lolcooldown.com/api/matchrunes?summonerName=${summonerName}&region=${region}`;
