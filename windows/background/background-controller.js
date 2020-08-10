@@ -26,8 +26,8 @@ define([
                 BackgroundController._updateWindows(Testing.getState());
             } else {
                 // close/open windows upon state change
-                await StateService.init();
                 StateService.addListener(StateService.LISTENERS.STATE_CHANGE, this._onStateChanged);
+                await StateService.init();
                 this._onStateChanged(await StateService.getState());
             }
         }

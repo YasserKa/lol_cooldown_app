@@ -42,7 +42,7 @@ define([
 
     // on game update
     function _onInGameEventUpdate(info) {
-        if (info && info.feature === 'live_client_data') {
+        if (info && info.info.live_client_data) {
             if (_listeners.hasOwnProperty(LISTENERS.IN_GAME)) {
                 _listeners[LISTENERS.IN_GAME](info.info.live_client_data);
             }

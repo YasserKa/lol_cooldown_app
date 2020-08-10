@@ -10,7 +10,7 @@ define([
     ];
 
     const REGISTER_RETRY_TIMEOUT = 3000;
-    const NUMBER_OF_RETRIES = 10;
+    const NUMBER_OF_RETRIES = 20;
     const GAME_ID = 5426;
 
     let _retries = 0;
@@ -41,10 +41,16 @@ define([
 
 
     async function getLiveClientData() {
-        let gameInfo = await _getInGameInfo();
-        return gameInfo.res.live_client_data;
+        while (true) {
+            let info = await _getInGameInfo();
+            if (!info.res.hasOwnProperty('live_client_data')) {
+                await Utils.sleep(1000);
+                return await getLiveClientData();
+            } else {
+                return info.res.live_client_data;
+            }
+        }
     }
-
 
     async function getInGameInfo() {
         let gameInfo = await _getInGameInfo();
@@ -81,9 +87,11 @@ define([
                     _retries++;
                     continue;
                 }
+            } else {
+                console.info("Service Registered: GAME");
+                _onEventUpdate({'info': {'live_client_data': await getLiveClientData()}});
+                return true;
             }
-            console.info("Service Registered: GAME");
-            return true;
         }
     }
 

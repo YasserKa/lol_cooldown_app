@@ -38,11 +38,9 @@ define([
         switch (flow) {
             case 'ChampSelect':
             case 'Reconnect':
-                state = States.IN_CHAMPSELECT;
-                break;
             case 'GameStart':
             case 'InProgress':
-                state = States.IN_GAME;
+                state = States.IN_CHAMPSELECT;
                 break;
             default:
                 state = States.IDLE;
