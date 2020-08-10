@@ -29,11 +29,12 @@ define([
             this._participantRunes = [];
             this._mainWindow = overwolf.windows.getMainWindow();
             this._stateService = this._mainWindow.stateService;
-            this.inGameInitialized = false;
 
             this._onStateUpdate = this._onStateUpdate.bind(this);
             this._inChampSelectEventUpdateListener = this._inChampSelectEventUpdateListener.bind(this);
             this._updateRunesUsingServer = this._updateRunesUsingServer.bind(this);
+            this._onFocusChanged = this._updateRunesUsingServer.bind(this);
+            this._inGameFocusChangeListener = this._inGameFocusChangeListener.bind(this);
             this._inGameEventUpdateListener = this._inGameEventUpdateListener.bind(this);
             this._updateHotkey = this._updateHotkey.bind(this);
         }
@@ -67,6 +68,7 @@ define([
             } else {
                 this._stateService.addListener(this._stateService.LISTENERS.CHAMP_SELECT, this._inChampSelectEventUpdateListener);
                 this._stateService.addListener(this._stateService.LISTENERS.IN_GAME, this._inGameEventUpdateListener);
+                this._stateService.addListener(this._stateService.LISTENERS.IN_GAME_INFO, this._inGameFocusChangeListener);
 
                 await this._onStateUpdate()
             }
@@ -76,18 +78,23 @@ define([
             HotkeysService.addHotkeyChangeListener(this._updateHotkey);
         }
 
+        _inGameFocusChangeListener(isInFocus) {
+            if (isInFocus) {
+                WindowService.restore(WindowNames.APP);
+            } else {
+                overwolf.windows.minimize(WindowNames.APP, () => {});
+            }
+        }
+
         async _onStateUpdate() {
             let state = await this._stateService.getState();
             switch (state) {
                 case States.IN_CHAMPSELECT:
                     this._inChampSelectEventUpdateListener(await LauncherService.getChampSelectInfo());
                     break;
-                case States.RECONNECT:
-                    // hide the window when there's no data intialized(not in
-                    // champselect previously)
-                    overwolf.windows.hide(WindowNames.APP);
                 case States.IN_GAME:
                     this._inGameEventUpdateListener(await InGameService.getLiveClientData());
+                    this._inGameFocusChangeListener(await InGameService.isGameInFocus());
                     break;
             }
         }
@@ -96,11 +103,6 @@ define([
             // attributes to parse
             if (!data || (!data.hasOwnProperty('all_players') && !data.hasOwnProperty('events'))) {
                 return;
-            }
-
-            // unhide the window
-            if (!this.inGameInitialized) {
-                WindowService.restore(WindowNames.APP);
             }
 
             if (!Testing.isTesting()) {
@@ -128,7 +130,6 @@ define([
             let parsedData = Parser.parseInGameData(data);
 
             this._appView.updateInGame(parsedData);
-            this.inGameInitialized = true;
         }
 
         _inChampSelectEventUpdateListener(data) {

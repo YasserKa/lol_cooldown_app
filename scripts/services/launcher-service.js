@@ -37,11 +37,11 @@ define([
         let state = States.NONE;
         switch (flow) {
             case 'ChampSelect':
+            case 'Reconnect':
                 state = States.IN_CHAMPSELECT;
                 break;
             case 'GameStart':
             case 'InProgress':
-            case 'Reconnect':
                 state = States.IN_GAME;
                 break;
             default:
@@ -50,8 +50,6 @@ define([
         }
         return state;
     }
-
-
 
     async function getSummonerInfo() {
         let launcherInfo = await _getLauncherInfo();
@@ -90,7 +88,6 @@ define([
             });
         });
     }
-
 
     async function _onLaunched() {
         _unRegisterEvents();

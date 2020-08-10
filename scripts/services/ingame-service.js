@@ -1,5 +1,6 @@
 define([
     '../helpers/utils.js',
+    '../constants/states',
 ], function (
     Utils,
 ) {
@@ -13,8 +14,8 @@ define([
     const GAME_ID = 5426;
 
     let _retries = 0;
-    let _listener = null;
-    let _onStartListener = null;
+    let _infoListener = null;
+    let _eventListener = null;
 
     async function init() {
         if (await isLoLGameRunning()) {
@@ -26,30 +27,36 @@ define([
                 await _onLaunched();
             }
         });
-        overwolf.games.onGameInfoUpdated.addListener((info) => {
-            if (info && info.gameInfo && !info.gameInfo.isRunning) {
-                _onTerminated()
-            }
-        });
     }
 
     async function isLoLGameRunning() {
-        let runningGameInfo = await _getRunningGameInfo();
-        return runningGameInfo && runningGameInfo.classId === GAME_ID;
+        let info = await _getRunningGameInfo();
+        return info && info.classId === GAME_ID;
     }
 
-
-    function updateListener(listener) {
-        _listener = listener;
+    async function isGameInFocus() {
+        let info = await _getRunningGameInfo();
+        return info && info.isInFocus;
     }
+
 
     async function getLiveClientData() {
         let gameInfo = await _getInGameInfo();
         return gameInfo.res.live_client_data;
     }
+
+
     async function getInGameInfo() {
         let gameInfo = await _getInGameInfo();
         return gameInfo;
+    }
+
+    function updateEventListener(listener) {
+        _eventListener = listener;
+    }
+
+    function updateInfoListener(listener) {
+        _infoListener = listener;
     }
 
     function _getInGameInfo() {
@@ -92,8 +99,6 @@ define([
         _unRegisterEvents();
         _registerEvents();
         await _setRequiredFeatures();
-        if (_onStartListener !== null)
-            _onStartListener();
     }
 
     function _onTerminated() {
@@ -101,30 +106,40 @@ define([
     }
 
     function _registerEvents() {
-        overwolf.games.events.onInfoUpdates2.addListener(_onInfoUpdate);
+        overwolf.games.events.onInfoUpdates2.addListener(_onEventUpdate);
+        overwolf.games.onGameInfoUpdated.addListener(_onInfoUpdate);
     }
 
     function _unRegisterEvents() {
-        overwolf.games.events.onInfoUpdates2.removeListener(_onInfoUpdate);
+        overwolf.games.events.onInfoUpdates2.removeListener(_onEventUpdate);
+        overwolf.games.onGameInfoUpdated.removeListener(_onInfoUpdate);
     }
 
-    function _onInfoUpdate(data) {
-        if (_listener !== null) {
-            _listener(data);
+    function _onInfoUpdate(info) {
+        if (_infoListener !== null) {
+            _infoListener(info);
+        }
+
+        if (info && info.gameInfo &&
+            info.gameInfo.runningChanged &&
+            !info.gameInfo.isRunning) {
+            _onTerminated()
         }
     }
 
-    function updateOnStartListener(listener) {
-        _onStartListener = listener;
+    function _onEventUpdate(data) {
+        if (_eventListener !== null) {
+            _eventListener(data);
+        }
     }
-
 
     return {
         init,
         getLiveClientData,
         getInGameInfo,
         isLoLGameRunning,
-        updateListener,
-        updateOnStartListener,
+        isGameInFocus,
+        updateEventListener,
+        updateInfoListener,
     }
 });

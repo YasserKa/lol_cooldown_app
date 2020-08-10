@@ -43,7 +43,6 @@ define([
                     WindowsService.openWindowOnlyIfNotOpen(WindowNames.MAIN);
                     break;
                 case States.IN_CHAMPSELECT:
-                case States.RECONNECT:
                 case States.IN_GAME:
                     // a state used for testing
                 case States.CHAMPSELECT_TO_GAME:

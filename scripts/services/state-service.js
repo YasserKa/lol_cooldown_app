@@ -12,6 +12,7 @@ define([
         STATE_CHANGE: 'state_change',
         CHAMP_SELECT: 'champ_select',
         IN_GAME: 'in_game',
+        IN_GAME_INFO: 'in_game_info',
     }
 
     let _currentInChampSelectData = {};
@@ -19,7 +20,8 @@ define([
 
     async function init() {
         LauncherService.updateListener(_onLauncherInfoUpdate);
-        InGameService.updateListener(_onInGameInfoUpdate);
+        InGameService.updateEventListener(_onInGameEventUpdate);
+        InGameService.updateInfoListener(_onInGameInfoUpdate);
         await LauncherService.init();
         await InGameService.init();
     }
@@ -38,9 +40,8 @@ define([
         _listeners[key] = listener;
     }
 
-
     // on game update
-    function _onInGameInfoUpdate(info) {
+    function _onInGameEventUpdate(info) {
         if (info && info.feature === 'live_client_data') {
             if (_listeners.hasOwnProperty(LISTENERS.IN_GAME)) {
                 _listeners[LISTENERS.IN_GAME](info.info.live_client_data);
@@ -48,10 +49,20 @@ define([
         }
     }
 
+    // on game unfocused
+    function _onInGameInfoUpdate(info) {
+        if (info && info.gameInfo &&
+            info.focusChanged) {
+            if (_listeners.hasOwnProperty(LISTENERS.IN_GAME_INFO)) {
+                _listeners[LISTENERS.IN_GAME_INFO](info.gameInfo.isInFocus);
+            }
+        }
+    }
+
     // on launcher state & champselect update
     async function _onLauncherInfoUpdate(info) {
         if (info.feature === 'game_flow') {
-            let state = await LauncherService.getState();
+        let state = await LauncherService.getState();
             if (_listeners.hasOwnProperty(LISTENERS.STATE_CHANGE)) {
                 _listeners[LISTENERS.STATE_CHANGE](state);
             }
