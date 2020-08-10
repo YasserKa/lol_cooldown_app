@@ -88,15 +88,15 @@
         "transparent": true,
         "size": {
           "width": 1100,
-          "height": 550
+          "height": 640
         },
         "min_size": {
           "width": 1100,
-          "height": 550
+          "height": 640
         },
         "max_size": {
           "width": 1100,
-          "height": 550
+          "height": 640
         }
       }
     },

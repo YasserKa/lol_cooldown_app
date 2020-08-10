@@ -1,4 +1,7 @@
 /** general **/
+.container-fluid {
+    min-height: calc(100vh - 170px);
+}
 p {
     margin: auto;
 }

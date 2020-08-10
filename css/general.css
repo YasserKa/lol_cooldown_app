@@ -15,6 +15,20 @@ button:focus {
   outline: none;
 }
 
+.ad-container {
+    background-color: #202B43;
+}
+
+.ad-container.main {
+    width: 400px;
+    height: 300px;
+}
+
+.ad-container.app {
+    width: 728px;
+    height: 90px;
+}
+
 /* Settings */
 #version {
     font-size: 0.85rem;

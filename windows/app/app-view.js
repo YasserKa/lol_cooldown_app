@@ -1,14 +1,14 @@
 define([
-  "../SampleAppView.js",
+  "../base-view.js",
 "../../scripts/services/htmlHandler.js",
 "../../scripts/classes/Game.js",
 ],
   function (
-    SampleAppView,
+    BaseView,
     HtmlHandler,
     Game
     ) {
-    class AppView extends SampleAppView {
+    class AppView extends BaseView {
 
       constructor() {
         super();
