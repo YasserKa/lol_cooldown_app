@@ -3,11 +3,7 @@ define([
 ], function (
     dataHandler,
 ) {
- // Uncaught (in promise) ReferenceError: array_replace_recursive is not defined
- //    at _array_replace_recursive (overwolf-extension://gfdpfbccfjejilgmmpolhankgnnbkcliolepbapc/scripts/services/parser.js:274)
- //    at _getUpdatedChampData (overwolf-extension://gfdpfbccfjejilgmmpolhankgnnbkcliolepbapc/scripts/services/parser.js:94)
- //    at Object.parseInChampSelectData (overwolf-extension://gfdpfbccfjejilgmmpolhankgnnbkcliolepbapc/scripts/services/parser.js:111)
- //    at AppController._inChampSelectEventUpdateListener (overwolf-extension://gfdpfbccfjejilgmmpolhankgnnbkcliolepbapc/windows/app/app-controller.js:115)
+
     const EXCEPTION_DATA = {
         'Sett': {
             'abilities': {
@@ -42,14 +38,14 @@ define([
 
     const DEFAULT_CHAMP_DATA = {
         'abilities': [],
-        'name': 'no-champ',
-        'icon': '../../img/howling_abyss.png',
+        'name': '',
+        'icon': '',
     };
     const DEFAULT_SPELL_DATA = {
         'cooldown': '-',
-        'image': '../../img/howling_abyss.png',
-        'name': 'dummy',
-        'description': 'dummy',
+        'image': '',
+        'name': '',
+        'description': '',
     }
 
     function parseInGameData(data) {

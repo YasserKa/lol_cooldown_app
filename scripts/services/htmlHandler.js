@@ -33,7 +33,7 @@ define([
             // update champion
             $(`table[partic-id="${participant.getId()}"] .champ-icon`)
                 .attr('src', participant.getChampionIcon())
-                .attr('alt', participant.getChampionName());
+                .attr('champ-name', participant.getChampionName());
 
             // cooldownReduction if in-game
             if (participant.isInGame()) {
@@ -50,7 +50,7 @@ define([
             // update spells
             $(`table[partic-id="${participant.getId()}"] div.spell-1 img`)
                 .attr('src', participant.getSummonerSpellImage(0))
-                .attr('alt', participant.getSummonerSpellName(0));
+                .attr('spell-name', participant.getSummonerSpellName(0));
 
             $(`table[partic-id="${participant.getId()}"] div.spell-1 p`)
                 .attr('spell-name', participant.getSummonerSpellName(0))
@@ -59,7 +59,7 @@ define([
 
             $(`table[partic-id="${participant.getId()}"] div.spell-2 img`)
                 .attr('src', participant.getSummonerSpellImage(1))
-                .attr('alt', participant.getSummonerSpellName(1));
+                .attr('spell-name', participant.getSummonerSpellName(1));
 
             $(`table[partic-id="${participant.getId()}"] div.spell-2 p`)
                 .attr('spell-name', participant.getSummonerSpellName(1))
@@ -101,17 +101,27 @@ define([
                 <tr class="champ-header">
                     <td class="cell champ p-0" colspan=4>
                         <div class="champ-icon-container d-inline-block">
-                        <img class="champ-icon" src="${participant.getChampionIcon()}" alt="${participant.getChampionName()}">
+                           <div class="icon-container">
+                            <img class="champ-icon" src="${participant.getChampionIcon()}" champ-name="${participant.getChampionName()}">
+                            </div>
                         </div>
                         <div class="spells-cdr-holder d-inline-block">
                         </div>
                         <div class="cell spells p-0 d-inline-flex">
                             <div class="spell-1 d-inline-block">
-                                <img class="spell-icon" src="${participant.getSummonerSpellImage(0)}" alt="${participant.getSummonerSpellImage(0)}">
+                               <div class="spell-icon-container">
+                                   <div class="icon-container">
+                                        <img class="spell-icon" src="${participant.getSummonerSpellImage(0)}" spell-name="${participant.getSummonerSpellImage(0)}">
+                                   </div>
+                               </div>
                                 <p class="cooldown" spell="0" spell-name="${participant.getSummonerSpellName(0)}">${firstSpellCooldownEl}</p>
                             </div>
                             <div class="spell-2 d-inline-block">
-                                    <img class="spell-icon" src="${participant.getSummonerSpellImage(1)}" alt="${participant.getSummonerSpellImage(1)}">
+                               <div class="spell-icon-container">
+                                   <div class="icon-container">
+                                    <img class="spell-icon" src="${participant.getSummonerSpellImage(1)}" spell-name="${participant.getSummonerSpellImage(1)}">
+                                    </div>
+                                </div>
                                     <p class="cooldown" spell="0" spell-name="${participant.getSummonerSpellName(1)}">${secondSpellCooldownEl}</p>
                             </div>
                         </div>
