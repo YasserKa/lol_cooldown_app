@@ -14,8 +14,17 @@ define([], function () {
         }
     }
 
+    function getAppVersion() {
+        return new Promise(resolve => {
+            overwolf.extensions.current.getManifest((manifest) => {
+                return resolve(manifest.meta.version);
+            });
+        });
+    }
+
     return {
         sleep,
         makeRequest,
+        getAppVersion,
     }
 });

@@ -15,6 +15,11 @@ button:focus {
   outline: none;
 }
 
+/* Settings */
+#version {
+    font-size: 0.85rem;
+}
+
 /**********************
  *  DISABLING BOOSTRAP  FOCUS
  **********************/

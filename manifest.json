@@ -72,7 +72,15 @@
         "transparent": true,
         "size": {
           "width": 400,
-          "height": 400
+          "height": 330
+        },
+        "min_size": {
+          "width": 400,
+          "height": 330
+        },
+        "max_size": {
+          "width": 400,
+          "height": 330
         }
       },
       "app": {
