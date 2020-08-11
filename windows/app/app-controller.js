@@ -27,6 +27,10 @@ define([
             this._participantRunes = [];
             this._mainWindow = overwolf.windows.getMainWindow();
             this._stateService = this._mainWindow.stateService;
+
+            this._inGameEventUpdateListener = this._inGameEventUpdateListener.bind(this);
+            this._inChampSelectEventUpdateListener = this._inChampSelectEventUpdateListener.bind(this);
+            this._inGameFocusChangeListener = this._inGameFocusChangeListener.bind(this);
         }
 
         // add listeners to services depending on the state (in-champselect/in-game)
