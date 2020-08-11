@@ -1,11 +1,9 @@
 define([
     '../../windows/settings/settings-view.js',
     "../../scripts/services/settings.js",
-    "../../scripts/helpers/utils.js",
 ], function (
     SettingsView,
     Settings,
-    Utils,
 ) {
 
     class SettingsController {
