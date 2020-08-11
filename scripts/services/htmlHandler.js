@@ -102,7 +102,7 @@ define([
                     <td class="cell champ p-0" colspan=4>
                         <div class="champ-icon-container d-inline-block">
                            <div class="icon-container">
-                            <img class="champ-icon" src="${participant.getChampionIcon()}" champ-name="${participant.getChampionName()}">
+                            <img class="champ-icon" src="${participant.getChampionIcon()}" alt="" champ-name="${participant.getChampionName()}">
                             </div>
                         </div>
                         <div class="spells-cdr-holder d-inline-block">
@@ -111,7 +111,7 @@ define([
                             <div class="spell-1 d-inline-block">
                                <div class="spell-icon-container">
                                    <div class="icon-container">
-                                        <img class="spell-icon" src="${participant.getSummonerSpellImage(0)}" spell-name="${participant.getSummonerSpellImage(0)}">
+                                        <img class="spell-icon" src="${participant.getSummonerSpellImage(0)}" alt="" spell-name="${participant.getSummonerSpellImage(0)}">
                                    </div>
                                </div>
                                 <p class="cooldown" spell="0" spell-name="${participant.getSummonerSpellName(0)}">${firstSpellCooldownEl}</p>
@@ -119,7 +119,7 @@ define([
                             <div class="spell-2 d-inline-block">
                                <div class="spell-icon-container">
                                    <div class="icon-container">
-                                    <img class="spell-icon" src="${participant.getSummonerSpellImage(1)}" spell-name="${participant.getSummonerSpellImage(1)}">
+                                    <img class="spell-icon" src="${participant.getSummonerSpellImage(1)}" alt="" spell-name="${participant.getSummonerSpellImage(1)}">
                                     </div>
                                 </div>
                                     <p class="cooldown" spell="0" spell-name="${participant.getSummonerSpellName(1)}">${secondSpellCooldownEl}</p>
@@ -156,7 +156,7 @@ define([
 
             el += `<div class="indication ${teamColor}"></div>`;
             if (ability['cdrType'] != '') {
-                el += `<img class="info" src="../../img/info.svg" data-toggle="tooltip" data-tippy-content="This ability decreases cooldowns" />`
+                el += `<img class="info" src="/img/info.svg" data-toggle="tooltip" data-tippy-content="This ability decreases cooldowns" />`
             }
 
             el +=
@@ -213,7 +213,7 @@ define([
         }
 
         if (isSpellsCDrMode) {
-            el += `<img class="item-icon ml-1" src="../../img/howling_abyss.png" alt="" data-tippy-content="+40% Summoner Spell CDR">`;
+            el += `<img class="item-icon ml-1" src="/img/howling_abyss.png" alt="" data-tippy-content="+40% Summoner Spell CDR">`;
         }
 
         el += `<p class="spells-cdr-value d-inline">${_getNumberElement(participant.getSummonerSpellsCDr())}</p>`;
@@ -277,7 +277,7 @@ define([
 
         if (!isSpellsCDrMode) {
             el += '<td class="cloud-stacks-container text-center d-inline-flex"><div class="d-inline-flex m-auto">'
-            el += `<p class="cloud-stacks-value">${cloudStacks}</p><img class="buff ml-1" src="../../img/cloud_buff.png" alt="cloud_buff">`
+            el += `<p class="cloud-stacks-value">${cloudStacks}</p><img class="buff ml-1" src="/img/cloud_buff.png" alt="cloud_buff">`
             el += '</div></td>'
         }
 

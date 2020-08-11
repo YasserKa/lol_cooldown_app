@@ -8,29 +8,29 @@ define([
         'Sett': {
             'abilities': {
                 'P': {
-                    'icon': '../../img/sett/sett_p.png',
+                    'icon': '/img/sett/sett_p.png',
                 }
             }
         },
         'Qiyana': {
             'abilities': {
                 'Q': {
-                    'icon': '../../img/qiyana/qiyana_q.png',
+                    'icon': '/img/qiyana/qiyana_q.png',
                 }
             }
         },
         'Aphelios': {
             'abilities': {
                 'Q': {
-                    'icon': '../../img/aphelios/moonshot.png',
-                    'icon1': '../../img/aphelios/onslaught.png',
+                    'icon': '/img/aphelios/moonshot.png',
+                    'icon1': '/img/aphelios/onslaught.png',
                 },
                 'W': {
-                    'icon': '../../img/aphelios/binding_eclipse.png',
+                    'icon': '/img/aphelios/binding_eclipse.png',
                 },
                 'E': {
-                    'icon': '../../img/aphelios/duskwave.png',
-                    'icon1': '../../img/aphelios/sentry.png',
+                    'icon': '/img/aphelios/duskwave.png',
+                    'icon1': '/img/aphelios/sentry.png',
                 },
             }
         }
@@ -247,7 +247,7 @@ define([
             let rune = dataHandler.getRuneById(runeId);
             parsedParticipantRunes[rune.name] = rune;
             if (runeId == 5007) {
-                parsedParticipantRunes[rune.name].image = '../../img/' + rune.image;
+                parsedParticipantRunes[rune.name].image = '/img/' + rune.image;
             }
         }
         return parsedParticipantRunes;

@@ -2,26 +2,26 @@
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
-    <script src="../../lib/jquery.min.js"></script>
-    <script src="../../lib/popper.min.js"></script>
-    <script src="../../lib/tippy-bundle.umd.min.js"></script>
-    <script src="../../lib/bootstrap.min.js"></script>
-    <script src="../../js/common.js"></script>
-    <link rel="stylesheet" href="../../css/bootstrap.min.css" />
-    <link rel="stylesheet" href="../../css/general.css" />
-    <link rel="stylesheet" href="../../css/header.css" />
-    <link rel="stylesheet" href="../../css/darkTheme.css" />
+    <script src="/lib/jquery.min.js"></script>
+    <script src="/lib/popper.min.js"></script>
+    <script src="/lib/tippy-bundle.umd.min.js"></script>
+    <script src="/lib/bootstrap.min.js"></script>
+    <script src="/js/common.js"></script>
+    <link rel="stylesheet" href="/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="/css/general.css" />
+    <link rel="stylesheet" href="/css/header.css" />
+    <link rel="stylesheet" href="/css/darkTheme.css" />
     <title>LoLCooldown</title>
   </head>
   <body class="dark">
     <!-- Header -->
     <div class="container-fluid">
       <header class="app-header">
-        <img class="logo" src="../../img/hourglass.png" alt=""/>
+        <img class="logo" src="/img/hourglass.png" alt=""/>
         <h1>LoLCooldown</h1>
         <div class="window-controls-group">
           <a class="discord-link" href="#">
-            <img class="discord" src="../../img/discord-white.png" alt="" />
+            <img class="discord" src="/img/discord-white.png" alt="" />
           </a>
           <a class="icon window-control" id="settings">
             <svg>
@@ -61,18 +61,19 @@
           </div>
         </div>
       </main>
+    </div>
 
-      <script src="../../lib/require.js"></script>
-      <script src="https://content.overwolf.com/libs/ads/latest/owads.min.js"></script>
+    <script src="/lib/require.js"></script>
+    <script src="https://content.overwolf.com/libs/ads/latest/owads.min.js"></script>
 
-      <script>
-        require(["main-controller"], function (MainController) {
-          console.log(`[INIT] main module loaded`);
-          const mainController = new MainController();
-          mainController.run();
-        }, function (error) {
-          console.log(`[INIT] failed to load in-game module ${error}`);
-        });
-      </script>
+    <script>
+      require(["main-controller"], function (MainController) {
+        console.log(`[INIT] main module loaded`);
+        const mainController = new MainController();
+        mainController.run();
+      }, function (error) {
+        console.log(`[INIT] failed to load in-game module ${error}`);
+      });
+    </script>
   </body>
 </html>
