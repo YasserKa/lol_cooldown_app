@@ -15,7 +15,8 @@ define([
             this._firstChampSelectUpdate = false;
 
             this._update = this._update.bind(this);
-            this._headerTitle = document.getElementById("header-title");
+            this._hotkeyEl = document.getElementById("hotkey-wrapper");
+
             // message sent after a change in settings to update the view
             overwolf.windows.onMessageReceived.addListener(()=>{
                 HtmlHandler.update(this.game);
@@ -26,8 +27,8 @@ define([
             if (!this._firstChampSelectUpdate) {
                 this._initGame(data);
                 this._firstChampSelectUpdate = true;
-                $(this._headerTitle).find('#game-state').text('Champ Select');
-                $(this._headerTitle).find('#hotkey-wrapper').css('display', 'none');
+                // don't display hotkey in-champ-select
+                $(this._hotkeyEl).css('display', 'none');
             }
 
             this._update(data);
@@ -39,8 +40,8 @@ define([
             ) {
                 this._initGame(data);
                 this._firstInGameUpdate = true;
-                $(this._headerTitle).find('#game-state').text('In-Game');
-                $(this._headerTitle).find('#hotkey-wrapper').css('display', 'block');
+                // display hotkey in-game
+                $(this._hotkeyEl).css('display', 'block');
             }
 
             this._update(data);
