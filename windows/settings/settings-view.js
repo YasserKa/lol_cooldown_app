@@ -1,28 +1,26 @@
 define([
-  '../base-view.js',
+    '../base-view.js',
+    '../../scripts/helpers/utils.js',
 ], function (
-  BaseView
-  ) {
+    BaseView,
+    Utils,
+) {
 
-  class SettingsView extends BaseView {
-    constructor() {
-      super();
+    class SettingsView extends BaseView {
+        constructor() {
+            super();
 
-      this.updateHotkey = this.updateHotkey.bind(this);
-      this.updateVersion = this.updateVersion.bind(this);
 
-      this._hotkey = document.getElementById("hotkey");
-      this._version = document.getElementById("version");
+            this._version = document.getElementById("version");
+
+            this.updateVersion();
+        }
+
+        async updateVersion() {
+            const version = await Utils.getAppVersion();
+            this._version.textContent = version;
+        }
     }
 
-    updateHotkey(hotkey) {
-      this._hotkey.textContent = hotkey;
-    }
-
-    updateVersion(version) {
-      this._version.textContent = version;
-    }
-  }
-
-  return SettingsView;
+    return SettingsView;
 });

@@ -13,15 +13,12 @@ define([
     class SettingsController {
         constructor() {
             this._settingsView = new SettingsView();
-
-            this._updateVersion = this._updateVersion.bind(this);
         }
 
         async run() {
             this._updateHotkey = this._updateHotkey.bind(this);
             // update hotkey view and listen to changes
             this._updateHotkey();
-            this._updateVersion();
 
             HotkeysService.addHotkeyChangeListener(this._updateHotkey);
 
@@ -50,11 +47,6 @@ define([
         async _updateHotkey() {
             const hotkey = await HotkeysService.getToggleHotkey();
             this._settingsView.updateHotkey(hotkey);
-        }
-
-        _updateVersion() {
-            const version = Utils.getAppVersion();
-            this._settingsView.updateVersion(version);
         }
     }
 
