@@ -106,8 +106,10 @@ define([
 
         function getRuneById(id) {
             _init();
-            // cooldown reduction minor rune
-            return  _runesReforged[id];
+            // making a copy of the object, because it will be altered for the
+            // 1-10CDred minirune
+            let rune = Object.assign({}, _runesReforged[id]);
+            return rune;
         }
 
         function getPatchVersion() {
