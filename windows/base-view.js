@@ -95,7 +95,7 @@ define([
         async updateScale(scale) {
             let newHeight = parseInt(this._height * scale);
             let newWidth = parseInt(this._width * scale);
-            let zoomValue = parseInt(scale * 100 * window.devicePixelRatio);
+            let zoomValue = scale * 100 * window.devicePixelRatio;
 
             let windowObjectParams = {
               "window_id": this._windowName,

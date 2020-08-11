@@ -26,8 +26,10 @@ define([
 
         // updating tool-top package
         tippy('[data-toggle="tooltip"]', {
+             appendTo: 'parent',
             allowHTML: true,
         });
+
     }
 
     function _updateTeam(team, color) {
