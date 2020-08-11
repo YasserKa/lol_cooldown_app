@@ -12,7 +12,7 @@ define([
     AppView,
     States,
     WindowNames,
-    WindowService,
+    WindowsService,
     Parser,
     LauncherService,
     InGameService,
@@ -68,11 +68,12 @@ define([
             }
         }
 
-        _inGameFocusChangeListener(isInFocus) {
+        async _inGameFocusChangeListener(isInFocus) {
             if (isInFocus) {
-                WindowService.restore(WindowNames.APP);
+                WindowsService.restore(WindowNames.APP);
             } else {
-                overwolf.windows.minimize(WindowNames.APP, () => {});
+                WindowsService.minimize(WindowNames.APP);
+                WindowsService.close(WindowNames.SETTINGS);
             }
         }
 
