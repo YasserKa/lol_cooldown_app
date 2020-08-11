@@ -14,68 +14,65 @@
     <title>LoLCooldown</title>
   </head>
   <body class="dark">
-    <!-- -------------------------------- Header ----------------------------- --!>
-    <header class="app-header">
-      <img class="logo" src="../../img/hourglass.png" />
-      <h1>LoLCooldown</h1>
-      <div class="window-controls-group">
-        <a class="discord-link" href="#">
-          <img class="discord" src="../../img/discord-white.png" />
-        </a>
-        <a class="icon window-control" id="settings">
-          <svg>
-            <use xlink:href="/img/header_icons.svg#window-control_settings" />
-          </svg>
-        </a>
-        <button class="icon window-control" id="minimize">
-          <svg>
-            <use xlink:href="/img/header_icons.svg#window-control_minimize" />
-          </svg>
-        </button>
-        <button class="icon window-control window-control-close" id="exit">
-          <svg>
-            <use xlink:href="/img/header_icons.svg#window-control_close" />
-          </svg>
-        </button>
-      </div>
-    </header>
-      <div class="container-fluid">
-        <div class="row">
+    <!-- Header -->
+    <div class="container-fluid">
+      <header class="app-header">
+        <img class="logo" src="../../img/hourglass.png" alt=""/>
+        <h1>LoLCooldown</h1>
+        <div class="window-controls-group">
+          <a class="discord-link" href="#">
+            <img class="discord" src="../../img/discord-white.png" alt="" />
+          </a>
+          <a class="icon window-control" id="settings">
+            <svg>
+              <use xlink:href="/img/header_icons.svg#window-control_settings" />
+            </svg>
+          </a>
+          <button class="icon window-control" id="minimize">
+            <svg>
+              <use xlink:href="/img/header_icons.svg#window-control_minimize" />
+            </svg>
+          </button>
+          <button class="icon window-control window-control-close" id="exit">
+            <svg>
+              <use xlink:href="/img/header_icons.svg#window-control_close" />
+            </svg>
+          </button>
+        </div>
+      </header>
+      <main>
+        <div class="px-5">
           <div class="primary">
-            <p class="mx-auto mt-2 mb-0">
-              Nothing to show here
-            </p>
+            <p class="mx-auto mt-2 mb-0"> Nothing to show here </p>
+            <p class="mx-auto mt-0"> Get inside a game to get the magic going! </p>
             <p class="mx-auto mt-0">
-              Get inside a game to get the magic going!
-            </p>
-            <p class="mx-auto mt-0">
-              If you want to report a bug,
-              <br>
-              or submit a feature request,
-              <br>
-              join us at
-              <a class="discord-link" href="#">discord</a>
+            If you want to report a bug,
+            <br>
+            or submit a feature request,
+            <br>
+            join us at
+            <a class="discord-link" href="#">discord</a>
             </p>
           </div>
         </div>
-        <div class="row mt-5">
+        <div class="mt-5">
           <div class="m-auto ad-container main">
-             <div id="ad-div"></div>
-           </div>
-         </div>
-      </div>
+            <div id="ad-div"></div>
+          </div>
+        </div>
+      </main>
 
-    <script src="../../lib/require.js"></script>
-    <script src="https://content.overwolf.com/libs/ads/latest/owads.min.js"></script>
+      <script src="../../lib/require.js"></script>
+      <script src="https://content.overwolf.com/libs/ads/latest/owads.min.js"></script>
 
-    <script>
-      require(["main-controller"], function (MainController) {
-        console.log(`[INIT] main module loaded`);
-        const mainController = new MainController();
-        mainController.run();
-      }, function (error) {
-        console.log(`[INIT] failed to load in-game module ${error}`);
-      });
-    </script>
+      <script>
+        require(["main-controller"], function (MainController) {
+          console.log(`[INIT] main module loaded`);
+          const mainController = new MainController();
+          mainController.run();
+        }, function (error) {
+          console.log(`[INIT] failed to load in-game module ${error}`);
+        });
+      </script>
   </body>
 </html>
