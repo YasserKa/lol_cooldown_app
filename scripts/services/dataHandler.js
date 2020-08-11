@@ -31,10 +31,6 @@ define([
             _initialized = true;
         }
 
-        // TODO:
-        // 1- Add time modified in server
-        // 2- Update if data modified is outdated
-        // 3- make a call just to check the version
         async function _updateDataIfNeeded() {
             _data = JSON.parse(localStorage.getItem("data"));
             if (Testing.isTesting()) {
