@@ -69,9 +69,7 @@ define([
         }
 
         async _inGameFocusChangeListener(isInFocus) {
-            if (isInFocus) {
-                WindowsService.restore(WindowNames.APP);
-            } else {
+            if (!isInFocus) {
                 WindowsService.minimize(WindowNames.APP);
                 WindowsService.close(WindowNames.SETTINGS);
             }
