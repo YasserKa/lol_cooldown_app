@@ -1,7 +1,26 @@
 /** general **/
-.container-fluid {
-    min-height: calc(100vh - 170px);
+html, body {
+    height: 100%;
+    margin: 0px
 }
+
+.container-fluid {
+    height:100%;
+    display: flex;
+    flex-direction: column;
+    /* min-height: calc(100vh - 170px); */
+}
+
+/* making the footer sticky */
+.game-details {
+    flex: 1 0 auto;
+}
+
+.footer {
+    flex-shrink: 0;
+    margin-bottom: 20px;
+}
+
 p {
     margin: auto;
 }
