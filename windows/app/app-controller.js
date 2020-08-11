@@ -6,7 +6,6 @@ define([
     "../../scripts/services/parser.js",
     "../../scripts/services/launcher-service.js",
     "../../scripts/services/ingame-service.js",
-    "../../scripts/services/hotkeys-service.js",
     "../../scripts/helpers/utils.js",
     "../../scripts/services/testing.js",
 ], function (
@@ -17,7 +16,6 @@ define([
     Parser,
     LauncherService,
     InGameService,
-    HotkeysService,
     Utils,
     Testing,
 ) {
@@ -29,13 +27,6 @@ define([
             this._participantRunes = [];
             this._mainWindow = overwolf.windows.getMainWindow();
             this._stateService = this._mainWindow.stateService;
-
-            this._onStateUpdate = this._onStateUpdate.bind(this);
-            this._inChampSelectEventUpdateListener = this._inChampSelectEventUpdateListener.bind(this);
-            this._getRunesUsingServer = this._getRunesUsingServer.bind(this);
-            this._inGameFocusChangeListener = this._inGameFocusChangeListener.bind(this);
-            this._inGameEventUpdateListener = this._inGameEventUpdateListener.bind(this);
-            this._updateHotkey = this._updateHotkey.bind(this);
         }
 
         // add listeners to services depending on the state (in-champselect/in-game)
@@ -71,10 +62,6 @@ define([
 
                 await this._onStateUpdate()
             }
-
-            // update hotkey view and listen to changes
-            this._updateHotkey();
-            HotkeysService.addHotkeyChangeListener(this._updateHotkey);
         }
 
         _inGameFocusChangeListener(isInFocus) {
@@ -148,10 +135,6 @@ define([
             return await Utils.makeRequest(url);
         }
 
-        async _updateHotkey() {
-            const hotkey = await HotkeysService.getToggleHotkey();
-            this._appView.updateHotkey(hotkey);
-        }
     }
 
 

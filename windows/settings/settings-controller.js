@@ -1,12 +1,10 @@
 define([
     '../../windows/settings/settings-view.js',
     "../../scripts/services/settings.js",
-    "../../scripts/services/hotkeys-service.js",
     "../../scripts/helpers/utils.js",
 ], function (
     SettingsView,
     Settings,
-    HotkeysService,
     Utils,
 ) {
 
@@ -16,12 +14,6 @@ define([
         }
 
         async run() {
-            this._updateHotkey = this._updateHotkey.bind(this);
-            // update hotkey view and listen to changes
-            this._updateHotkey();
-
-            HotkeysService.addHotkeyChangeListener(this._updateHotkey);
-
             // minute/second cooldown display
             let cooldownDisplay = Settings.getSetting('cooldownDisplay');
             var cooldownDisplayEl = $('input[value="' + cooldownDisplay + '"]');
@@ -42,11 +34,6 @@ define([
                 Settings.setSetting('cooldownReductionDisplay', cooldownRedDisplay)
             });
 
-        }
-
-        async _updateHotkey() {
-            const hotkey = await HotkeysService.getToggleHotkey();
-            this._settingsView.updateHotkey(hotkey);
         }
     }
 

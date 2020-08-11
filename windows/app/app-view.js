@@ -1,12 +1,11 @@
 define([
     "../base-view.js",
-"../../scripts/services/htmlHandler.js",
 "../../scripts/classes/Game.js",
-],
-    function (
+"../../scripts/services/htmlHandler.js",
+], function (
         BaseView,
+        Game,
         HtmlHandler,
-        Game
     ) {
         class AppView extends BaseView {
 
@@ -16,8 +15,6 @@ define([
                 this._firstChampSelectUpdate = false;
 
                 this._update = this._update.bind(this);
-                this.updateHotkey = this.updateHotkey.bind(this);
-                this._hotkey = document.getElementById("hotkey");
                 this._headerTitle = document.getElementById("header-title");
                 // message sent after a change in settings to update the view
                 overwolf.windows.onMessageReceived.addListener(()=>{
@@ -47,10 +44,6 @@ define([
                 }
 
                 this._update(data);
-            }
-
-            updateHotkey(hotkey) {
-                this._hotkey.textContent = hotkey;
             }
 
             _init(data) {

@@ -1,11 +1,13 @@
 define([
+    "../scripts/constants/window-names.js",
     "../scripts/services/drag-service.js",
-    "../../scripts/services/windows-service.js",
-    "../../scripts/constants/window-names.js",
+    "../scripts/services/windows-service.js",
+    "../scripts/services/hotkeys-service.js",
 ], function(
+    WindowNames,
     DragService,
     WindowsService,
-    WindowNames,
+    HotkeysService,
 ) {
     class BaseView {
         constructor() {
@@ -13,14 +15,15 @@ define([
             this._exitButton = document.getElementById("exit");
             this._minimizeButton = document.getElementById("minimize");
             this._header = document.getElementsByClassName("app-header")[0];
-            this._version = document.getElementById("version");
             this._settings = document.getElementById("settings");
             this._discord = document.getElementsByClassName("discord-link");
+            this._hotkey = document.getElementById("hotkey");
             this._adEl = document.getElementById("ad-div");
             this._ad = null;
 
             this.displayAd = this.displayAd.bind(this);
             this.removeAd = this.removeAd.bind(this);
+            this._updateHotkey = this._updateHotkey.bind(this);
             this.onWindowStateChanged = this.onWindowStateChanged.bind(this);
             this.init();
         }
@@ -47,6 +50,7 @@ define([
                 }
             });
 
+            // assign discord elements
             Array.from(this._discord).forEach(el => {
                    el.addEventListener("click", function() {
                     overwolf.utils.openUrlInDefaultBrowser("https://discord.gg/wSZZDcP");
@@ -57,6 +61,12 @@ define([
             overwolf.windows.getCurrentWindow(result => {
                 this.dragService = new DragService(result.window, this._header);
             });
+
+            // update hotkey view and listen to changes
+            if (this._hotkey !== null) {
+                this._updateHotkey();
+                HotkeysService.addHotkeyChangeListener(this._updateHotkey);
+            }
 
             // remove/refresh app on window state change(minimize/normal)
             overwolf.windows.onStateChanged.removeListener(this.onWindowStateChanged);
@@ -93,6 +103,11 @@ define([
             }
         }
 
+        async _updateHotkey() {
+            console.log('here');
+            let hotkey = await HotkeysService.getToggleHotkey();
+            this._hotkey.textContent = hotkey;
+        }
 
     }
 
