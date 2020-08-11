@@ -23,7 +23,7 @@ define([
 
             this.displayAd = this.displayAd.bind(this);
             this.removeAd = this.removeAd.bind(this);
-            this._updateHotkey = this._updateHotkey.bind(this);
+            this.updateHotkey = this.updateHotkey.bind(this);
             this.onWindowStateChanged = this.onWindowStateChanged.bind(this);
             this.init();
         }
@@ -64,13 +64,18 @@ define([
 
             // update hotkey view and listen to changes
             if (this._hotkey !== null) {
-                this._updateHotkey();
-                HotkeysService.addHotkeyChangeListener(this._updateHotkey);
+                this.updateHotkey();
+                HotkeysService.addHotkeyChangeListener(this.updateHotkey);
             }
 
             // remove/refresh app on window state change(minimize/normal)
             overwolf.windows.onStateChanged.removeListener(this.onWindowStateChanged);
             overwolf.windows.onStateChanged.addListener(this.onWindowStateChanged);
+        }
+
+        async updateHotkey() {
+            let hotkey = await HotkeysService.getToggleHotkey();
+            this._hotkey.textContent = hotkey;
         }
 
         displayAd() {
@@ -101,12 +106,6 @@ define([
                     this._ad.refreshAd();
                 }
             }
-        }
-
-        async _updateHotkey() {
-            console.log('here');
-            let hotkey = await HotkeysService.getToggleHotkey();
-            this._hotkey.textContent = hotkey;
         }
 
     }
