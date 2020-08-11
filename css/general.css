@@ -1,11 +1,8 @@
-@import url("https://fonts.googleapis.com/css?family=Roboto|Roboto+Mono&display=swap");
+@import url("font-roboto.css");
 
 .container-fluid {
     height:100%;
     padding: 0px;
-    display: flex;
-    flex-direction: column;
-    /* min-height: calc(100vh - 170px); */
 }
 
 html, body {
@@ -20,6 +17,8 @@ body {
 main {
     height: 100%;
     overflow: auto;
+    display: flex;
+    flex-direction: column;
 }
 
 h1,
