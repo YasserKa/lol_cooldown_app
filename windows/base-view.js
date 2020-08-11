@@ -11,14 +11,19 @@ define([
 ) {
     class BaseView {
         constructor() {
-            this._backgroundWindow = overwolf.windows.getMainWindow();
+            this._container = document.getElementsByClassName('container-fluid')[0];
             this._exitButton = document.getElementById("exit");
             this._minimizeButton = document.getElementById("minimize");
             this._header = document.getElementsByClassName("app-header")[0];
-            this._settings = document.getElementById("settings");
+            this._settingsEl = document.getElementById("settings");
+            this._adEl = document.getElementById("ad-div");
             this._discord = document.getElementsByClassName("discord-link");
             this._hotkey = document.getElementById("hotkey");
-            this._adEl = document.getElementById("ad-div");
+            this._width = document.getElementById("ad-div");
+            this._height = document.getElementById("ad-div");
+
+            this._backgroundWindow = overwolf.windows.getMainWindow();
+            this._settings = this._backgroundWindow.settings;
             this._ad = null;
 
             this.displayAd = this.displayAd.bind(this);
@@ -28,9 +33,15 @@ define([
             this.init();
         }
 
-        init() {
-            if (this._settings !== null) {
-                this._settings.addEventListener("click", async function() {
+
+        async init() {
+            let overwolfWindow = await WindowsService.getCurrentWindow();
+            this._windowName = overwolfWindow.name;
+            this._height = overwolfWindow.height;
+            this._width = overwolfWindow.width;
+
+            if (this._settingsEl !== null) {
+                this._settingsEl.addEventListener("click", async function() {
                     await WindowsService.restore(WindowNames.SETTINGS);
                 });
             }
@@ -68,9 +79,34 @@ define([
                 HotkeysService.addHotkeyChangeListener(this.updateHotkey);
             }
 
+
+            this.updateScale(this._settings.getSetting(this._settings.SETTINGS.WINDOW_SCALE));
+            // update view when settings are updated
+            this._settings.addListener(`${this._windowName}_view_scale`, (settings) => {
+                this.updateScale(settings[this._settings.SETTINGS.WINDOW_SCALE]);
+            });
+
+
             // remove/refresh app on window state change(minimize/normal)
             overwolf.windows.onStateChanged.removeListener(this.onWindowStateChanged);
             overwolf.windows.onStateChanged.addListener(this.onWindowStateChanged);
+        }
+
+        async updateScale(scale) {
+            let newHeight = parseInt(this._height * scale);
+            let newWidth = parseInt(this._width * scale);
+            let zoomValue = parseInt(scale * 100 * window.devicePixelRatio);
+
+            let windowObjectParams = {
+              "window_id": this._windowName,
+              "width": newWidth,
+              "height": newHeight,
+              "auto_dpi_resize": true
+            };
+
+            this._container.style.zoom = `${zoomValue}%`;
+            overwolf.windows.setMinSize(this._windowName, newWidth, newHeight, () => {})
+            overwolf.windows.changeSize(windowObjectParams, () => {});
         }
 
         async updateHotkey() {

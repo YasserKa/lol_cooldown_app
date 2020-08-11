@@ -32,11 +32,11 @@
           <p class="mb-1">Cooldown Display</p>
           <div class="btn-group btn-group-sm btn-group-toggle d-inline" data-toggle="buttons">
             <label class="btn boarder boarder-secondary rounded-0 btn-primary">
-              <input type="radio" name="cooldown-display" id="option-seconds" autocomplete="off" value="seconds">
+              <input type="radio" name="cooldown-time" id="option-seconds" autocomplete="off" value="seconds">
               Seconds
             </label>
             <label class="btn boarder boarder-secondary rounded-0 btn-primary">
-              <input type="radio" name="cooldown-display" id="option-minutes" autocomplete="off" value="minutes">
+              <input type="radio" name="cooldown-time" id="option-minutes" autocomplete="off" value="minutes">
               Minutes
             </label>
           </div>
@@ -55,14 +55,35 @@
           </label>
         </div>
       </div>
-      <!-- Show/Hide hotkey -->
+      <!-- Window Scale -->
       <div class="mt-4 text-center">
+        <p class="mb-1">Window Scale</p>
+        <div class="btn-group btn-group-sm btn-group-toggle d-inline" data-toggle="buttons">
+          <label class="btn boarder boarder-secondary rounded-0 btn-primary">
+            <input type="radio" name="window-scale" id="option-0.5"
+            autocomplete="off" value="0.5">
+            0.5
+          </label>
+          <label class="btn boarder boarder-secondary rounded-0 btn-primary">
+            <input type="radio" name="window-scale" id="option-0.75"
+            autocomplete="off" value="0.75">
+            0.75
+          </label>
+          <label class="btn boarder boarder-secondary rounded-0 btn-primary">
+            <input type="radio" name="window-scale" id="option-1"
+            autocomplete="off" value="1">
+            1
+          </label>
+        </div>
+      </div>
+      <!-- Show/Hide hotkey -->
+      <div class="mt-4 mb-2 text-center">
         <p class="mb-1">Show/Hide Hotkey</p>
         <div class="p-0">
           <button id="hotkey" type="button" class="btn rounded-0 btn-primary" onclick="window.location.href='overwolf://settings/hotkeys';"></button>
         </div>
       </div>
-      <div class="mt-3" id="version"> </div>
+      <div id="version"> </div>
     </main>
     <script src="../../lib/require.js"></script>
 

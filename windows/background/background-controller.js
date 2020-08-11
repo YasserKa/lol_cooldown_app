@@ -4,6 +4,7 @@ define([
     "../../scripts/services/windows-service.js",
     "../../scripts/services/hotkeys-service.js",
     "../../scripts/services/state-service.js",
+    "../../scripts/services/settings.js",
     "../../scripts/services/testing.js",
 ], function (
     States,
@@ -11,6 +12,7 @@ define([
     WindowsService,
     HotkeysService,
     StateService,
+    Settings,
     Testing,
 ) {
     class BackgroundController {
@@ -18,6 +20,7 @@ define([
         static async run() {
             // saving stateService instance for app-controller
             window.stateService = StateService;
+            window.settings = Settings;
 
             this._registerHotkeys();
 

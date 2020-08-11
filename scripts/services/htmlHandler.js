@@ -4,6 +4,9 @@ define([
     Settings
 ) {
 
+    let _timeSetting = '';
+    let _displaySetting = '';
+
     function initializeView(game) {
         $(".game-details .team").remove();
         _createGame(game);
@@ -15,6 +18,9 @@ define([
     }
 
     function _updateView(game) {
+        _timeSetting = Settings.getSetting(Settings.SETTINGS.CD_TIME);
+        _displaySetting = Settings.getSetting(Settings.SETTINGS.CD_RED_DISPLAY);
+
         _updateTeam(game.getBlueTeam(), 'blue');
         _updateTeam(game.getRedTeam(), 'red');
 
@@ -185,7 +191,7 @@ define([
     function _updateCooldownReduction(participant) {
         $(`table[partic-id="${participant.getId()}"] .cdr`).remove();
 
-        if (Settings.getSetting('cooldownReductionDisplay')) {
+        if (_displaySetting) {
             $(`table[partic-id="${participant.getId()}"]`).append(_createCdRedCell(participant));
             $(`table[partic-id="${participant.getId()}"] .spells-cdr-holder`)
                 .html(_createSpellCdRedCell(participant));
@@ -296,7 +302,7 @@ define([
         if (cooldown == null)
             return null;
 
-        if (Settings.getSetting('cooldownDisplay') == 'minutes' && cooldown > 60) {
+        if (_timeSetting == 'minutes' && cooldown > 60) {
             var minutes = Math.floor(cooldown / 60);
             var seconds = cooldown - minutes * 60;
 

@@ -17,8 +17,8 @@ define([
             this._update = this._update.bind(this);
             this._hotkeyEl = document.getElementById("hotkey-wrapper");
 
-            // message sent after a change in settings to update the view
-            overwolf.windows.onMessageReceived.addListener(()=>{
+            // update view when settings are updated
+            this._settings.addListener('app_view', () => {
                 HtmlHandler.update(this.game);
             });
         }

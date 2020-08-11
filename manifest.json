@@ -71,31 +71,31 @@
                 "transparent": true,
                 "size": {
                     "width": 400,
-                    "height": 330
+                    "height": 400
                 },
                 "min_size": {
                     "width": 400,
-                    "height": 330
+                    "height": 400
                 },
                 "max_size": {
                     "width": 400,
-                    "height": 330
+                    "height": 400
                 }
             },
             "app": {
                 "file": "windows/app/app.html",
                 "transparent": true,
                 "size": {
-                    "width": 1100,
-                    "height": 640
+                    "width": 1150,
+                    "height": 650
                 },
                 "min_size": {
-                    "width": 1100,
-                    "height": 640
+                    "width": 1150,
+                    "height": 650
                 },
                 "max_size": {
-                    "width": 1100,
-                    "height": 640
+                    "width": 1150,
+                    "height": 650
                 }
             }
         },

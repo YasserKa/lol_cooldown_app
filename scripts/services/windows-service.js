@@ -158,6 +158,21 @@ define([
         });
     }
 
+    function getCurrentWindow() {
+        return new Promise(async (resolve, reject) => {
+            try {
+                overwolf.windows.getCurrentWindow((result) => {
+                    if (result.status === 'success') {
+                        resolve(result['window']);
+                    } else {
+                        reject(result);
+                    }
+                });
+            } catch (e) {
+                reject(e)
+            }
+        });
+    }
 
     /**
      * get current window name
@@ -185,6 +200,7 @@ define([
         close,
         minimizeCurrentWindow,
         closeCurrentWindow,
+        getCurrentWindow,
         getCurrentWindowName,
         obtainWindow,
         getOpenWindows,
