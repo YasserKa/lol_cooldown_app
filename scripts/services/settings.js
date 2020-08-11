@@ -1,10 +1,8 @@
 define([
-    "../../scripts/constants/window-names.js",
 ], function (
-    WindowNames
 ) {
     const SETTINGS = {
-        CD_TIME: 'cooldown_time',
+       CD_TIME: 'cooldown_time',
         CD_RED_DISPLAY: 'cooldown_reduction_display',
         WINDOW_SCALE: 'window_scale',
     }
@@ -49,6 +47,7 @@ define([
         }
 
         _settings = JSON.parse(localStorage.getItem("settings"));
+        _settings = _settings === null ? {} : _settings;
 
         for (let [key, value] of Object.entries(DEFAULT_SETTINGS)) {
             if (!_settings.hasOwnProperty(key)) {
