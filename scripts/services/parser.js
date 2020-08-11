@@ -1,7 +1,5 @@
 define([
-    "../../scripts/services/dataHandler.js",
 ], function (
-    dataHandler,
 ) {
 
     const EXCEPTION_DATA = {
@@ -47,6 +45,8 @@ define([
         'name': '',
         'description': '',
     }
+
+    let dataHandler = overwolf.windows.getMainWindow().dataHandler;
 
     function parseInGameData(data) {
         let parsedData = {
@@ -169,6 +169,7 @@ define([
         for (let participant of participantsData) {
             // participant['championName'] = 'Neeko';
             let champData = dataHandler.getChampionByName(participant['championName']);
+            console.log(champData, participant['championName']);
             champData = typeof champData === 'undefined' ? DEFAULT_CHAMP_DATA : champData;
 
             champData = _getUpdatedChampData(champData);

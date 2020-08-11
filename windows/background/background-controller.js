@@ -5,6 +5,7 @@ define([
     "../../scripts/services/hotkeys-service.js",
     "../../scripts/services/state-service.js",
     "../../scripts/services/settings.js",
+    "../../scripts/services/dataHandler.js",
     "../../scripts/services/testing.js",
 ], function (
     States,
@@ -13,6 +14,7 @@ define([
     HotkeysService,
     StateService,
     Settings,
+    DataHandler,
     Testing,
 ) {
     class BackgroundController {
@@ -21,6 +23,9 @@ define([
             // saving stateService instance for app-controller
             window.stateService = StateService;
             window.settings = Settings;
+            window.dataHandler = DataHandler;
+
+            await DataHandler.init();
 
             this._registerHotkeys();
 
