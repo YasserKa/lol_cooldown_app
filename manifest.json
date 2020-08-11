@@ -6,11 +6,10 @@
         "version": "0.1.0",
         "minimum-overwolf-version": "0.120.0",
         "author": "Yasser Kaddoura",
-        "icon": "IconMouseOver.png",
-        "icon_gray": "IconMouseNormal.png",
-        "launcher_icon": "desktop-icon.ico",
-        "window_icon": "TaskbarIcon.png",
-        "description": "App showcasing the cooldowns in a League of Legends game"
+        "icon": "img/hourglass.png",
+        "icon_gray": "img/hourglass-gray.png",
+        "launcher_icon": "img/hourglass.ico",
+        "description": " View the cooldowns of champions during champselect & ingame.\n Items, runes & cloud drake is put into consideration to show the correct numbers.\n Use this info to plan ahead and win your games."
     },
     "permissions": [
         "Hotkeys",
