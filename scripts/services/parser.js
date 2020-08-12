@@ -169,7 +169,6 @@ define([
         for (let participant of participantsData) {
             // participant['championName'] = 'Neeko';
             let champData = dataHandler.getChampionByName(participant['championName']);
-            console.log(champData, participant['championName']);
             champData = typeof champData === 'undefined' ? DEFAULT_CHAMP_DATA : champData;
 
             champData = _getUpdatedChampData(champData);

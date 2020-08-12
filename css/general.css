@@ -10,6 +10,7 @@ html, body {
     margin: 0px
 }
 
+/** needed to make tippy works **/
 [data-tippy-root] {
 width: max-content;
 }
@@ -44,6 +45,7 @@ button:focus {
   outline: none;
 }
 
+/* ads */
 .ad-container {
     background-color: #202B43;
 }
@@ -58,7 +60,7 @@ button:focus {
     height: 90px;
 }
 
-/* Settings */
+/* settings */
 #version {
     font-size: 0.85rem;
 }
