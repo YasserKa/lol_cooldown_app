@@ -58,12 +58,12 @@
                     "height": 600
                 },
                 "min_size": {
-                    "width": 500,
-                    "height":600
+                    "width": 0,
+                    "height":0
                 },
                 "max_size": {
-                    "width": 500,
-                    "height": 600
+                    "width": 2000,
+                    "height": 2000
                 }
             },
             "settings": {
