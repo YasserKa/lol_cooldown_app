@@ -24,40 +24,45 @@ define([
             window.stateService = StateService;
             window.settings = Settings;
             window.dataHandler = DataHandler;
-
             await DataHandler.init();
 
             this._registerHotkeys();
 
             // testing
             if (Testing.isTesting()) {
-                BackgroundController._updateWindows(Testing.getState());
+                this._onStateChanged(Testing.getState());
             } else {
                 // close/open windows upon state change
                 StateService.addListener(StateService.LISTENERS.STATE_CHANGE, this._onStateChanged);
                 await StateService.init();
                 this._onStateChanged(await StateService.getState());
             }
+            // _onDataLoaded();
         }
+
 
         // on client state change (idle/in-champselect/in-game)
-        static _onStateChanged(state) {
-            BackgroundController._updateWindows(state);
+        static async _onStateChanged(state) {
+            await BackgroundController._updateWindows(state);
         }
+        // const openWindows = await getOpenWindows();
+
+        // if it doesn't exist open it
+        // if (!openWindows.hasOwnProperty(windowName)) {
 
         static async _updateWindows(state) {
+            console.log(state)
             switch (state) {
                 case States.IDLE:
-                    WindowsService.openWindowOnlyIfNotOpen(WindowNames.MAIN);
+                    await WindowsService.restoreWindowOnlyIfNotOpen(WindowNames.MAIN);
                     break;
                 case States.IN_CHAMPSELECT:
                 case States.IN_GAME:
                     // a state used for testing
                 case States.CHAMPSELECT_TO_GAME:
-                    WindowsService.openWindowOnlyIfNotOpen(WindowNames.APP);
+                    await WindowsService.restoreWindowOnlyIfNotOpen(WindowNames.APP);
                     break;
             }
-            this._currentState = state;
         }
 
         static _registerHotkeys() {

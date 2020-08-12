@@ -20,15 +20,14 @@ define([
             this._discord = document.getElementsByClassName("discord-link");
             this._hotkey = document.getElementById("hotkey");
 
-            this._backgroundWindow = overwolf.windows.getMainWindow();
-            this._settings = this._backgroundWindow.settings;
+            this._mainWindow = overwolf.windows.getMainWindow();
+            this._settings = this._mainWindow.settings;
             this._ad = null;
 
             this.displayAd = this.displayAd.bind(this);
             this.removeAd = this.removeAd.bind(this);
             this.updateHotkey = this.updateHotkey.bind(this);
             this.onWindowStateChanged = this.onWindowStateChanged.bind(this);
-            this.init();
         }
 
 
@@ -56,7 +55,7 @@ define([
                 if (windowName === WindowNames.SETTINGS) {
                     await WindowsService.closeCurrentWindow();
                 } else {
-                    this._backgroundWindow.close();
+                    this._mainWindow.close();
                 }
             });
 
@@ -78,21 +77,16 @@ define([
                 HotkeysService.addHotkeyChangeListener(this.updateHotkey);
             }
 
-
-            this._updateHtmlContentScale(this._settings.getSetting(this._settings.SETTINGS.WINDOW_SCALE));
             // update view when settings are updated
-            this._settings.addListener(`${this._windowName}_view_scale`, (settings) => {
-                this.updateScale(settings[this._settings.SETTINGS.WINDOW_SCALE]);
-            });
-
             // remove/refresh app on window state change(minimize/normal)
             overwolf.windows.onStateChanged.removeListener(this.onWindowStateChanged);
             overwolf.windows.onStateChanged.addListener(this.onWindowStateChanged);
         }
 
-        async updateScale(scale) {
+        updateScale(scale) {
+            console.info('updating window scale');
             this._updateWindowScale(scale);
-            this._updateHtmlContentScale(scale);
+            this.updateHtmlContentScale(scale);
         }
 
         _updateWindowScale(scale) {
@@ -109,7 +103,7 @@ define([
             overwolf.windows.changeSize(windowObjectParams, () => {});
         }
 
-        _updateHtmlContentScale(scale) {
+        updateHtmlContentScale(scale) {
             let zoomValue = scale * 100;
             this._container.style.zoom = `${zoomValue}%`;
         }

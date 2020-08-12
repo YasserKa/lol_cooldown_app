@@ -14,6 +14,14 @@ define([], function () {
         }
     }
 
+    function getMonitorsList() {
+        return new Promise(resolve => {
+            overwolf.utils.getMonitorsList((result)=>{
+                return resolve(result);
+            });
+        });
+    }
+
     function getAppVersion() {
         return new Promise(resolve => {
             overwolf.extensions.current.getManifest((manifest) => {
@@ -25,6 +33,7 @@ define([], function () {
     return {
         sleep,
         makeRequest,
+        getMonitorsList,
         getAppVersion,
     }
 });

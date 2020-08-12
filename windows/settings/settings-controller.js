@@ -1,15 +1,18 @@
 define([
-    '../../windows/settings/settings-view.js',
+    'settings-view.js',
+    '../base-window-controller',
 ], function (
     SettingsView,
+    BaseWindowController,
 ) {
 
-    class SettingsController {
+    class SettingsController extends BaseWindowController{
         constructor() {
-            this._settingsView = new SettingsView();
+            super(SettingsView);
         }
 
         async run() {
+            await super.run();
         }
     }
 

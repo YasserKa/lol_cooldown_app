@@ -81,12 +81,12 @@ define([
     }
 
     // open window if not open & close other windows besides background
-    async function openWindowOnlyIfNotOpen(windowName) {
+    async function restoreWindowOnlyIfNotOpen(windowName) {
         const openWindows = await getOpenWindows();
 
         // if it doesn't exist open it
         if (!openWindows.hasOwnProperty(windowName)) {
-            await restore(windowName);
+            await restore(windowName)
         }
 
         // close windows besides background && the one needed (if opened)
@@ -205,6 +205,6 @@ define([
         obtainWindow,
         getOpenWindows,
         getWindowState,
-        openWindowOnlyIfNotOpen,
+        restoreWindowOnlyIfNotOpen,
     }
 });

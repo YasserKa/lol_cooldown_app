@@ -1,5 +1,6 @@
 define([
-    './app-view.js',
+    'app-view.js',
+    '../base-window-controller.js',
     "../../scripts/constants/states.js",
     "../../scripts/constants/window-names.js",
     "../../scripts/services/windows-service.js",
@@ -10,6 +11,7 @@ define([
     "../../scripts/services/testing.js",
 ], function (
     AppView,
+    BaseWindowController,
     States,
     WindowNames,
     WindowsService,
@@ -19,22 +21,25 @@ define([
     Utils,
     Testing,
 ) {
-    class AppController {
+    class AppController extends BaseWindowController {
 
         constructor() {
-            this._appView = new AppView();
+            super(AppView);
             this._runesUpdated = false;
             this._participantRunes = [];
             this._mainWindow = overwolf.windows.getMainWindow();
             this._stateService = this._mainWindow.stateService;
+            // this._mainWindow.dataHandler.addListener(this.onDataLoaded);
+            // this.onDataLoaded = this.onDataLoaded.bind(this);
+            // this._appView.displaySpinner();
 
             this._inGameEventUpdateListener = this._inGameEventUpdateListener.bind(this);
             this._inChampSelectEventUpdateListener = this._inChampSelectEventUpdateListener.bind(this);
             this._inGameFocusChangeListener = this._inGameFocusChangeListener.bind(this);
         }
 
-        // add listeners to services depending on the state (in-champselect/in-game)
         async run() {
+            await super.run();
             // send window below LoL
             overwolf.windows.setPosition({
                 "relativeTo": {
@@ -44,6 +49,10 @@ define([
                 "insertAbove": false,
             }, () => {});
 
+            this.onDataLoaded();
+        }
+
+        async onDataLoaded() {
             if (Testing.isTesting()) {
                 switch (Testing.getState()) {
                     case States.IN_CHAMPSELECT:
@@ -66,6 +75,8 @@ define([
 
                 await this._onStateUpdate()
             }
+
+            // this._appView.removeSpinner();
         }
 
         async _inGameFocusChangeListener(isInFocus) {
@@ -105,13 +116,13 @@ define([
 
             let parsedData = Parser.parseInGameData(data);
 
-            this._appView.updateInGame(parsedData);
+            this._view.updateInGame(parsedData);
         }
 
         _inChampSelectEventUpdateListener(data) {
             if (data.hasOwnProperty('myTeam') && data.myTeam.length > 0) {
                 let parsedData = Parser.parseInChampSelectData(data);
-                this._appView.updateInChampSelect(parsedData);
+                this._view.updateInChampSelect(parsedData);
             }
         }
 
