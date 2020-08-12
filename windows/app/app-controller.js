@@ -47,7 +47,15 @@ define([
                 },
                 "insertAbove": false,
             }, () => {});
-            await this._mainWindow.dataHandler.init();
+
+            try {
+                await this._mainWindow.dataHandler.init();
+            } catch(message) {
+                this._view.removeSpinner();
+                this._view.displayModal(message);
+                this._view.updateHeaderMessage(`* ${message}`);
+            }
+
             this.onDataLoaded();
         }
 
@@ -74,7 +82,6 @@ define([
 
                 await this._onStateUpdate()
             }
-
             this._view.removeSpinner();
         }
 

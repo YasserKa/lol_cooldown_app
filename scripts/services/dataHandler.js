@@ -30,10 +30,7 @@ define([
             // update if it doesn't exist or outdated
             if (_data === null) {
                 await _updateDataUsingServer();
-            } else {
-                if (Testing.isTesting()) {
-                    return;
-                }
+            } else if(!Testing.isTesting) {
                 let lastDateUpdated = await _getLastDateUpdated();
                 let dateAtServer = new Date(lastDateUpdated);
                 let dateAtClient = new Date(_data.lastDateUpdated);

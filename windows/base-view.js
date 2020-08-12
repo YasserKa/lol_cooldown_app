@@ -21,6 +21,8 @@ define([
             this._spinner = document.querySelector(".spinner-container");
             this._discord = document.getElementsByClassName("discord-link");
             this._hotkey = document.getElementById("hotkey");
+            this._modal = document.getElementById("modal");
+            this._modalDescription = document.getElementById("modal-description");
 
             this._mainWindow = overwolf.windows.getMainWindow();
             this._settings = this._mainWindow.settings;
@@ -30,26 +32,10 @@ define([
             this.removeAd = this.removeAd.bind(this);
             this.updateHotkey = this.updateHotkey.bind(this);
             this.onWindowStateChanged = this.onWindowStateChanged.bind(this);
+            this.displayModal = this.displayModal.bind(this);
+            this._removeModal = this._removeModal.bind(this);
             this.displaySpinner = this.displaySpinner.bind(this);
             this.removeSpinner = this.removeSpinner.bind(this);
-        }
-
-        updateHeaderMessage(message) {
-            if (this._headerMessage !== null) {
-                this._headerMessage.innerHTML = message;
-            }
-        }
-
-        displaySpinner() {
-            if (this._spinner !== null) {
-                this._spinner.style.display = 'block';
-            }
-        }
-
-        removeSpinner() {
-            if (this._spinner !== null) {
-                this._spinner.style.display = 'none';
-            }
         }
 
         async init() {
@@ -60,12 +46,12 @@ define([
             this._defaultWidth = overwolfWindow.width / scale;
 
             if (this._settingsEl !== null) {
-                this._settingsEl.addEventListener("click", async function() {
+                this._settingsEl.addEventListener("click", async () => {
                     await WindowsService.restore(WindowNames.SETTINGS);
                 });
             }
             if (this._minimizeButton !== null) {
-                this._minimizeButton.addEventListener("click", async function() {
+                this._minimizeButton.addEventListener("click", async () => {
                     await WindowsService.minimizeCurrentWindow();
                 });
             }
@@ -74,16 +60,28 @@ define([
                 let windowName = await WindowsService.getCurrentWindowName();
                 // close the window only if it's settings, else close the app
                 if (windowName === WindowNames.APP ||
-                windowName === WindowNames.MAIN) {
+                    windowName === WindowNames.MAIN) {
                     this._mainWindow.close();
                 } else {
                     await WindowsService.closeCurrentWindow();
                 }
             });
+                // When the user clicks anywhere outside of the modal, close it
+            if (this._modal !==null) {
+                  this._modal.addEventListener('click', () => {
+                      this._removeModal();
+                  })
+
+                  window.onclick = function(event) {
+                    if (event.target == this._modal) {
+                      this._removeModal();
+                    }
+                  }.bind(this);
+            }
 
             // assign discord elements
             Array.from(this._discord).forEach(el => {
-                   el.addEventListener("click", function() {
+                el.addEventListener("click", () => {
                     overwolf.utils.openUrlInDefaultBrowser("https://discord.gg/wSZZDcP");
                 });
             });
@@ -105,6 +103,37 @@ define([
             overwolf.windows.onStateChanged.addListener(this.onWindowStateChanged);
         }
 
+        updateHeaderMessage(message) {
+            if (this._headerMessage !== null) {
+                this._headerMessage.innerHTML = message;
+            }
+        }
+
+        displayModal(message) {
+            if (this._modal !== null) {
+                  this._modal.style.display = "block";
+                  this._modalDescription.textContent = message;
+            }
+        }
+
+        _removeModal() {
+            if (this._modal !== null) {
+                  this._modal.style.display = "none";
+            }
+        }
+
+        displaySpinner() {
+            if (this._spinner !== null) {
+                this._spinner.style.display = 'block';
+            }
+        }
+
+        removeSpinner() {
+            if (this._spinner !== null) {
+                this._spinner.style.display = 'none';
+            }
+        }
+
         updateScale(scale) {
             console.info('updating window scale');
             this._updateWindowScale(scale);
@@ -116,10 +145,10 @@ define([
             let newWidth = parseInt(this._defaultWidth * scale);
 
             let windowObjectParams = {
-              "window_id": this._windowName,
-              "width": newWidth,
-              "height": newHeight,
-              "auto_dpi_resize": true
+                "window_id": this._windowName,
+                "width": newWidth,
+                "height": newHeight,
+                "auto_dpi_resize": true
             };
 
             overwolf.windows.changeSize(windowObjectParams, () => {});

@@ -4,6 +4,11 @@ define([], function () {
     }
 
     async function makeRequest(url) {
+        // user disconnected
+        if (!window.navigator.onLine) {
+            throw('No Internet Connection!')
+        }
+
         const response = await fetch(url, {
             method: 'GET',
         });
@@ -11,6 +16,8 @@ define([], function () {
         if (response.status === 201 || response.status === 200) {
             let json = await response.json();
             return json;
+        } else {
+            throw("Couldn't retrieve data from server!");
         }
     }
 
