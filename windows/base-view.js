@@ -15,6 +15,7 @@ define([
             this._exitButton = document.getElementById("exit");
             this._minimizeButton = document.getElementById("minimize");
             this._header = document.getElementsByClassName("app-header")[0];
+            this._headerMessage = document.getElementById("header-message");
             this._settingsEl = document.getElementById("settings");
             this._adEl = document.getElementById("ad-div");
             this._spinner = document.querySelector(".spinner-container");
@@ -31,6 +32,12 @@ define([
             this.onWindowStateChanged = this.onWindowStateChanged.bind(this);
             this.displaySpinner = this.displaySpinner.bind(this);
             this.removeSpinner = this.removeSpinner.bind(this);
+        }
+
+        updateHeaderMessage(message) {
+            if (this._headerMessage !== null) {
+                this._headerMessage.innerHTML = message;
+            }
         }
 
         displaySpinner() {

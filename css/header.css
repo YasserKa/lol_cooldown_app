@@ -55,10 +55,6 @@
   margin: 0;
 }
 
-#header-title #hotkey-wrapper{
-  display: none;
-}
-
 .window-controls-group {
   z-index: 1001;
   margin-left: auto;

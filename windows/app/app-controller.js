@@ -128,24 +128,32 @@ define([
         async _getRunesUsingServer() {
             let gameInfo = await InGameService.getInGameInfo();
             let region = gameInfo.res.summoner_info.region;
-            let summonerName = JSON.parse(gameInfo.res.live_client_data.active_player).displayName;
+            let summonerName = JSON.parse(gameInfo.res.live_client_data.active_player).summonerName;
 
             if (Testing.isFakeRunes()) {
-            // summonerName = '#random';
-                return {
+                summonerName = '#random';
+                let rune = {
                     'Clumsy Gamer': {
                         perkIds: [5007, 8106, 8134, 8210, 8347],
                         perkStyle: 8000,
                         perkSubStyle: 8200,
                     }
                 };
+                return new Promise (resolve => {
+                    return resolve(rune);
+                });
             }
 
             summonerName = encodeURIComponent(summonerName);
             region = encodeURIComponent(region);
             let url = `https://www.lolcooldown.com/api/matchrunes?summonerName=${summonerName}&region=${region}`;
 
-            return await Utils.makeRequest(url);
+            let response = await Utils.makeRequest(url);
+            if (response !== 200) {
+                let html = `* runes not loaded: ${response.message}`;
+                this._view.updateHeaderMessage(html);
+            }
+            return response.runes;
         }
 
     }
