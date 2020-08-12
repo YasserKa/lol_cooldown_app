@@ -27,13 +27,13 @@ define([
 
         async function _updateDataIfNeeded() {
             _data = JSON.parse(localStorage.getItem("data"));
-            if (Testing.isTesting()) {
-                return;
-            }
             // update if it doesn't exist or outdated
             if (_data === null) {
                 await _updateDataUsingServer();
             } else {
+                if (Testing.isTesting()) {
+                    return;
+                }
                 let lastDateUpdated = await _getLastDateUpdated();
                 let dateAtServer = new Date(lastDateUpdated);
                 let dateAtClient = new Date(_data.lastDateUpdated);
