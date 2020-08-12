@@ -66,10 +66,11 @@ define([
             this._exitButton.addEventListener("click", async () => {
                 let windowName = await WindowsService.getCurrentWindowName();
                 // close the window only if it's settings, else close the app
-                if (windowName === WindowNames.SETTINGS) {
-                    await WindowsService.closeCurrentWindow();
-                } else {
+                if (windowName === WindowNames.APP ||
+                windowName === WindowNames.MAIN) {
                     this._mainWindow.close();
+                } else {
+                    await WindowsService.closeCurrentWindow();
                 }
             });
 
