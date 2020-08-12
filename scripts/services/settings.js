@@ -10,7 +10,7 @@ define([
     const DEFAULT_SETTINGS = {};
     DEFAULT_SETTINGS[SETTINGS.CD_TIME] = 'minutes';
     DEFAULT_SETTINGS[SETTINGS.CD_RED_DISPLAY] = true;
-    DEFAULT_SETTINGS[SETTINGS.WINDOW_SCALE] = 0.75;
+    DEFAULT_SETTINGS[SETTINGS.WINDOW_SCALE] = 1;
 
     let _settings = {};
     let _listeners = {};

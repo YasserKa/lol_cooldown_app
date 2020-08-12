@@ -19,8 +19,6 @@ define([
             this._adEl = document.getElementById("ad-div");
             this._discord = document.getElementsByClassName("discord-link");
             this._hotkey = document.getElementById("hotkey");
-            this._width = document.getElementById("ad-div");
-            this._height = document.getElementById("ad-div");
 
             this._backgroundWindow = overwolf.windows.getMainWindow();
             this._settings = this._backgroundWindow.settings;
@@ -37,8 +35,9 @@ define([
         async init() {
             let overwolfWindow = await WindowsService.getCurrentWindow();
             this._windowName = overwolfWindow.name;
-            this._height = overwolfWindow.height;
-            this._width = overwolfWindow.width;
+            let scale = this._settings.getSetting(this._settings.SETTINGS.WINDOW_SCALE);
+            this._defaultHeight = overwolfWindow.height / scale;
+            this._defaultWidth = overwolfWindow.width / scale;
 
             if (this._settingsEl !== null) {
                 this._settingsEl.addEventListener("click", async function() {
@@ -80,12 +79,11 @@ define([
             }
 
 
-            this.updateScale(this._settings.getSetting(this._settings.SETTINGS.WINDOW_SCALE));
+            this._updateHtmlContentScale(this._settings.getSetting(this._settings.SETTINGS.WINDOW_SCALE));
             // update view when settings are updated
             this._settings.addListener(`${this._windowName}_view_scale`, (settings) => {
                 this.updateScale(settings[this._settings.SETTINGS.WINDOW_SCALE]);
             });
-
 
             // remove/refresh app on window state change(minimize/normal)
             overwolf.windows.onStateChanged.removeListener(this.onWindowStateChanged);
@@ -93,9 +91,13 @@ define([
         }
 
         async updateScale(scale) {
-            let newHeight = parseInt(this._height * scale);
-            let newWidth = parseInt(this._width * scale);
-            let zoomValue = scale * 100 * window.devicePixelRatio;
+            this._updateWindowScale(scale);
+            this._updateHtmlContentScale(scale);
+        }
+
+        _updateWindowScale(scale) {
+            let newHeight = parseInt(this._defaultHeight * scale);
+            let newWidth = parseInt(this._defaultWidth * scale);
 
             let windowObjectParams = {
               "window_id": this._windowName,
@@ -104,9 +106,12 @@ define([
               "auto_dpi_resize": true
             };
 
-            this._container.style.zoom = `${zoomValue}%`;
-            overwolf.windows.setMinSize(this._windowName, newWidth, newHeight, () => {})
             overwolf.windows.changeSize(windowObjectParams, () => {});
+        }
+
+        _updateHtmlContentScale(scale) {
+            let zoomValue = scale * 100;
+            this._container.style.zoom = `${zoomValue}%`;
         }
 
         async updateHotkey() {

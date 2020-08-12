@@ -74,12 +74,12 @@
                     "height": 400
                 },
                 "min_size": {
-                    "width": 400,
-                    "height": 400
+                    "width": 0,
+                    "height": 0
                 },
                 "max_size": {
-                    "width": 400,
-                    "height": 400
+                    "width": 1000,
+                    "height": 1000
                 }
             },
             "app": {
@@ -90,12 +90,12 @@
                     "height": 650
                 },
                 "min_size": {
-                    "width": 1150,
-                    "height": 650
+                    "width": 0,
+                    "height": 0
                 },
                 "max_size": {
-                    "width": 1150,
-                    "height": 650
+                    "width": 2000,
+                    "height": 2000
                 }
             }
         },
