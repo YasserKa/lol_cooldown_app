@@ -74,7 +74,7 @@ define([
 
         async _updateVersion() {
             const version = await Utils.getAppVersion();
-            this._version.textContent = version;
+            this._version.textContent = `v ${version}`;
         }
     }
 
