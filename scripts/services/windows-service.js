@@ -14,10 +14,10 @@ define([
     function obtainWindow(name) {
         return new Promise((resolve, reject) => {
             overwolf.windows.obtainDeclaredWindow(name, (response) => {
-                if (response.status !== 'success') {
-                    return reject(response);
+                if (response.success) {
+                    return resolve(response);
                 }
-                resolve(response);
+                reject(response);
             });
         });
     }
@@ -32,7 +32,7 @@ define([
             try {
                 await obtainWindow(name);
                 overwolf.windows.restore(name, (result) => {
-                    if (result.status === 'success') {
+                    if (result.success) {
                         resolve();
                     } else {
                         reject(result);
@@ -68,7 +68,7 @@ define([
         return new Promise(async (resolve, reject) => {
             try {
                 overwolf.windows.getWindowState(name, (state) => {
-                    if (state.status === 'success') {
+                    if (state.success) {
                         resolve(state.window_state_ex);
                     } else {
                         reject(state);
@@ -129,7 +129,7 @@ define([
             try {
                 await obtainWindow(name);
                 overwolf.windows.minimize(name, (result) => {
-                    if (result.status === 'success') {
+                    if (result.success) {
                         resolve();
                     } else {
                         reject(result);
@@ -162,7 +162,7 @@ define([
         return new Promise(async (resolve, reject) => {
             try {
                 overwolf.windows.getCurrentWindow((result) => {
-                    if (result.status === 'success') {
+                    if (result.success) {
                         resolve(result['window']);
                     } else {
                         reject(result);
@@ -182,7 +182,7 @@ define([
         return new Promise(async (resolve, reject) => {
             try {
                 overwolf.windows.getCurrentWindow((result) => {
-                    if (result.status === 'success') {
+                    if (result.success) {
                         resolve(result['window']['name']);
                     } else {
                         reject(result);
