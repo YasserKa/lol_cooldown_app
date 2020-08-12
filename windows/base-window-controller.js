@@ -27,7 +27,7 @@ define([
         async doBeforeWindowRestore() {
             console.info('Before Window Restore');
             await this._view.init();
-            await this._view.updateHtmlContentScale(this._settings.getSetting(this._settings.SETTINGS.WINDOW_SCALE));
+            this._view.updateHtmlContentScale(this._settings.getSetting(this._settings.SETTINGS.WINDOW_SCALE));
         }
 
         doPostWindowRestore() {

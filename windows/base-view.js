@@ -17,6 +17,7 @@ define([
             this._header = document.getElementsByClassName("app-header")[0];
             this._settingsEl = document.getElementById("settings");
             this._adEl = document.getElementById("ad-div");
+            this._spinner = document.querySelector(".spinner-container");
             this._discord = document.getElementsByClassName("discord-link");
             this._hotkey = document.getElementById("hotkey");
 
@@ -28,8 +29,21 @@ define([
             this.removeAd = this.removeAd.bind(this);
             this.updateHotkey = this.updateHotkey.bind(this);
             this.onWindowStateChanged = this.onWindowStateChanged.bind(this);
+            this.displaySpinner = this.displaySpinner.bind(this);
+            this.removeSpinner = this.removeSpinner.bind(this);
         }
 
+        displaySpinner() {
+            if (this._spinner !== null) {
+                this._spinner.style.display = 'block';
+            }
+        }
+
+        removeSpinner() {
+            if (this._spinner !== null) {
+                this._spinner.style.display = 'none';
+            }
+        }
 
         async init() {
             let overwolfWindow = await WindowsService.getCurrentWindow();

@@ -29,9 +29,7 @@ define([
             this._participantRunes = [];
             this._mainWindow = overwolf.windows.getMainWindow();
             this._stateService = this._mainWindow.stateService;
-            // this._mainWindow.dataHandler.addListener(this.onDataLoaded);
-            // this.onDataLoaded = this.onDataLoaded.bind(this);
-            // this._appView.displaySpinner();
+            this.onDataLoaded = this.onDataLoaded.bind(this);
 
             this._inGameEventUpdateListener = this._inGameEventUpdateListener.bind(this);
             this._inChampSelectEventUpdateListener = this._inChampSelectEventUpdateListener.bind(this);
@@ -39,6 +37,7 @@ define([
         }
 
         async run() {
+            this._view.displaySpinner();
             await super.run();
             // send window below LoL
             overwolf.windows.setPosition({
@@ -48,7 +47,7 @@ define([
                 },
                 "insertAbove": false,
             }, () => {});
-
+            await this._mainWindow.dataHandler.init();
             this.onDataLoaded();
         }
 
@@ -76,7 +75,7 @@ define([
                 await this._onStateUpdate()
             }
 
-            // this._appView.removeSpinner();
+            this._view.removeSpinner();
         }
 
         async _inGameFocusChangeListener(isInFocus) {
