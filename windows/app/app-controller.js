@@ -54,6 +54,11 @@ define([
                 this._view.removeSpinner();
                 this._view.displayModal(message);
                 this._view.updateHeaderMessage(`* ${message}`);
+
+                // on reconnect rerun
+                window.addEventListener('online', () => {
+                    this.run();
+                });
             }
 
             this.onDataLoaded();

@@ -14,6 +14,9 @@ define([
         }
 
         async run() {
+            // clear header message
+            this._view.updateHeaderMessage('');
+            // update scale
             this._windowName = await WindowsService.getCurrentWindowName();
             this._settings.addListener(`${this._windowName}_view_scale`, (settings) => {
                 this._view.updateScale(settings[this._settings.SETTINGS.WINDOW_SCALE]);
