@@ -107,7 +107,7 @@
             "matches": [
                 "https://*.lolcooldown.com",
                 "https://*.google-analytics.com",
-                "http://*.google-analytics.com",
+                "http://www.google-analytics.com",
                 "https://www.googleapis.com"
             ]
         },
