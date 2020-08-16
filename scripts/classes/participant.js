@@ -232,16 +232,21 @@ define([], function() {
                         newCds = [cooldowns[0]];
                     }
                 } else {
-                    cooldowns.forEach(cooldown => {
-                        let newCd = 0;
-                        if (key === "R") {
-                            newCd = cooldown - (cooldown * (this.ultCdRed / 100));
-                        } else {
-                            newCd = cooldown - (cooldown * (this.cdRed / 100));
-                        }
-                        let roundedCd = Math.round(newCd * 2) / 2;
-                        newCds.push(roundedCd);
-                    });
+                    // kled recharge is level based
+                    if (cooldowns.length === 18) {
+                        newCds = [cooldowns[this.level - 1]];
+                    } else {
+                        cooldowns.forEach(cooldown => {
+                            let newCd = 0;
+                            if (key === "R") {
+                                newCd = cooldown - (cooldown * (this.ultCdRed / 100));
+                            } else {
+                                newCd = cooldown - (cooldown * (this.cdRed / 100));
+                            }
+                            let roundedCd = Math.round(newCd * 2) / 2;
+                            newCds.push(roundedCd);
+                        });
+                    }
 
                 }
 
