@@ -66,17 +66,17 @@ define([
                     await WindowsService.closeCurrentWindow();
                 }
             });
-                // When the user clicks anywhere outside of the modal, close it
+            // When the user clicks anywhere outside of the modal, close it
             if (this._modal !==null) {
-                  this._modal.addEventListener('click', () => {
-                      this._removeModal();
-                  })
+                this._modal.addEventListener('click', () => {
+                    this._removeModal();
+                })
 
-                  window.onclick = function(event) {
+                window.onclick = function(event) {
                     if (event.target == this._modal) {
-                      this._removeModal();
+                        this._removeModal();
                     }
-                  }.bind(this);
+                }.bind(this);
             }
 
             // assign discord elements
@@ -111,14 +111,14 @@ define([
 
         displayModal(message) {
             if (this._modal !== null) {
-                  this._modal.style.display = "block";
-                  this._modalDescription.textContent = message;
+                this._modal.style.display = "block";
+                this._modalDescription.textContent = message;
             }
         }
 
         _removeModal() {
             if (this._modal !== null) {
-                  this._modal.style.display = "none";
+                this._modal.style.display = "none";
             }
         }
 
@@ -166,7 +166,9 @@ define([
 
         displayAd() {
             if (this._adEl !== null && OwAd) {
-                this._ad = new OwAd(this._adEl);
+                this._ad = new OwAd(this._adEl,
+                    {width: this._adEl.offsetWidth, height: this._adEl.offsetHeight}
+                );
             }
         }
 
