@@ -30,6 +30,7 @@ define([
 
             this.displayAd = this.displayAd.bind(this);
             this.removeAd = this.removeAd.bind(this);
+            this.updateAdScale = this.updateAdScale.bind(this);
             this.updateHotkey = this.updateHotkey.bind(this);
             this.onWindowStateChanged = this.onWindowStateChanged.bind(this);
             this.displayModal = this.displayModal.bind(this);
@@ -138,6 +139,7 @@ define([
             console.info('updating window scale');
             this._updateWindowScale(scale);
             this.updateHtmlContentScale(scale);
+            this.updateAdScale(scale);
         }
 
         _updateWindowScale(scale) {
@@ -162,6 +164,13 @@ define([
         async updateHotkey() {
             let hotkey = await HotkeysService.getToggleHotkey();
             this._hotkey.textContent = hotkey;
+        }
+
+        updateAdScale(scale) {
+            let zoomValue = 100/scale;
+            this._adEl.style.zoom = `${zoomValue}%`;
+            this._adEl.style.transform = `scale(${scale})`;
+            this._adEl.style.transformOrigin = 'left top';
         }
 
         displayAd() {

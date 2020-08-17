@@ -30,7 +30,9 @@ define([
         async doBeforeWindowRestore() {
             console.info('Before Window Restore');
             await this._view.init();
-            this._view.updateHtmlContentScale(this._settings.getSetting(this._settings.SETTINGS.WINDOW_SCALE));
+            let scale = this._settings.getSetting(this._settings.SETTINGS.WINDOW_SCALE)
+            this._view.updateHtmlContentScale(scale);
+            this._view.updateAdScale(scale);
         }
 
         doPostWindowRestore() {
