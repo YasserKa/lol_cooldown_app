@@ -57,6 +57,10 @@ define([
     // get the current state of the launcher
     async function getChampSelectInfo() {
         let launcherInfo = await _getLauncherInfo();
+        if (!launcherInfo || !launcherInfo.res ||
+            !launcherInfo.res.champ_select) {
+            return null;
+        }
         return JSON.parse(launcherInfo.res.champ_select.raw);
     }
 
