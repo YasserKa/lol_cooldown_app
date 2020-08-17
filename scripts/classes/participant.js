@@ -35,6 +35,7 @@ define([], function() {
             this.position = data['position'];
             this.level = data['level'];
             this.items = data['items'];
+            this.gameMode = data.gameMode
             if (this.champion['name'] !== data['champion']['name']) {
                 this.originalAbilities = data['champion']['abilities'];
                 this.currentAbilities = JSON.parse(JSON.stringify(this.originalAbilities));
