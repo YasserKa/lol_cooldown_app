@@ -161,7 +161,7 @@ define([
             let url = `https://www.lolcooldown.com/api/matchrunes?summonerName=${summonerName}&region=${region}`;
 
             let response = await Utils.makeRequest(url);
-            if (response !== 200) {
+            if (response.code !== 200) {
                 let html = `* runes not loaded: ${response.message}`;
                 this._view.updateHeaderMessage(html);
             }
