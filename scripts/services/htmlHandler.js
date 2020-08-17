@@ -201,7 +201,7 @@ define([
     }
 
     function _createSpellCdRedCell(participant) {
-        let el = '<div class="cdr spells-cdr-cell mx-2">';
+        let el = '<div class="cdr spells-cdr-cell mx-auto">';
         let cdRedSpells = participant.getSummonerSpellsCDr();
         if (cdRedSpells == 0) {
             return el;
