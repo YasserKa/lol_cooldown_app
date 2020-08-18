@@ -20,6 +20,7 @@ define([
             this._adEl = document.getElementById("ad-div");
             this._spinner = document.querySelector(".spinner-container");
             this._discord = document.getElementsByClassName("discord-link");
+            this._gameInfo = document.getElementById("game-info");
             this._hotkey = document.getElementById("hotkey");
             this._modal = document.getElementById("modal");
             this._modalDescription = document.getElementById("modal-description");
@@ -87,6 +88,13 @@ define([
                     overwolf.utils.openUrlInDefaultBrowser("https://discord.gg/wSZZDcP");
                 });
             });
+
+            if (this._gameInfo !== null) {
+                    this._gameInfo.addEventListener('click', () => {
+                        overwolf.utils.openUrlInDefaultBrowser(
+                            "https://www.lolcooldown.com/app");
+                    });
+            }
 
             // enable dragging on this window
             overwolf.windows.getCurrentWindow(result => {
