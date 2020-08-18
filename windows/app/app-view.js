@@ -29,6 +29,7 @@ define([
                 this._firstChampSelectUpdate = true;
                 // don't display hotkey in-champ-select
                 $(this._hotkeyEl).css('display', 'none');
+                this.removeSpinner();
             }
 
             this._update(data);
@@ -42,6 +43,7 @@ define([
                 this._firstInGameUpdate = true;
                 // display hotkey in-game
                 $(this._hotkeyEl).css('display', 'block');
+                this.removeSpinner();
             }
 
             this._update(data);

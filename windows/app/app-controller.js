@@ -51,7 +51,6 @@ define([
             try {
                 await this._mainWindow.dataHandler.init();
             } catch(message) {
-                this._view.removeSpinner();
                 this._view.displayModal(message);
                 this._view.updateHeaderMessage(`* ${message}`);
 
@@ -87,7 +86,6 @@ define([
 
                 await this._onStateUpdate()
             }
-            this._view.removeSpinner();
         }
 
         async _inGameFocusChangeListener(isInFocus) {
