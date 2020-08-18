@@ -16,6 +16,8 @@ define([
     const NUMBER_OF_RETRIES = 10;
 
     let _listener = null;
+    let _onTerminatedListener = () => {};
+    let _onLaunchedListener = () => {};
 
     async function init() {
         if (await _getRunningLauncherInfo()) {
@@ -95,10 +97,12 @@ define([
         _unRegisterEvents();
         _registerEvents();
         await _setRequiredFeatures();
+        _onLaunchedListener();
     }
 
     function _onTerminated() {
         _unRegisterEvents()
+        _onTerminatedListener();
     }
 
     function _getRunningLauncherInfo() {
@@ -130,11 +134,21 @@ define([
         _listener = listener;
     }
 
+    function updateOnLaunchedListener(listener) {
+        _onLaunchedListener = listener;
+    }
+
+    function updateOnTerminatedListener(listener) {
+        _onTerminatedListener = listener;
+    }
+
     return {
         init,
         getState,
         getSummonerInfo,
         getChampSelectInfo,
         updateListener,
+        updateOnTerminatedListener,
+        updateOnLaunchedListener,
     }
 });

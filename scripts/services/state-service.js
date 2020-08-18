@@ -20,6 +20,8 @@ define([
 
     async function init() {
         LauncherService.updateListener(_onLauncherInfoUpdate);
+        LauncherService.updateOnTerminatedListener(_onLauncherTerminated);
+        LauncherService.updateOnLaunchedListener(_onLauncherLaunched);
         InGameService.updateEventListener(_onInGameEventUpdate);
         InGameService.updateInfoListener(_onInGameInfoUpdate);
         await LauncherService.init();
@@ -59,10 +61,22 @@ define([
         }
     }
 
+    function _onLauncherLaunched() {
+        if (_listeners.hasOwnProperty(LISTENERS.STATE_CHANGE)) {
+            _listeners[LISTENERS.STATE_CHANGE](States.IDLE);
+        }
+    }
+
+    function _onLauncherTerminated() {
+        if (_listeners.hasOwnProperty(LISTENERS.STATE_CHANGE)) {
+            _listeners[LISTENERS.STATE_CHANGE](States.IDLE);
+        }
+    }
+
     // on launcher state & champselect update
     async function _onLauncherInfoUpdate(info) {
         if (info.feature === 'game_flow') {
-        let state = await LauncherService.getState();
+            let state = await LauncherService.getState();
             if (_listeners.hasOwnProperty(LISTENERS.STATE_CHANGE)) {
                 _listeners[LISTENERS.STATE_CHANGE](state);
             }
