@@ -123,6 +123,7 @@ define([
 
         for (let participant of participantsData) {
             let champId = participant.championPicked;
+            champId = typeof champId === 'undefined' ? participant.championId : champId;
 
             let champData = dataHandler.getChampionById(champId);
             champData = typeof champData === 'undefined' ? DEFAULT_CHAMP_DATA : champData;

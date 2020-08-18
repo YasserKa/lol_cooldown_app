@@ -67,6 +67,7 @@ define([
                     await WindowsService.closeCurrentWindow();
                 }
             });
+
             // When the user clicks anywhere outside of the modal, close it
             if (this._modal !==null) {
                 this._modal.addEventListener('click', () => {
