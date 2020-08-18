@@ -301,8 +301,11 @@ define([
 
     function _getParsedCooldown(cooldown) {
         // passives with no CD uses dash (-)
-        if (cooldown == null)
-            return null;
+        if (cooldown == '-')
+            return '-';
+
+        // rounded it to 0/0.5
+        cooldown = Math.round(cooldown * 2) / 2;
 
         if (_timeSetting == 'minutes' && cooldown > 60) {
             var minutes = Math.floor(cooldown / 60);

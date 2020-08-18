@@ -244,8 +244,7 @@ define([], function() {
                             } else {
                                 newCd = cooldown - (cooldown * (this.cdRed / 100));
                             }
-                            let roundedCd = Math.round(newCd * 2) / 2;
-                            newCds.push(roundedCd);
+                            newCds.push(newCd);
                         });
                     }
 

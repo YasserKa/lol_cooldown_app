@@ -59,7 +59,7 @@ define([
         let launcherInfo = await _getLauncherInfo();
         if (!launcherInfo || !launcherInfo.res ||
             !launcherInfo.res.champ_select) {
-            return null;
+            return {};
         }
         return JSON.parse(launcherInfo.res.champ_select.raw);
     }
