@@ -80,6 +80,10 @@ define([
         }
 
         function getSpellByName(name) {
+            // smite upgrades like chilling
+            if (name.includes('Smite')) {
+                name = 'Smite';
+            }
             return _summonerSpells[Object.keys(_summonerSpells).find(
                 key => _summonerSpells[key]['name'] === name)];
         }
