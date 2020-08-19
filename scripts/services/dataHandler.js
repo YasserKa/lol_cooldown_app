@@ -80,6 +80,10 @@ define([
         }
 
         function getSpellByName(name) {
+            // used mark's name is empty
+            if (name === "") {
+                name = 'Mark';
+            }
             // smite upgrades like chilling
             if (name.includes('Smite')) {
                 name = 'Smite';
