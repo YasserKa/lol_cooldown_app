@@ -35,7 +35,7 @@ define([], function() {
             this.position = data['position'];
             this.level = data['level'];
             this.items = data['items'];
-            if (data.hasOwnProperty('gameMode')) {
+            if (data.hasOwnProperty('gameMode') && typeof data.gameMode !== 'undefined') {
                 this.gameMode = data.gameMode
             }
 
