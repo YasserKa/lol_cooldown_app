@@ -187,12 +187,13 @@ define([
                 this._ad = new OwAd(this._adEl,
                     {width: this._adEl.offsetWidth, height: this._adEl.offsetHeight}
                 );
+                this._ad.addEventListener('complete', this.removeAd);
             }
         }
 
         removeAd() {
             if (this._ad !== null) {
-                this._ad.refreshAd();
+                this._ad.removeAd();
             }
         }
 

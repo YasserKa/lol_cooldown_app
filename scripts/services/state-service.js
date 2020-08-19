@@ -17,6 +17,7 @@ define([
 
     let _currentInChampSelectData = {};
     let _listeners = {};
+    let _appWindowPreviousState = States.NONE;
 
     async function init() {
         LauncherService.updateListener(_onLauncherInfoUpdate);
@@ -46,6 +47,7 @@ define([
         if (info && info.info.live_client_data) {
             if (_listeners.hasOwnProperty(LISTENERS.IN_GAME)) {
                 _listeners[LISTENERS.IN_GAME](info.info.live_client_data);
+                _appWindowPreviousState = States.IN_GAME;
             }
         }
     }
@@ -66,10 +68,17 @@ define([
         }
     }
 
+    function getAppWindowPreviousState() {
+        return _appWindowPreviousState;
+    }
+
     // on launcher state & champselect update
     async function _onLauncherInfoUpdate(info) {
         if (info.feature === 'game_flow') {
             let state = await LauncherService.getState();
+            if (state === States.IN_CHAMPSELECT || state === States.IN_GAME) {
+                _appWindowPreviousState = state;
+            }
             if (_listeners.hasOwnProperty(LISTENERS.STATE_CHANGE)) {
                 _listeners[LISTENERS.STATE_CHANGE](state);
             }
@@ -99,6 +108,7 @@ define([
         init,
         LISTENERS,
         getState,
+        getAppWindowPreviousState,
         addListener,
     }
 });

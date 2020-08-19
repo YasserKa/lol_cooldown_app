@@ -17,6 +17,7 @@ define([
             this._update = this._update.bind(this);
             this._hotkeyEl = document.getElementById("hotkey-wrapper");
 
+            this.displayAd();
             // update view when settings are updated
             this._settings.addListener('app_view', (settings) => {
                 HtmlHandler.update(this.game);
