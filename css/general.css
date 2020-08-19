@@ -17,6 +17,7 @@ html, body {
 /** needed to make tippy works **/
 [data-tippy-root] {
     width: max-content;
+    font-weight: lighter;
 }
 
 body {
