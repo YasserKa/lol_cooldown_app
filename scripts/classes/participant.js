@@ -248,7 +248,8 @@ define([], function() {
                     let bonusAS = this._getBonusAS();
                     bonusAS = bonusAS > 105 ? 105 : bonusAS;
                     newCds = [cooldowns[0] * (1 - (0.01 * (bonusAS / 1.68)))];
-                } else if (key === "P") {
+                } else if (key === "P" && this.champion.name !== 'Swain') {
+                    // Swain's passive is affected by CDred
                     // passives that don't have cooldowns or one cooldown only
                     if (cooldowns.length === 18) {
                         newCds = [cooldowns[this.level - 1]];
