@@ -118,7 +118,6 @@ define([
             if (!Testing.isTesting()) {
                 if (!this._runesUpdated) {
                     this._participantRunes = await this._getRunesUsingServer();
-                    this._runesUpdated = true;
                 }
                 data.participantRunes = this._participantRunes;
             }
@@ -163,6 +162,7 @@ define([
                 let html = `* runes not loaded: ${response.message}`;
                 this._view.updateHeaderMessage(html);
             }
+            this._runesUpdated = true;
             return response.runes;
         }
 
