@@ -237,7 +237,7 @@ define([
         // in clash & aram there's no cloud drake
         let isSpellsCDrMode = participant.isSpellsCDrMode();
 
-        let items = participant.getItems();
+        let items = participant.getCDRedItems();
 
         el += '<td class="items d-inline-flex">'
         // items
@@ -254,7 +254,8 @@ define([
         el += '<td class="runes d-inline-flex">'
         let index = 0;
         for (let [key, rune] of Object.entries(runes)) {
-            if (key === 'UltimateHunter' || key === 'IngeniousHunter') {
+            if (key === 'UltimateHunter' || key === 'IngeniousHunter'
+                || key === 'AttackSpeed' || key === 'LegendAlacrity') {
                 continue;
             }
             el += `<img class="rune-icon ml-1"`;

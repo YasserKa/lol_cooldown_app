@@ -93,10 +93,18 @@ define([
         }
 
         function getRunesNeeded() {
-            return Object.keys(_runesReforged);
+            // 5005 & 9104 is for AS rune (needed by Yasuo & Yone)
+            return [...Object.keys(_runesReforged), '5005', '9104'];
         }
 
         function getRuneById(id) {
+            // AS rune
+            if (id === 5005) {
+                return {'name': 'AttackSpeed'};
+            }
+            if (id === 9104) {
+                return {'name': 'LegendAlacrity'};
+            }
             // making a copy of the object, because it will be altered for the
             // 1-10CDred minirune
             let rune = Object.assign({}, _runesReforged[id]);

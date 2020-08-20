@@ -6,11 +6,13 @@ define([], function() {
         IngeniousHunter: 'IngeniousHunter',
         Transcendence: 'Transcendence',
         CosmicInsight: 'CosmicInsight',
+        AttackSpeed: 'AttackSpeed',
+        LegendAlacrity: 'LegendAlacrity',
     };
 
     class Participant {
         constructor(data) {
-            this.uniqueKills = [];
+            this.kills = [];
             this.cdRed = 0;
             this.ultCdRed = 0;
             this.spellsCdRed = 0;
@@ -21,6 +23,7 @@ define([], function() {
             this.originalSpells = data['spells'];
             this.currentSpells = JSON.parse(JSON.stringify(this.originalSpells));
             this.gameMode = data.gameMode
+            this.creepScore = data.creepScore;
 
             this.position = data['position'];
             this.cellId = data.hasOwnProperty('cellId') ? data['cellId'] : null;
@@ -35,6 +38,7 @@ define([], function() {
             this.position = data['position'];
             this.level = data['level'];
             this.items = data['items'];
+            this.creepScore = data.creepScore;
             if (data.hasOwnProperty('gameMode') && typeof data.gameMode !== 'undefined') {
                 this.gameMode = data.gameMode
             }
@@ -49,6 +53,7 @@ define([], function() {
                 this.currentSpells = JSON.parse(JSON.stringify(this.originalSpells));
             }
 
+
             this._updateCdRed();
             this._updateAbilitiesCd();
             this._updateSpellsCd();
@@ -60,10 +65,8 @@ define([], function() {
             this._updateAbilitiesCd();
         }
 
-        addUniqueKill(name) {
-            if (!this.uniqueKills.includes(name)) {
-                this.uniqueKills.push(name);
-            }
+        updateKills(kills) {
+            this.kills = kills;
             this._updateAbilitiesCd();
         }
 
@@ -107,6 +110,14 @@ define([], function() {
             return this.items;
         }
 
+        getCDRedItems() {
+            return this.items.filter(item => item.cooldownReduction > 0 || item.uniqueCooldownReduction > 0);
+        }
+
+        getASItems() {
+            return this.items.filter(item => item.attackSpeed > 0);
+        }
+
         getSpellsCDr() {
             return this.cdReduction;
         }
@@ -128,7 +139,7 @@ define([], function() {
         }
 
         getUniqueKillsCount() {
-            return this.uniqueKills.length;
+            return new Set(this.kills).size;
         }
 
         getCloudStacks() {
@@ -187,7 +198,7 @@ define([], function() {
             // CloudStacks
             let runesUltCdRed = this.cloudDrakeStacks * 10;
             if (this._hasRune(RUNES_ENUM.UltimateHunter)) {
-                runesUltCdRed += 5 + this.uniqueKills.length * 4
+                runesUltCdRed += 5 + new Set(this.kills).size * 4
             }
             let addedUltcdRed = (100 - this.cdRed) * (runesUltCdRed / 100);
             this.ultCdRed = this.cdRed + addedUltcdRed;
@@ -227,8 +238,17 @@ define([], function() {
                 if (cooldowns[0] === '-') {
                     continue;
                 }
-
-                if (key === "P") {
+                if ((this.champion.name === 'Yasuo' && key === 'Q') ||
+                    (this.champion.name === 'Yone' && key === 'Q')
+                ) {
+                    let bonusAS = this._getBonusAS();
+                    bonusAS = bonusAS > 111.1 ? 111.1 : bonusAS;
+                    newCds = [cooldowns[0] * (1 - (0.01 * (bonusAS / 1.67)))];
+                } else if (this.champion.name === 'Yone' && key === 'W') {
+                    let bonusAS = this._getBonusAS();
+                    bonusAS = bonusAS > 105 ? 105 : bonusAS;
+                    newCds = [cooldowns[0] * (1 - (0.01 * (bonusAS / 1.68)))];
+                } else if (key === "P") {
                     // passives that don't have cooldowns or one cooldown only
                     if (cooldowns.length === 18) {
                         newCds = [cooldowns[this.level - 1]];
@@ -241,6 +261,7 @@ define([], function() {
                         newCds = [cooldowns[this.level - 1]];
                     } else {
                         cooldowns.forEach(cooldown => {
+                            // yasou Q & yone Q, W are exception
                             let newCd = 0;
                             if (key === "R") {
                                 newCd = cooldown - (cooldown * (this.ultCdRed / 100));
@@ -255,6 +276,31 @@ define([], function() {
 
                 this.currentAbilities[key]['cooldowns'] = newCds;
             }
+        }
+
+        _getBonusAS() {
+            let bonusAS = 0;
+            // champion AS growth
+            // formula extracted from https://leagueoflegends.fandom.com/wiki/Champion_statistic
+            // 2.5 is AS growth for Yasou & Yone
+            bonusAS += 2.5 * (this.level - 1) * (0.7025 + 0.0175 * (this.level - 1));
+            let items = this.getASItems();
+            for (let item of items) {
+                bonusAS += item.attackSpeed;
+            }
+            if (this._hasRune(RUNES_ENUM.AttackSpeed)) {
+                bonusAS += 10;
+            }
+            if (this._hasRune(RUNES_ENUM.LegendAlacrity)) {
+                // 100 points for champion Damage rating takedowns
+                // 100 points for epic monster Damage rating takedowns
+                // 25 points for large monster kills
+                // 4 points for minion kills
+                let points = (this.creepScore  * 4 + this.kills.length * 100);
+                bonusAS += 3 + parseInt(points / 100);
+            }
+
+            return bonusAS;
         }
 
         _updateSpellsCd() {

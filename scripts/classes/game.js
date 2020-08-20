@@ -50,11 +50,19 @@ define([
 
         _updateChampionKills(events) {
             let participants = this._blueTeam.concat(this._redTeam);
+            let contributors = {};
             for (let event of events) {
-                for (let partic of participants) {
-                    if (event['Contributors'].includes(partic.getSummonerName())) {
-                        partic.addUniqueKill(event['VictimName']);
+                for (let contributor of event['Contributors']) {
+                    if (!contributors.hasOwnProperty(contributor)) {
+                        contributors[contributor] = [];
                     }
+                    contributors[contributor].push(event['VictimName']);
+                }
+            }
+            for (let partic of participants) {
+                let summonerName = partic.getSummonerName();
+                if (contributors.hasOwnProperty(summonerName)) {
+                    partic.updateKills(contributors[summonerName]);
                 }
             }
         }

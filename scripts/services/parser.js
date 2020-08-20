@@ -195,14 +195,15 @@ define([
             let items = _parseItemsData(participant['items']);
 
             let parsedData = {
-                'summonerName': participant['summonerName'],
+                'summonerName': participant.summonerName,
                 'champion': champData,
-                'position': participant['position'],
-                'level': participant['level'],
+                'position': participant.position,
+                'level': participant.level,
+                'creepScore': participant.scores.creepScore,
                 'spells': spellsData,
-                'runes': _parseParticipantRunes(participant['runesReforged']),
+                'runes': _parseParticipantRunes(participant.runesReforged),
                 'items': items,
-                'gameMode': participant['gameMode'],
+                'gameMode': participant.gameMode,
             };
 
             if (participant['team'])
@@ -251,6 +252,7 @@ define([
                 parsedParticipantRunes[rune.name].image = '/img/' + rune.image;
             }
         }
+
         return parsedParticipantRunes;
     }
 
