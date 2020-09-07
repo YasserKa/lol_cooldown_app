@@ -31,6 +31,10 @@ define([
     }
 
     async function getState() {
+        let isLauncherRunning = await _getRunningLauncherInfo();
+        if (!isLauncherRunning) {
+            return States.IDLE;
+        }
         let launcherInfo = await _getLauncherInfo();
         return _getState(launcherInfo.res.game_flow.phase);
     }
