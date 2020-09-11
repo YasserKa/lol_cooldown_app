@@ -9,7 +9,7 @@
         "icon": "img/hourglass.png",
         "icon_gray": "img/hourglass-gray.png",
         "launcher_icon": "img/hourglass.ico",
-        "description": " View the cooldowns of champions during champselect & ingame.\n Items, runes & cloud drake is put into consideration to show the correct numbers.\n Use this info to plan ahead and win your games."
+        "description": "View the cooldowns of champions.\n Items, runes & cloud drake is put into consideration to show the correct numbers.\n Use this info to plan ahead and win your games."
     },
     "permissions": [
         "Hotkeys",
