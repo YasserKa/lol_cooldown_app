@@ -65,6 +65,10 @@ button:focus {
     height: 90px;
 }
 
+#ad-div {
+    height: 100% !important;
+    width: 100% !important;
+}
 /* settings */
 #version {
     font-size: 0.85rem;
