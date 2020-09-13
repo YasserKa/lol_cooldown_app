@@ -185,7 +185,7 @@ define([
         displayAd() {
             if (this._adEl !== null && OwAd) {
                 this._ad = new OwAd(this._adEl,
-                    {width: this._adEl.offsetWidth, height: this._adEl.offsetHeight}
+                    {size: {width: this._adEl.offsetWidth, height: this._adEl.offsetHeight}}
                 );
                 this._ad.addEventListener('complete', this.removeAd);
             }
