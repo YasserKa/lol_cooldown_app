@@ -43,9 +43,8 @@ define([
         async init() {
             let overwolfWindow = await WindowsService.getCurrentWindow();
             this._windowName = overwolfWindow.name;
-            let scale = this._settings.getSetting(this._settings.SETTINGS.WINDOW_SCALE);
-            this._defaultHeight = overwolfWindow.height / scale;
-            this._defaultWidth = overwolfWindow.width / scale;
+            this._defaultHeight = overwolfWindow.height;
+            this._defaultWidth = overwolfWindow.width;
 
             if (this._settingsEl !== null) {
                 this._settingsEl.addEventListener("click", async () => {
@@ -149,6 +148,9 @@ define([
             this._updateWindowScale(scale);
             this.updateHtmlContentScale(scale);
             this.updateAdScale(scale);
+            if (this._adEl !== null) {
+                this.updateAdScale(scale);
+            }
         }
 
         _updateWindowScale(scale) {
@@ -199,6 +201,10 @@ define([
 
         // define the event handler
         onWindowStateChanged(state) {
+            // don't refresh/remove ad when dealing with setting window
+            if (state.window_name === 'settings') {
+                return;
+            }
             if (this._ad === null) {
                 return;
             }

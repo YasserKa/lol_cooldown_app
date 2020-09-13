@@ -13,7 +13,7 @@ define([
      */
     function obtainWindow(name) {
         return new Promise((resolve, reject) => {
-            overwolf.windows.obtainDeclaredWindow(name, (response) => {
+            overwolf.windows.obtainDeclaredWindow(name, {useDefaultSizeAndLocation: true}, (response) => {
                 if (response.success) {
                     return resolve(response);
                 }

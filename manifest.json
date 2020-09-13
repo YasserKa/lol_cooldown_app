@@ -50,8 +50,6 @@
             },
             "main": {
                 "file": "windows/main/main.html",
-                "native_window": true,
-                "desktop_only": true,
                 "transparent": true,
                 "size": {
                     "width": 500,
