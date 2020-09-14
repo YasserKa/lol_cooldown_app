@@ -50,6 +50,7 @@
             },
             "main": {
                 "file": "windows/main/main.html",
+                "desktop_only": true,
                 "transparent": true,
                 "size": {
                     "width": 500,
