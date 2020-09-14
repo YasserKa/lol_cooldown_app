@@ -147,7 +147,6 @@ define([
             console.info('updating window scale');
             this._updateWindowScale(scale);
             this.updateHtmlContentScale(scale);
-            this.updateAdScale(scale);
             if (this._adEl !== null) {
                 this.updateAdScale(scale);
             }
@@ -201,8 +200,7 @@ define([
 
         // define the event handler
         onWindowStateChanged(state) {
-            // don't refresh/remove ad when dealing with setting window
-            if (state.window_name === 'settings') {
+            if (state.window_name === WindowNames.SETTINGS) {
                 return;
             }
             if (this._ad === null) {

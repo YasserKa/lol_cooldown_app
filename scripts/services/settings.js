@@ -24,7 +24,11 @@ define([
 
 
     function addListener(key, listener) {
-        _listeners[key] = listener
+        _listeners[key] = listener;
+    }
+
+    function removeListener(key) {
+        delete _listeners[key];
     }
 
     function onSettingsUpdate(settings) {
@@ -61,5 +65,6 @@ define([
         setSetting,
         getSetting,
         addListener,
+        removeListener,
     }
 });

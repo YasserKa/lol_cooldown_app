@@ -36,6 +36,8 @@ define([
                 await StateService.init();
                 this._onStateChanged(await StateService.getState());
             }
+
+            overwolf.windows.onStateChanged.addListener(this._onWindowStateChanged);
         }
 
         // on client state change (idle/in-champselect/in-game)
@@ -54,6 +56,13 @@ define([
                 case States.CHAMPSELECT_TO_GAME:
                     await WindowsService.restoreWindowOnlyIfNotOpen(WindowNames.APP);
                     break;
+            }
+        }
+
+        static _onWindowStateChanged(state) {
+            // don't refresh/remove ad when dealing with setting window
+            if (state.window_state_ex === 'closed') {
+                Settings.removeListener(`${state.window_name}_view_scale`);
             }
         }
 

@@ -43,10 +43,7 @@ define([
             // await WindowsService.restore(this._windowName);
         }
 
-
-
     }
-
 
     return BaseWindowController;
 });
