@@ -308,7 +308,7 @@ define([
         // rounded it to 0/0.5
         cooldown = Math.round(cooldown * 2) / 2;
 
-        if (_timeSetting == 'minutes' && cooldown > 60) {
+        if (_timeSetting == 'minutes' && cooldown >= 60) {
             var minutes = Math.floor(cooldown / 60);
             var seconds = cooldown - minutes * 60;
 
