@@ -48,7 +48,14 @@ define([
 
             if (this._settingsEl !== null) {
                 this._settingsEl.addEventListener("click", async () => {
-                    await WindowsService.restore(WindowNames.SETTINGS);
+                    const state = await WindowsService.getWindowState(WindowNames.SETTINGS);
+                    if (state === "minimized" || state === "closed") {
+                        WindowsService.restore(WindowNames.SETTINGS);
+                    } else if (state === "normal" || state === "maximized") {
+                        WindowsService.close(WindowNames.SETTINGS);
+                    }
+                });
+            }
                 });
             }
             if (this._minimizeButton !== null) {
