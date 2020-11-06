@@ -174,6 +174,37 @@ define([
             }
         });
     }
+    /**
+     * Returns a map (window name, object) of all open windows.
+     * @returns {Promise<any>}
+     */
+    function centerWindow(windowName, horizonalOnly=true) {
+        return new Promise(async (resolve, reject) => {
+            try {
+            overwolf.utils.getMonitorsList(async function (info) {
+                let display = info['displays'][0];
+                let height = display['height'];
+                let width = display['width'];
+                let my_window = await obtainWindow(windowName);
+                console.log(my_window)
+                let windowHeight = my_window['window']['height'];
+                let windowWidth = my_window['window']['width'];
+
+                let newTopPosition = 0;
+                let newLeftPosition = (width / window.devicePixelRatio) / 2 - windowWidth / 2;
+                if (!horizonalOnly)  {
+                    newTopPosition = (height / window.devicePixelRatio) / 2 - windowHeight / 2;
+                }
+
+                overwolf.windows.changePosition(windowName, newLeftPosition, newTopPosition);
+                resolve();
+            });
+
+            } catch (e) {
+                reject(e);
+            }
+        });
+    }
 
     /**
      * get current window name
@@ -206,6 +237,7 @@ define([
         obtainWindow,
         getOpenWindows,
         getWindowState,
+        centerWindow,
         restoreWindowOnlyIfNotOpen,
     }
 });
