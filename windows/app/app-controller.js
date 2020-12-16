@@ -47,6 +47,8 @@ define([
                 },
                 "insertAbove": false,
             }, () => {});
+            WindowsService.centerWindow(WindowNames.APP);
+
 
             try {
                 await this._mainWindow.dataHandler.init();

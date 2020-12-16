@@ -13,8 +13,7 @@ define([
      */
     function obtainWindow(name) {
         return new Promise((resolve, reject) => {
-            // overwolf.windows.obtainDeclaredWindow(name, {useDefaultSizeAndLocation: true}, (response) => {
-            overwolf.windows.obtainDeclaredWindow(name, (response) => {
+            overwolf.windows.obtainDeclaredWindow(name, {useDefaultSizeAndLocation: true}, (response) => {
                 if (response.success) {
                     return resolve(response);
                 }
@@ -186,7 +185,6 @@ define([
                 let height = display['height'];
                 let width = display['width'];
                 let my_window = await obtainWindow(windowName);
-                console.log(my_window)
                 let windowHeight = my_window['window']['height'];
                 let windowWidth = my_window['window']['width'];
 
