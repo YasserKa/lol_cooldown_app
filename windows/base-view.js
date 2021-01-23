@@ -17,6 +17,7 @@ define([
             this._header = document.getElementsByClassName("app-header")[0];
             this._headerMessage = document.getElementById("header-message");
             this._settingsEl = document.getElementById("settings");
+            this._feedbackEl = document.getElementById("feedback");
             this._adEl = document.getElementById("ad-div");
             this._spinner = document.querySelector(".spinner-container");
             this._discord = document.getElementsByClassName("discord-link");
@@ -56,6 +57,14 @@ define([
                     }
                 });
             }
+            if (this._feedbackEl !== null) {
+                this._feedbackEl.addEventListener("click", async () => {
+                    const state = await WindowsService.getWindowState(WindowNames.FEEDBACK);
+                    if (state === "minimized" || state === "closed") {
+                        WindowsService.restore(WindowNames.FEEDBACK);
+                    } else if (state === "normal" || state === "maximized") {
+                        WindowsService.close(WindowNames.FEEDBACK);
+                    }
                 });
             }
             if (this._minimizeButton !== null) {
@@ -205,7 +214,7 @@ define([
 
         // define the event handler
         onWindowStateChanged(state) {
-            if (state.window_name === WindowNames.SETTINGS) {
+            if (state.window_name === WindowNames.SETTINGS || state.window_name === WindowNames.FEEDBACK) {
                 return;
             }
             if (this._ad === null) {

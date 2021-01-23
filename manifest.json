@@ -81,12 +81,28 @@
                     "height": 1000
                 }
             },
+            "feedback": {
+                "file": "windows/feedback/feedback.html",
+                "transparent": true,
+                "size": {
+                    "width": 600,
+                    "height": 470
+                },
+                "min_size": {
+                    "width": 0,
+                    "height": 0
+                },
+                "max_size": {
+                    "width": 1000,
+                    "height": 1000
+                }
+            },
             "app": {
                 "file": "windows/app/app.html",
                 "transparent": true,
                 "size": {
                     "width": 1150,
-                    "height": 650
+                    "height": 800
                 },
                 "min_size": {
                     "width": 0,

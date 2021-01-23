@@ -10,8 +10,13 @@
 }
 
 .discord,
-.logo {
+.logo,
+.feedback {
   width: 28px;
+}
+
+.feedback {
+ padding: 5px !important;
 }
 
 .toggle-icons svg {

@@ -55,6 +55,18 @@ button:focus {
     background-color: #202B43;
 }
 
+/* feedback */
+
+input[type=text],
+textarea.form-control {
+    background-color: #202B43;
+    color: #fff;
+}
+.form-control:focus {
+    background-color: #202B43;
+    color: #fff;
+}
+
 /* Ad for main window */
 .ad-container.main {
     width: 400px;
@@ -62,8 +74,8 @@ button:focus {
 }
 
 .ad-container.app {
-    width: 728px;
-    height: 90px;
+    width: 300px;
+    height: 250px;
 }
 
 #ad-div {

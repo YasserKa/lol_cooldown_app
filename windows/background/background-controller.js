@@ -74,6 +74,7 @@ define([
                 } else if (state === "normal" || state === "maximized") {
                     WindowsService.minimize(WindowNames.APP);
                     WindowsService.close(WindowNames.SETTINGS);
+                    WindowsService.close(WindowNames.FEEDBACK);
                 }
             });
         }
