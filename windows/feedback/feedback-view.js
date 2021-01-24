@@ -25,7 +25,6 @@ define([
                     url += "mail:" + this._emailEl.value +
                         "         feedback: "+this._feedbackTextEl.value;
 
-                    console.log(encodeURI(url))
                     await Utils.makeRequest(url);
 
                     await WindowsService.closeCurrentWindow();

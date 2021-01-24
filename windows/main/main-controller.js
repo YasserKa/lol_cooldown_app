@@ -26,9 +26,9 @@ define([
             // if player was in game display
             let prevState = this._stateService.getAppWindowPreviousState();
             // show ad after finishing a game
-            if (prevState === States.IN_GAME) {
-                this._view.displayAd();
-            }
+            // if (prevState === States.IN_GAME) {
+            this._view.displayAd();
+            // }
             // disable window flashing in taskbar
             overwolf.windows.flash(WindowNames.MAIN, overwolf.windows.enums.FlashBehavior.off);
             this._view.setWindowPosition();

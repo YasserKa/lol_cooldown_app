@@ -189,12 +189,13 @@ define([
                 let windowWidth = my_window['window']['width'];
 
                 let newTopPosition = 0;
-                let newLeftPosition = (width / window.devicePixelRatio) / 2 - windowWidth / 2;
+                let newLeftPosition = (width / 2 - windowWidth / 2) / window.devicePixelRatio;
+
                 if (!horizonalOnly)  {
-                    newTopPosition = (height / window.devicePixelRatio) / 2 - windowHeight / 2;
+                    newTopPosition = (height / 2 - windowHeight / 2) / window.devicePixelRatio;
                 }
 
-                overwolf.windows.changePosition(windowName, newLeftPosition, newTopPosition);
+                overwolf.windows.changePosition(windowName, parseInt(newLeftPosition), parseInt(newTopPosition));
                 resolve();
             });
 

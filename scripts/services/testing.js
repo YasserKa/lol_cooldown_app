@@ -6,10 +6,10 @@ define([
     ) {
 
     const IS_TESTING = false;
-    const STATE = States.IN_CHAMPSELECT;
-    // const STATE = States.IN_GAME;
+    // const STATE = States.IN_CHAMPSELECT;
+    const STATE = States.IN_GAME;
     // const STATE = States.CHAMPSELECT_TO_GAME;
-    const FAKE_RUNES = true;
+    const FAKE_RUNES = false;
 
     function isTesting() {
         return IS_TESTING;
@@ -88,6 +88,9 @@ define([
                     'championName': 'Soraka',
                     'position': '',
                     'level': 1,
+                    'scores': {
+                        'creepScore': 10,
+                    },
                     'summonerSpells': {
                         'summonerSpellOne': {
                             'displayName': 'Ignite',
@@ -98,7 +101,11 @@ define([
                     },
                     'items': [
                         {'itemID': 3110},
-                        {'itemID': 3114}
+                        {'itemID': 3110},
+                        {'itemID': 3110},
+                        {'itemID': 3110},
+                        {'itemID': 3110},
+                        {'itemID': 3110},
                     ],
                     'team': 'ORDER',
                 },
@@ -107,6 +114,9 @@ define([
                     'championName': 'Jhin',
                     'position': '',
                     'level': 1,
+                    'scores': {
+                        'creepScore': 10,
+                    },
                     'summonerSpells': {
                         'summonerSpellOne': {
                             'displayName': 'Ignite',
@@ -126,6 +136,9 @@ define([
                     'championName': 'Vayne',
                     'position': '',
                     'level': 1,
+                    'scores': {
+                        'creepScore': 10,
+                    },
                     'summonerSpells': {
                         'summonerSpellOne': {
                             'displayName': 'Ignite',
@@ -145,6 +158,9 @@ define([
                     'championName': 'Annie',
                     'position': '',
                     'level': 1,
+                    'scores': {
+                        'creepScore': 10,
+                    },
                     'summonerSpells': {
                         'summonerSpellOne': {
                             'displayName': 'Ignite',
@@ -162,6 +178,9 @@ define([
                     'championName': 'Olaf',
                     'position': '',
                     'level': 1,
+                    'scores': {
+                        'creepScore': 10,
+                    },
                     'summonerSpells': {
                         'summonerSpellOne': {
                             'displayName': 'Flash',
@@ -182,6 +201,97 @@ define([
                     'championName': 'Olaf',
                     'position': '',
                     'level': 1,
+                    'scores': {
+                        'creepScore': 10,
+                    },
+                    'summonerSpells': {
+                        'summonerSpellOne': {
+                            'displayName': 'Teleport',
+                        },
+                        'summonerSpellTwo': {
+                            'displayName': 'Flash',
+                        },
+                    },
+                    'items': [
+                        {'itemID': 3110},
+                        {'itemID': 3114}
+                    ],
+                    'team': 'CHAOS',
+                },
+                {
+                    'summonerName': 'red2',
+                    'championName': 'Olaf',
+                    'position': '',
+                    'level': 1,
+                    'scores': {
+                        'creepScore': 10,
+                    },
+                    'summonerSpells': {
+                        'summonerSpellOne': {
+                            'displayName': 'Teleport',
+                        },
+                        'summonerSpellTwo': {
+                            'displayName': 'Flash',
+                        },
+                    },
+                    'items': [
+                        {'itemID': 3110},
+                        {'itemID': 3114}
+                    ],
+                    'team': 'CHAOS',
+                },
+                {
+                    'summonerName': 'red3',
+                    'championName': 'Olaf',
+                    'position': '',
+                    'level': 1,
+                    'scores': {
+                        'creepScore': 10,
+                    },
+                    'summonerSpells': {
+                        'summonerSpellOne': {
+                            'displayName': 'Teleport',
+                        },
+                        'summonerSpellTwo': {
+                            'displayName': 'Flash',
+                        },
+                    },
+                    'items': [
+                        {'itemID': 3110},
+                        {'itemID': 3114}
+                    ],
+                    'team': 'CHAOS',
+                },
+                {
+                    'summonerName': 'red4',
+                    'championName': 'Olaf',
+                    'position': '',
+                    'level': 1,
+                    'scores': {
+                        'creepScore': 10,
+                    },
+                    'summonerSpells': {
+                        'summonerSpellOne': {
+                            'displayName': 'Teleport',
+                        },
+                        'summonerSpellTwo': {
+                            'displayName': 'Flash',
+                        },
+                    },
+                    'items': [
+                        {'itemID': 3110},
+                        {'itemID': 3114}
+                    ],
+                    'team': 'CHAOS',
+                },
+                {
+                    'summonerName': 'red5',
+                    'championName': 'Olaf',
+                    'position': '',
+                    'level': 1,
+                    'scores': {
+                        'creepScore': 10,
+                    },
                     'summonerSpells': {
                         'summonerSpellOne': {
                             'displayName': 'Teleport',

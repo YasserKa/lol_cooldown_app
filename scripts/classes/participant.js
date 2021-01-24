@@ -14,6 +14,8 @@ define([], function() {
         constructor(data) {
             this.kills = [];
             this.cdRed = 0;
+            this.abilityHaste = 0;
+            this.summonerSpellHaste = 0;
             this.ultCdRed = 0;
             this.spellsCdRed = 0;
             this.cloudDrakeStacks = 0;
@@ -111,7 +113,7 @@ define([], function() {
         }
 
         getCDRedItems() {
-            return this.items.filter(item => item.cooldownReduction > 0 || item.uniqueCooldownReduction > 0);
+            return this.items.filter(item => item.abilityHaste > 0);
         }
 
         getASItems() {
@@ -162,65 +164,59 @@ define([], function() {
             return this.summonerName !== null;
         }
 
+        _getCooldownReduction(haste) {
+            return (1 - (1/(1+haste/100)))*100;
+        }
+
         _updateCdRed() {
-            const levelCdRed = [1, 1.53, 2.06, 2.59, 3.12, 3.65, 4.18, 4.71, 5.24, 5.76, 6.29, 6.82, 7.35, 7.88, 8.41, 8.94, 9.47, 10];
-            let cdRed = 0;
-            let itemsUsed = [];
+            this.abilityHaste = 0;
 
             for (let item of this.items) {
                 // add unique cooldowns one time
-                if (!itemsUsed.includes(item.name)) {
-                    cdRed += item.uniqueCooldownReduction;
-                }
-                itemsUsed.push(item.name);
-                cdRed += item.cooldownReduction;
+                this.abilityHaste += item.abilityHaste;
             }
 
             if (this._hasRune(RUNES_ENUM.CooldownReduction)) {
-                // when it's 0 don't decrease it by 1
-                cdRed += levelCdRed[this.level - 1];
-            }
-            if (this._hasRune(RUNES_ENUM.Transcendence) && this.level >= 10) {
-                cdRed += 10;
-            }
-            if (this._hasRune(RUNES_ENUM.CosmicInsight)) {
-                cdRed += 5;
-                // Max cdRed is 45%
-                cdRed = cdRed > 45 ? 45 : cdRed;
-            } else {
-                // Max cdRed is 40%
-                cdRed = cdRed > 40 ? 40 : cdRed;
+                this.abilityHaste += 8;
             }
 
-            this.cdRed = Number(cdRed.toFixed(2));
+            if (this._hasRune(RUNES_ENUM.Transcendence)) {
+                if (this.level >= 5) {
+                    this.abilityHaste += 5;
+                }
+                if (this.level >= 10) {
+                    this.abilityHaste += 5;
+                }
+            }
+
+            this.cdRed = this._getCooldownReduction(this.abilityHaste)
+            this.cdRed = Number(this.cdRed.toFixed(2));
 
             // Ultimate Cooldown reduction addition from runes & dragon stacks
             // CloudStacks
-            let runesUltCdRed = this.cloudDrakeStacks * 10;
+            let ultHaste = this.cloudDrakeStacks * 12;
             if (this._hasRune(RUNES_ENUM.UltimateHunter)) {
-                runesUltCdRed += 5 + new Set(this.kills).size * 4
+                ultHaste += 6 + new Set(this.kills).size * 5;
             }
-            let addedUltcdRed = (100 - this.cdRed) * (runesUltCdRed / 100);
-            this.ultCdRed = this.cdRed + addedUltcdRed;
+
+            this.ultCdRed = this._getCooldownReduction(ultHaste+this.abilityHaste);
             this.ultCdRed = Number(this.ultCdRed.toFixed(2));
 
             // Spells Cooldown Reduction
-            let spellsCdRed = 0;
+            this.summonerSpellHaste = 0;
             let hasCdrBoots = this.items.filter(value => value.name === 'Ionian Boots of Lucidity').length > 0;
 
-            // Max cdRed is 45%
-            if (this.isSpellsCDrMode())
-                spellsCdRed += 40;
             if (hasCdrBoots)
-                spellsCdRed += 10;
-            if (this._hasRune(RUNES_ENUM.CosmicInsight)) {
-                if (this.isSpellsCDrMode())
-                    spellsCdRed += ((100 - spellsCdRed) * 0.05);
-                else
-                    spellsCdRed += 5
-            }
+                this.summonerSpellHaste += 12;
+            if (this._hasRune(RUNES_ENUM.CosmicInsight))
+                this.summonerSpellHaste += 18;
 
-            this.spellsCdRed = spellsCdRed;
+            // HA spell haste increases if boot or rune is available
+            if (this.isSpellsCDrMode())
+                this.summonerSpellHaste += 70 * this.summonerSpellHaste/100 + 70;
+
+            this.spellsCdRed = this._getCooldownReduction(this.summonerSpellHaste);
+            this.spellsCdRed = Number(this.spellsCdRed.toFixed(2));
         }
 
         _updateAbilitiesCd() {

@@ -193,8 +193,8 @@ define([
         }
 
         updateAdScale(scale) {
-            this._adEl.style.transform = `scale(${scale})`;
-            this._adEl.style.transformOrigin = 'left top';
+            // this._adEl.style.transform = `scale(${scale})`;
+            // this._adEl.style.transformOrigin = 'left top';
         }
 
         displayAd() {

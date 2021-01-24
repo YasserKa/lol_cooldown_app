@@ -222,18 +222,18 @@ define([
 
     function _parseInGameEvents(events) {
         let parsedEvents = [];
-        for (event of events) {
-            if (event['EventName'] === 'ChampionKill') {
+        for (event_ of events) {
+            if (event_['EventName'] === 'ChampionKill') {
                 parsedEvents.push({
                     'EventName': 'ChampionKill',
-                    'Contributors': [...event['Assisters'], event['KillerName']],
-                    'VictimName': event['VictimName'],
+                    'Contributors': [...event_['Assisters'], event_['KillerName']],
+                    'VictimName': event_['VictimName'],
                 });
             }
-            if (event['EventName'] === 'DragonKill' && event['DragonType'] === 'Air') {
+            if (event_['EventName'] === 'DragonKill' && event_['DragonType'] === 'Air') {
                 parsedEvents.push({
                     'EventName': 'DragonKill',
-                    'KillerName': event['KillerName'],
+                    'KillerName': event_['KillerName'],
                 });
             }
         }

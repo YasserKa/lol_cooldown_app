@@ -255,7 +255,8 @@ define([
         let index = 0;
         for (let [key, rune] of Object.entries(runes)) {
             if (key === 'UltimateHunter' || key === 'IngeniousHunter'
-                || key === 'AttackSpeed' || key === 'LegendAlacrity') {
+                || key === 'AttackSpeed' || key === 'LegendAlacrity' ||
+                 key === 'CosmicInsight') {
                 continue;
             }
             el += `<img class="rune-icon ml-1"`;
