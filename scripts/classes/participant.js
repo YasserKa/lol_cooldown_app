@@ -213,7 +213,7 @@ define([], function() {
 
             // HA spell haste increases if boot or rune is available
             if (this.isSpellsCDrMode())
-                this.summonerSpellHaste += 70 * this.summonerSpellHaste/100 + 70;
+                this.summonerSpellHaste += 70;
 
             this.spellsCdRed = this._getCooldownReduction(this.summonerSpellHaste);
             this.spellsCdRed = Number(this.spellsCdRed.toFixed(2));
