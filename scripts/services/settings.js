@@ -5,6 +5,8 @@ define([
        CD_TIME: 'cooldown_time',
         CD_RED_DISPLAY: 'cooldown_reduction_display',
         WINDOW_SCALE: 'window_scale',
+        WINDOW_WIDTH: 'window_width',
+        WINDOW_HEIGHT: 'window_height',
     }
 
     const DEFAULT_SETTINGS = {};
@@ -19,7 +21,12 @@ define([
         _update();
         _settings[setting] = value;
         localStorage.setItem("settings", JSON.stringify(_settings));
-        onSettingsUpdate(_settings);
+        if (
+            setting.substring(0,12) !== SETTINGS.WINDOW_WIDTH &&
+            setting.substring(0,13) !== SETTINGS.WINDOW_HEIGHT
+        ) {
+            onSettingsUpdate(_settings);
+        }
     }
 
 
@@ -36,6 +43,25 @@ define([
             listener(settings);
         });
     }
+
+    function getSettingWindowWidth(setting, value) {
+        _update();
+        setting = SETTINGS.WINDOW_WIDTH+setting;
+        if (!_settings.hasOwnProperty(setting)) {
+            setSetting(setting, value);
+        }
+        return _settings[setting];
+    }
+
+    function getSettingWindowHeight(setting, value) {
+        _update();
+        setting = SETTINGS.WINDOW_HEIGHT+setting;
+        if (!_settings.hasOwnProperty(setting)) {
+            setSetting(setting, value);
+        }
+        return _settings[setting];
+    }
+
 
     function getSetting(setting) {
         _update();
@@ -66,5 +92,7 @@ define([
         getSetting,
         addListener,
         removeListener,
+        getSettingWindowHeight,
+        getSettingWindowWidth,
     }
 });

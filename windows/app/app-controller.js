@@ -47,7 +47,7 @@ define([
                 },
                 "insertAbove": false,
             }, () => {});
-            WindowsService.centerWindow(WindowNames.APP);
+            // WindowsService.centerWindow(WindowNames.APP);
 
 
             try {

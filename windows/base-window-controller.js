@@ -32,6 +32,7 @@ define([
             await this._view.init();
             let scale = this._settings.getSetting(this._settings.SETTINGS.WINDOW_SCALE)
             this._view.updateScale(scale);
+            // this._view.updateHtmlContentScale(scale);
         }
 
         doPostWindowRestore() {

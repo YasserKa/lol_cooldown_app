@@ -44,8 +44,8 @@ define([
         async init() {
             let overwolfWindow = await WindowsService.getCurrentWindow();
             this._windowName = overwolfWindow.name;
-            this._defaultHeight = overwolfWindow.height;
-            this._defaultWidth = overwolfWindow.width;
+            this._defaultHeight = this._settings.getSettingWindowHeight(this._windowName, overwolfWindow.height);
+            this._defaultWidth = this._settings.getSettingWindowWidth(this._windowName, overwolfWindow.width);
 
             if (this._settingsEl !== null) {
                 this._settingsEl.addEventListener("click", async () => {
@@ -193,8 +193,11 @@ define([
         }
 
         updateAdScale(scale) {
-            // this._adEl.style.transform = `scale(${scale})`;
-            // this._adEl.style.transformOrigin = 'left top';
+            // reverse the effect that zoom value is doing
+            let zoomValue = (1 + 2*(1-scale)) * 100;
+            this._adEl.style.zoom = `${zoomValue}%`;
+            this._adEl.style.transform = `scale(${scale})`;
+            this._adEl.style.transformOrigin = 'left top';
         }
 
         displayAd() {

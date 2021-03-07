@@ -18,7 +18,7 @@ define([
         async run() {
             await super.run();
 
-            WindowsService.centerWindow(WindowNames.SETTINGS);
+            // WindowsService.centerWindow(WindowNames.SETTINGS);
         }
     }
 
