@@ -29,7 +29,7 @@ define([
                 this._initGame(data);
                 this._firstChampSelectUpdate = true;
                 // don't display hotkey in-champ-select
-                $(this._hotkeyEl).css('display', 'none');
+                // $(this._hotkeyEl).css('display', 'none');
                 this.removeSpinner();
             }
 

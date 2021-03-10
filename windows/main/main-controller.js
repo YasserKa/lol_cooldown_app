@@ -15,6 +15,8 @@ define([
             super(MainView);
             this._mainWindow = overwolf.windows.getMainWindow();
             this._stateService = this._mainWindow.stateService;
+            this._hotkeyEl = document.getElementById("hotkey-wrapper");
+            $(this._hotkeyEl).css('display', 'block');
         }
 
         async run() {
