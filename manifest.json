@@ -51,7 +51,11 @@
             "main": {
                 "file": "windows/main/main.html",
                 "desktop_only": true,
+                "native_window": true,
                 "transparent": true,
+                "block_top_window_navigation": true,
+                "popup_blocker": true,
+                "mute": true,
                 "size": {
                     "width": 500,
                     "height": 600
@@ -100,6 +104,9 @@
             "app": {
                 "file": "windows/app/app.html",
                 "transparent": true,
+                "block_top_window_navigation": true,
+                "popup_blocker": true,
+                "mute": true,
                 "size": {
                     "width": 1150,
                     "height": 800
@@ -115,9 +122,6 @@
             }
         },
         "protocol_override_domains": { "googlesyndication": "http" },
-        "block_top_window_navigation": true,
-        "popup_blocker": true,
-        "mute": true,
         "externally_connectable": {
             "matches": [
                 "https://*.lolcooldown.com",
