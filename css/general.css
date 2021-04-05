@@ -11,7 +11,7 @@
 
 html, body {
     height: 100%;
-    margin: 0px
+    margin: 0px;
 }
 
 /** needed to make tippy works **/
@@ -26,7 +26,6 @@ body {
 
 main {
     height: 100%;
-    overflow: auto;
     display: flex;
     flex-direction: column;
 }
@@ -53,6 +52,8 @@ button:focus {
 /* ads */
 .ad-container {
     background-color: #202B43;
+}
+#ad-div {
 }
 
 /* feedback */

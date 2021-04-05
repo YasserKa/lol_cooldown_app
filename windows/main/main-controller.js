@@ -33,7 +33,7 @@ define([
             // }
             // disable window flashing in taskbar
             overwolf.windows.flash(WindowNames.MAIN, overwolf.windows.enums.FlashBehavior.off);
-            // this._view.setWindowPosition();
+            this._view.setWindowPosition();
         }
 
     }

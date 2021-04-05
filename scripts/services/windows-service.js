@@ -13,7 +13,7 @@ define([
      */
     function obtainWindow(name) {
         return new Promise((resolve, reject) => {
-            overwolf.windows.obtainDeclaredWindow(name, {useDefaultSizeAndLocation: false}, (response) => {
+            overwolf.windows.obtainDeclaredWindow(name, {useDefaultSizeAndLocation: true}, (response) => {
                 if (response.success) {
                     return resolve(response);
                 }
@@ -173,6 +173,19 @@ define([
             }
         });
     }
+
+    function getMonitorsList() {
+        return new Promise(async (resolve, reject) => {
+            try {
+            overwolf.utils.getMonitorsList(async function (info) {
+                resolve(info);
+            });
+
+            } catch (e) {
+                reject(e);
+            }
+        });
+    }
     /**
      * Returns a map (window name, object) of all open windows.
      * @returns {Promise<any>}
@@ -189,10 +202,10 @@ define([
                 let windowWidth = my_window['window']['width'];
 
                 let newTopPosition = 0;
-                let newLeftPosition = (width / 2 - windowWidth / 2) / window.devicePixelRatio;
+                let newLeftPosition = (width / 2 - (windowWidth / 2 * window.devicePixelRatio));
 
                 if (!horizonalOnly)  {
-                    newTopPosition = (height / 2 - windowHeight / 2) / window.devicePixelRatio;
+                    newTopPosition = (height / 2 - (windowHeight / 2 * window.devicePixelRatio));
                 }
 
                 overwolf.windows.changePosition(windowName, parseInt(newLeftPosition), parseInt(newTopPosition));
@@ -237,6 +250,7 @@ define([
         getOpenWindows,
         getWindowState,
         centerWindow,
+        getMonitorsList,
         restoreWindowOnlyIfNotOpen,
     }
 });

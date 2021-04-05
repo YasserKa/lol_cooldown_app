@@ -22,7 +22,7 @@ define([
             let overwolfWindow = await WindowsService.obtainWindow(WindowNames.MAIN);
             let windowHeight = overwolfWindow.window.height;
 
-            let newTopPosition = parseInt((height-100)/2 - windowHeight/2);
+            let newTopPosition = parseInt(height/2 - (windowHeight / 2));
             let newLeftPosition = 0;
 
             overwolf.windows.changePosition(WindowNames.MAIN, newLeftPosition, newTopPosition);

@@ -1,13 +1,15 @@
 define([
     "../scripts/constants/window-names.js",
-    "../scripts/services/drag-service.js",
+   "../scripts/services/drag-service.js",
     "../scripts/services/windows-service.js",
     "../scripts/services/hotkeys-service.js",
+    "../scripts/services/ingame-service.js",
 ], function(
     WindowNames,
     DragService,
     WindowsService,
     HotkeysService,
+    InGameService,
 ) {
     class BaseView {
         constructor() {
@@ -35,6 +37,7 @@ define([
             this.updateAdScale = this.updateAdScale.bind(this);
             this.updateHotkey = this.updateHotkey.bind(this);
             this.onWindowStateChanged = this.onWindowStateChanged.bind(this);
+            this.onGameInfoUpdated = this.onGameInfoUpdated.bind(this);
             this.displayModal = this.displayModal.bind(this);
             this._removeModal = this._removeModal.bind(this);
             this.displaySpinner = this.displaySpinner.bind(this);
@@ -44,8 +47,11 @@ define([
         async init() {
             let overwolfWindow = await WindowsService.getCurrentWindow();
             this._windowName = overwolfWindow.name;
-            this._defaultHeight = this._settings.getSettingWindowHeight(this._windowName, overwolfWindow.height);
-            this._defaultWidth = this._settings.getSettingWindowWidth(this._windowName, overwolfWindow.width);
+
+            // this._defaultHeight = this._settings.getSettingWindowHeight(this._windowName, window.innerHeight);
+            // this._defaultWidth = this._settings.getSettingWindowWidth(this._windowName, window.innerWidth);
+            this._defaultHeight = window.innerHeight
+            this._defaultWidth = window.innerWidth
 
             if (this._settingsEl !== null) {
                 this._settingsEl.addEventListener("click", async () => {
@@ -126,6 +132,9 @@ define([
             // remove/refresh app on window state change(minimize/normal)
             overwolf.windows.onStateChanged.removeListener(this.onWindowStateChanged);
             overwolf.windows.onStateChanged.addListener(this.onWindowStateChanged);
+
+            overwolf.games.onGameInfoUpdated.removeListener(this.onGameInfoUpdated);
+            overwolf.games.onGameInfoUpdated.addListener(this.onGameInfoUpdated);
         }
 
         updateHeaderMessage(message) {
@@ -159,9 +168,20 @@ define([
             }
         }
 
-        updateScale(scale) {
+        async updateScale(scale, ingame=false) {
             console.info('updating window scale');
+
+            let monitors = await WindowsService.getMonitorsList();
+
+            scale = monitors.displays[0].width/1920 * scale
             this._updateWindowScale(scale);
+
+            if (this._windowName == WindowNames.APP)  {
+                if (monitors.displays[0].width <= 1366 && !ingame) {
+                    scale = 1 / window.devicePixelRatio * scale
+                }
+             }
+
             this.updateHtmlContentScale(scale);
             if (this._adEl !== null) {
                 this.updateAdScale(scale);
@@ -176,7 +196,7 @@ define([
                 "window_id": this._windowName,
                 "width": newWidth,
                 "height": newHeight,
-                "auto_dpi_resize": true
+                "auto_dpi_resize": false
             };
 
             overwolf.windows.changeSize(windowObjectParams, () => {});
@@ -213,6 +233,14 @@ define([
             if (this._ad !== null) {
                 this._ad.removeAd();
             }
+        }
+
+        onGameInfoUpdated(state) {
+            if (!state.resolutionChanged) {
+                return;
+            }
+            let scale = this._settings.getSetting(this._settings.SETTINGS.WINDOW_SCALE)
+            this.updateScale(scale);
         }
 
         // define the event handler

@@ -80,12 +80,13 @@ define([
         let el = _createTeam(game.getBlueTeam(), 'blue') + _createTeam(game.getRedTeam(), 'red');
 
         $(".game-details").append(el);
+
     }
 
     function _createTeam(team, color) {
         // start team element
         let el =
-            `<div id="team-${color}" class="team row justify-content-center mx-auto mt-2 team-${color}">`
+            `<div id="team-${color}" class="team row justify-content-center mx-auto mt-1 team-${color}">`
         for (let participant of team) {
             el += _createParticipant(participant, color);
         }

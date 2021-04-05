@@ -7,12 +7,16 @@ define([
         WINDOW_SCALE: 'window_scale',
         WINDOW_WIDTH: 'window_width',
         WINDOW_HEIGHT: 'window_height',
+        FIRST_RUN: 'first_run',
+        RESIZE: 'resize',
     }
 
     const DEFAULT_SETTINGS = {};
     DEFAULT_SETTINGS[SETTINGS.CD_TIME] = 'minutes';
     DEFAULT_SETTINGS[SETTINGS.CD_RED_DISPLAY] = true;
     DEFAULT_SETTINGS[SETTINGS.WINDOW_SCALE] = 1;
+    DEFAULT_SETTINGS[SETTINGS.FIRST_RUN] = true;
+    DEFAULT_SETTINGS[SETTINGS.RESIZE] = false;
 
     let _settings = {};
     let _listeners = {};
@@ -23,7 +27,9 @@ define([
         localStorage.setItem("settings", JSON.stringify(_settings));
         if (
             setting.substring(0,12) !== SETTINGS.WINDOW_WIDTH &&
-            setting.substring(0,13) !== SETTINGS.WINDOW_HEIGHT
+            setting.substring(0,13) !== SETTINGS.WINDOW_HEIGHT &&
+            setting.substring(0,9) !== SETTINGS.FIRST_RUN &&
+            setting.substring(0,6) !== SETTINGS.RESIZE
         ) {
             onSettingsUpdate(_settings);
         }

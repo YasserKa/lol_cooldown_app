@@ -3,7 +3,7 @@
     "type": "WebApp",
     "meta": {
         "name": "LoLCooldown",
-        "version": "0.1.0",
+        "version": "0.1.1",
         "minimum-overwolf-version": "0.120.0",
         "author": "Yasser Kaddoura",
         "icon": "img/hourglass.png",
@@ -50,7 +50,6 @@
             },
             "main": {
                 "file": "windows/main/main.html",
-                "desktop_only": true,
                 "native_window": true,
                 "transparent": true,
                 "block_top_window_navigation": true,
@@ -62,7 +61,7 @@
                 },
                 "min_size": {
                     "width": 0,
-                    "height":0
+                    "height": 0
                 },
                 "max_size": {
                     "width": 2000,
@@ -116,8 +115,8 @@
                     "height": 0
                 },
                 "max_size": {
-                    "width": 2000,
-                    "height": 2000
+                    "width": 1150,
+                    "height": 800
                 }
             }
         },
