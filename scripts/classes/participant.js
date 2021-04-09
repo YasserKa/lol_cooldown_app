@@ -10,11 +10,19 @@ define([], function() {
         LegendAlacrity: 'LegendAlacrity',
     };
 
+    const MYTHIC_ABILITY_HASTE_PASSIVE = ["Moonstone Renewer",
+        "Turbo Chemtank",
+        "Night Harvester",
+        "Liandry's Anguish",
+        "Goredrinker",
+        "Duskblade of Draktharr"];
+
     class Participant {
         constructor(data) {
             this.kills = [];
             this.cdRed = 0;
             this.abilityHaste = 0;
+            this.abilityPower = 0;
             this.summonerSpellHaste = 0;
             this.ultCdRed = 0;
             this.spellsCdRed = 0;
@@ -40,6 +48,7 @@ define([], function() {
             this.position = data['position'];
             this.level = data['level'];
             this.items = data['items'];
+
             this.creepScore = data.creepScore;
             if (data.hasOwnProperty('gameMode') && typeof data.gameMode !== 'undefined') {
                 this.gameMode = data.gameMode
@@ -170,10 +179,27 @@ define([], function() {
 
         _updateCdRed() {
             this.abilityHaste = 0;
+            this.abilityPower = 0;
+
+            let has_mythic_ability_haste_passive = this.items.some((item) => {
+                return MYTHIC_ABILITY_HASTE_PASSIVE.indexOf(item.name) >= 0;
+            });
 
             for (let item of this.items) {
                 // add unique cooldowns one time
                 this.abilityHaste += item.abilityHaste;
+                this.abilityPower += item.ability_power;
+                if (has_mythic_ability_haste_passive) {
+                    if (item.is_legendary) {
+                        this.abilityHaste += 5;
+                    }
+                }
+            }
+
+            for (let item of this.items) {
+                if (item.name == "Cosmic Drive" && this.abilityPower >= 160) {
+                    this.abilityHaste += 20;
+                }
             }
 
             if (this._hasRune(RUNES_ENUM.CooldownReduction)) {
