@@ -48,7 +48,6 @@ define([
         static async _updateWindows(state) {
             switch (state) {
                 case States.IDLE:
-                    console.log("ERE");
                     await WindowsService.restoreWindowOnlyIfNotOpen(WindowNames.MAIN);
                     break;
                 case States.IN_CHAMPSELECT:
