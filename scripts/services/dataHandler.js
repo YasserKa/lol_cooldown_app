@@ -84,6 +84,9 @@ define([
             if (name === "") {
                 name = 'Mark';
             }
+            if (name === "Hexflash") {
+                name =  "Flash";
+            }
             // smite upgrades like chilling
             if (name.includes('Smite')) {
                 name = 'Smite';
