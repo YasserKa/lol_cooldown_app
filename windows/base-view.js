@@ -200,6 +200,9 @@ define([
             };
 
             overwolf.windows.changeSize(windowObjectParams, () => {});
+            if (this._windowName == WindowNames.APP) {
+                WindowsService.centerWindow(this._windowName);
+            }
         }
 
         updateHtmlContentScale(scale) {
