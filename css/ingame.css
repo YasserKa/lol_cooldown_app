@@ -16,10 +16,12 @@
 /** champ card header **/
 th.blue {
     background-color: #45A9F1;
+    height: 2px;
 }
 
 th.red {
     background-color: #FF5859;
+    height: 2px;
 }
 
 /** champ card **/
