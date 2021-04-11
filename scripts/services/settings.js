@@ -9,6 +9,13 @@ define([
         WINDOW_HEIGHT: 'window_height',
         FIRST_RUN: 'first_run',
         RESIZE: 'resize',
+        TIMER_SOUND: 'timer_sound',
+    }
+
+    const TIMER_SOUND = {
+        None : "none",
+        Bell : "bell",
+        Speech : "speech",
     }
 
     const DEFAULT_SETTINGS = {};
@@ -17,6 +24,7 @@ define([
     DEFAULT_SETTINGS[SETTINGS.WINDOW_SCALE] = 1;
     DEFAULT_SETTINGS[SETTINGS.FIRST_RUN] = true;
     DEFAULT_SETTINGS[SETTINGS.RESIZE] = false;
+    DEFAULT_SETTINGS[SETTINGS.TIMER_SOUND] = TIMER_SOUND.Bell;
 
     let _settings = {};
     let _listeners = {};
@@ -94,6 +102,7 @@ define([
 
     return {
         SETTINGS,
+        TIMER_SOUND,
         setSetting,
         getSetting,
         addListener,

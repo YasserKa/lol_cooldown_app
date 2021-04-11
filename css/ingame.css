@@ -41,6 +41,7 @@ table.champ {
 .icon-container {
     height: 100%;
     background: radial-gradient(#24394f, #151F28);
+    position: relative;
 }
 
 img.champ-icon {
@@ -190,4 +191,22 @@ div.ability-img-container {
 
 p small:not(:empty) {
     font-size: 0.7em;
+}
+
+.spell-overlay  {
+    height: 100%;
+    width: 100%;
+    top: 0;
+    left: 0;
+    position: absolute;
+    background: rgba(0, 0, 0, 0.5);
+    color: white;
+    opacity: 0;
+    cursor: pointer;
+}
+
+.spell-overlay > p {
+    margin-top: 15%;
+    /* -ms-transform: translate(-50%, -50%); */
+    /* transform: translate(-50%, -50%); */
 }

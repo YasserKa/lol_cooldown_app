@@ -21,7 +21,7 @@
 
 ga('create', 'UA-175532598-1', 'auto');
 ga('send', 'pageview');
- // Removes failing protocol check. @see: http://stackoverflow.com/a/22152353/1958200
+// Removes failing protocol check. @see: http://stackoverflow.com/a/22152353/1958200
 ga('set', 'checkProtocolTask', function(){});
 ga('require', 'displayfeatures');
 ga('send', 'pageview', '/settings.html');
@@ -42,63 +42,120 @@ ga('send', 'pageview', '/settings.html');
       </header>
       <!-- Main -->
       <main>
-        <!-- Cooldown Display -->
-        <div class="mt-4 text-center">
-          <p class="mb-1">Cooldown Display</p>
-          <div class="btn-group btn-group-sm btn-group-toggle d-inline" data-toggle="buttons">
-            <label class="btn boarder boarder-secondary rounded-0 btn-primary">
-              <input type="radio" name="cooldown-time" id="option-seconds" autocomplete="off" value="seconds">
-              Seconds
-            </label>
-            <label class="btn boarder boarder-secondary rounded-0 btn-primary">
-              <input type="radio" name="cooldown-time" id="option-minutes" autocomplete="off" value="minutes">
-              Minutes
-            </label>
+        <ul class="nav nav-tabs justify-content-center" id="myTab">
+          <li class="nav-item">
+            <a href="#settings-tab" class="mx-1 btn boarder boarder-secondary rounded-0
+              btn-primary nav-link flex-sm-fill active" data-toggle="tab">Settings</a>
+          </li>
+          <li class="nav-item">
+            <a href="#changelog-tab" class="mx-1 btn boarder boarder-secondary
+              rounded-0 btn-primary nav-link flex-sm-fill" data-toggle="tab">ChangeLog</a>
+          </li>
+        </ul>
+        <div class="tab-content">
+          <div class="tab-pane fade show active" id="settings-tab">
+            <div class="mt-4 text-center d-flex">
+              <p class="mb-1 mb-1 ml-5 mr-0">Cooldown Display</p>
+              <div class="ml-3 btn-group btn-group-sm btn-group-toggle d-inline" data-toggle="buttons">
+                <label class="btn boarder boarder-secondary rounded-0 btn-primary">
+                  <input type="radio" name="cooldown-time" id="option-seconds" autocomplete="off" value="seconds">
+                  Seconds
+                </label>
+                <label class="btn boarder boarder-secondary rounded-0 btn-primary">
+                  <input type="radio" name="cooldown-time" id="option-minutes" autocomplete="off" value="minutes">
+                  Minutes
+                </label>
+              </div>
+            </div>
+            <!-- CooldownReduction Elements Display -->
+            <div class="mt-4 text-center d-flex">
+              <p class="mb-1 mb-1 ml-5 mr-0">CDr Elements Visibility</p>
+              <div class="ml-3 btn-group btn-group-sm btn-group-toggle d-inline" data-toggle="buttons">
+                <label class="btn boarder boarder-secondary rounded-0 btn-primary">
+                  <input type="radio" name="cooldown-reduction-display" id="option-show" autocomplete="off" value="show">
+                  Show
+                </label>
+                <label class="btn boarder boarder-secondary rounded-0 btn-primary">
+                  <input type="radio" name="cooldown-reduction-display" id="option-hide" autocomplete="off" value="hide">
+                  Hide
+                </label>
+              </div>
+            </div>
+            <!-- Window Scale -->
+            <div class="mt-4 text-center d-flex">
+              <p class="mb-1 mb-1 ml-5 mr-0">Window Scale</p>
+              <div class="ml-3 btn-group btn-group-sm btn-group-toggle d-inline" data-toggle="buttons">
+                <label class="btn boarder boarder-secondary rounded-0 btn-primary">
+                  <input type="radio" name="window-scale" id="option-0.5"
+                                                          autocomplete="off" value="0.5">
+                  0.5
+                </label>
+                <label class="btn boarder boarder-secondary rounded-0 btn-primary">
+                  <input type="radio" name="window-scale" id="option-0.75"
+                                                          autocomplete="off" value="0.75">
+                  0.75
+                </label>
+                <label class="btn boarder boarder-secondary rounded-0 btn-primary">
+                  <input type="radio" name="window-scale" id="option-1"
+                                                          autocomplete="off" value="1">
+                  1
+                </label>
+              </div>
+            </div>
+            <!-- Timer sound -->
+            <div class="mt-4 text-center d-flex">
+              <p class="mb-1 mb-1 ml-5 mr-0">Timer Sound</p>
+              <div class="ml-3 btn-group btn-group-sm btn-group-toggle d-inline" data-toggle="buttons">
+                <label class="btn boarder boarder-secondary rounded-0 btn-primary">
+                  <input type="radio" name="timer-sound" id="option-none"
+                                                         autocomplete="off"
+                                                         value="none">
+                  None
+                </label>
+                <label class="btn boarder boarder-secondary rounded-0 btn-primary">
+                  <input type="radio" name="timer-sound" id="option-bell"
+                                                         autocomplete="off"
+                                                         value="bell">
+                  Bell
+                </label>
+                <label class="btn boarder boarder-secondary rounded-0 btn-primary">
+                  <input type="radio" name="timer-sound" id="option-speech"
+                                                         autocomplete="off"
+                                                         value="speech">
+                  Speech
+                </label>
+              </div>
+            </div>
+            <!-- Show/Hide hotkey -->
+            <div class="mt-4 mb-2 d-flex">
+              <p class="mb-1 mb-1 ml-5 mr-0">Show/Hide Hotkey</p>
+              <div class="ml-3 p-0">
+                <button id="hotkey" type="button" class="btn rounded-0 btn-primary" onclick="window.location.href='overwolf://settings/hotkeys';"></button>
+              </div>
+            </div>
+            <div class="px-3" id="version"> </div>
+          </div>
+          <div class="tab-pane fade" id="changelog-tab">
+            <div class="release">
+              <h5 class="ml-3 my-1">v0.2.1</h5>
+              Added:
+              <ul>
+                <li>Summoner spell tracker with bell and speech alerts.</li>
+              </ul>
+            </div>
+            <div class="release ml-3 my-1">
+              <h5>v0.1.4</h5>
+              Fixed:
+              <ul>
+                <li>Include 5 Ability Haste on each legendary item if certain
+                  epic items are in inventory.</li>
+                <li>Include 20 Ability Haste triggered by Cosmic Drive's
+                  passive.</li>
+                <li>Flash doesn't disappear if hexflash takes its place.</li>
+              </ul>
+            </div>
           </div>
         </div>
-        <!-- CooldownReduction Elements Display -->
-        <div class="mt-4 text-center">
-          <p class="mb-1">CooldownReduction Elements Visibility</p>
-          <div class="btn-group btn-group-sm btn-group-toggle d-inline" data-toggle="buttons">
-            <label class="btn boarder boarder-secondary rounded-0 btn-primary">
-              <input type="radio" name="cooldown-reduction-display" id="option-show" autocomplete="off" value="show">
-              Show
-            </label>
-            <label class="btn boarder boarder-secondary rounded-0 btn-primary">
-              <input type="radio" name="cooldown-reduction-display" id="option-hide" autocomplete="off" value="hide">
-              Hide
-            </label>
-          </div>
-        </div>
-        <!-- Window Scale -->
-        <div class="mt-4 text-center">
-          <p class="mb-1">Window Scale</p>
-          <div class="btn-group btn-group-sm btn-group-toggle d-inline" data-toggle="buttons">
-            <label class="btn boarder boarder-secondary rounded-0 btn-primary">
-              <input type="radio" name="window-scale" id="option-0.5"
-                                                      autocomplete="off" value="0.5">
-              0.5
-            </label>
-            <label class="btn boarder boarder-secondary rounded-0 btn-primary">
-              <input type="radio" name="window-scale" id="option-0.75"
-                                                      autocomplete="off" value="0.75">
-              0.75
-            </label>
-            <label class="btn boarder boarder-secondary rounded-0 btn-primary">
-              <input type="radio" name="window-scale" id="option-1"
-                                                      autocomplete="off" value="1">
-              1
-            </label>
-          </div>
-        </div>
-        <!-- Show/Hide hotkey -->
-        <div class="mt-4 mb-2 text-center">
-          <p class="mb-1">Show/Hide Hotkey</p>
-          <div class="p-0">
-            <button id="hotkey" type="button" class="btn rounded-0 btn-primary" onclick="window.location.href='overwolf://settings/hotkeys';"></button>
-          </div>
-        </div>
-        <div class="px-3" id="version"> </div>
       </main>
     </div>
     <script src="/lib/require.js"></script>

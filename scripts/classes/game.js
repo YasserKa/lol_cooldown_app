@@ -36,6 +36,15 @@ define([
             return this._redTeam;
         }
 
+        getParticipantUsingSummonerName(summonerName) {
+            let participants = this._blueTeam.concat(this._redTeam);
+            for (let partic of participants) {
+                if (partic.getSummonerName() === summonerName) {
+                    return partic;
+                }
+            }
+        }
+
         _updateEvents(events) {
             let dragonKillsEvents = events.filter(value => value['EventName'] === 'DragonKill');
             if (dragonKillsEvents.length > 0) {

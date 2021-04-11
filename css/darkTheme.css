@@ -6,6 +6,10 @@ body.dark .close {
     color: white;
 }
 
+.nav-tabs {
+    border-bottom-color: #151F28;
+}
+
 body.dark .text {
     fill: white;
 }

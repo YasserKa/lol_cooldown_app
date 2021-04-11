@@ -1,8 +1,10 @@
 define([
     '../base-view.js',
+    '../../scripts/services/settings.js',
     '../../scripts/helpers/utils.js',
 ], function (
     BaseView,
+    Settings,
     Utils,
 ) {
 
@@ -22,6 +24,8 @@ define([
             this._initCooldownRedDisplay();
             // show hide cooldownreduction elements
             this._initWindowScale();
+            // timer sound
+            this._initTimerSound();
 
             this._updateVersion();
         }
@@ -49,6 +53,30 @@ define([
                 el.addEventListener("click", () => {
                     let windowScale = $("input[name='window-scale']:checked").val();
                     this._settings.setSetting(this._settings.SETTINGS.WINDOW_SCALE, windowScale)
+                });
+            });
+        }
+
+        _initTimerSound() {
+            let  settingValue = this._settings.getSetting(this._settings.SETTINGS.TIMER_SOUND);
+            this._activateSettingEl(settingValue);
+            let elements = document.querySelectorAll('input[name="timer-sound"]');
+
+            Array.from(elements).forEach(el => {
+                el.addEventListener("click", () => {
+                    let timerSound = $("input[name='timer-sound']:checked").val();
+                    switch (timerSound) {
+                        case Settings.TIMER_SOUND.None:
+                            break;
+                        case Settings.TIMER_SOUND.Bell:
+                            Utils.makeBellSound();
+                            break;
+                        case Settings.TIMER_SOUND.Speech:
+                            Utils.makeSoundAfterSummonerSpellIsUp("Annie", "Flash");
+                            break;
+                    }
+
+                    this._settings.setSetting(this._settings.SETTINGS.TIMER_SOUND, timerSound)
                 });
             });
         }

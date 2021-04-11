@@ -1,16 +1,40 @@
 define([
     "../../scripts/services/settings.js",
+    "../../scripts/helpers/utils.js",
 ], function (
-    Settings
+    Settings,
+    Utils
 ) {
 
     let _timeSetting = '';
     let _displaySetting = '';
 
+    let timers = {}
+
     function initializeView(game) {
         $(".game-details .team").remove();
         _createGame(game);
         update(game);
+
+        if (game.isInGame()) {
+            // Timers
+            $(`.spell-overlay`).click(function() {
+                let particId = $(this).parents('table[partic-id]').attr('partic-id');
+                let partic = game.getParticipantUsingSummonerName(particId);
+
+                let spellId = $(this).attr('spell');
+                let cooldown = partic.getSummonerSpellCooldown(spellId);
+                let timerId = (particId).toString() + (spellId).toString()
+
+                // If it's already working
+                if (timerId in timers) {
+                    stopTimer($(this), timerId, true)
+                } else {
+                    startTimer(cooldown, $(this), timerId);
+                }
+            });
+        }
+
     }
 
     function update(game) {
@@ -26,7 +50,7 @@ define([
 
         // updating tool-top package
         tippy('[data-toggle="tooltip"]', {
-             appendTo: 'parent',
+            appendTo: 'parent',
             allowHTML: true,
         });
 
@@ -60,18 +84,18 @@ define([
                 .attr('src', participant.getSummonerSpellImage(0))
                 .attr('spell-name', participant.getSummonerSpellName(0));
 
-            $(`table[partic-id="${participant.getId()}"] div.spell-1 p`)
+            $(`table[partic-id="${participant.getId()}"] div.spell-1 p.cooldown`)
                 .attr('spell-name', participant.getSummonerSpellName(0))
-            $(`table[partic-id="${participant.getId()}"] div.spell-1 p`)
+            $(`table[partic-id="${participant.getId()}"] div.spell-1 p.cooldown`)
                 .html(firstSpellCooldownEl);
 
             $(`table[partic-id="${participant.getId()}"] div.spell-2 img`)
                 .attr('src', participant.getSummonerSpellImage(1))
                 .attr('spell-name', participant.getSummonerSpellName(1));
 
-            $(`table[partic-id="${participant.getId()}"] div.spell-2 p`)
+            $(`table[partic-id="${participant.getId()}"] div.spell-2 p.cooldown`)
                 .attr('spell-name', participant.getSummonerSpellName(1))
-            $(`table[partic-id="${participant.getId()}"] div.spell-2 p`)
+            $(`table[partic-id="${participant.getId()}"] div.spell-2 p.cooldown`)
                 .html(secondSpellCooldownEl);
         }
     }
@@ -121,6 +145,9 @@ define([
                                <div class="spell-icon-container">
                                    <div class="icon-container">
                                         <img class="spell-icon" src="${participant.getSummonerSpellImage(0)}" alt="" spell-name="${participant.getSummonerSpellImage(0)}">
+                                        <div class="spell-overlay" summonerName="${participant.getChampionName()}" spell="0">
+                                          <p></p>
+                                        </div>
                                    </div>
                                </div>
                                 <p class="cooldown" spell="0" spell-name="${participant.getSummonerSpellName(0)}">${firstSpellCooldownEl}</p>
@@ -129,6 +156,9 @@ define([
                                <div class="spell-icon-container">
                                    <div class="icon-container">
                                     <img class="spell-icon" src="${participant.getSummonerSpellImage(1)}" alt="" spell-name="${participant.getSummonerSpellImage(1)}">
+                                        <div class="spell-overlay" summonerName="${participant.getChampionName()}" spell="1">
+                                          <p></p>
+                                        </div>
                                     </div>
                                 </div>
                                     <p class="cooldown" spell="0" spell-name="${participant.getSummonerSpellName(1)}">${secondSpellCooldownEl}</p>
@@ -257,7 +287,7 @@ define([
         for (let [key, rune] of Object.entries(runes)) {
             if (key === 'UltimateHunter' || key === 'IngeniousHunter'
                 || key === 'AttackSpeed' || key === 'LegendAlacrity' ||
-                 key === 'CosmicInsight') {
+                key === 'CosmicInsight') {
                 continue;
             }
             el += `<img class="rune-icon ml-1"`;
@@ -300,6 +330,50 @@ define([
         el += `</tr>`;
 
         return el;
+    }
+
+    function startTimer(duration, element, id) {
+        element.children()[0].textContent = _getParsedCooldown(Math.floor(duration));
+        duration--;
+        element.css("opacity", "1");
+
+        let intervalId = setInterval(function () {
+            element.children()[0].textContent = _getParsedCooldown(Math.floor(duration));
+
+            if (--duration < 0) {
+                stopTimer(element, id);
+            }
+        }, 1000);
+
+        timers[id] = intervalId;
+    }
+
+    function stopTimer(element, id, triggered=false) {
+        clearInterval(timers[id]);
+        delete timers[id];
+
+        let timer_sound_setting = Settings.getSetting(Settings.SETTINGS.TIMER_SOUND);
+
+        element.css("opacity", "0");
+
+        // if player disables it, no need to alert them
+        if (triggered) {
+            return;
+        }
+        switch (timer_sound_setting) {
+            case Settings.TIMER_SOUND.None:
+                break;
+            case Settings.TIMER_SOUND.Bell:
+                Utils.makeBellSound();
+                break;
+            case Settings.TIMER_SOUND.Speech:
+                let summonerSpellName = element.siblings().attr('spell-name');
+                let summonerName = element.attr('summonerName');
+
+                Utils.makeSoundAfterSummonerSpellIsUp(summonerName, summonerSpellName);
+                break;
+            default:
+        }
     }
 
     function _getParsedCooldown(cooldown) {

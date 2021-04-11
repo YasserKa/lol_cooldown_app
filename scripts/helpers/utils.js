@@ -3,6 +3,30 @@ define([], function () {
         return new Promise(resolve => setTimeout(resolve, ms));
     }
 
+    function makeBellSound() {
+        let audio = new Audio('/lib/ding_sound.mp3');
+        audio.play();
+    }
+
+    function makeSoundAfterSummonerSpellIsUp(championName, summonerSpellName) {
+            const httpreq = new XMLHttpRequest();
+            const championTwoSummonerOneTimer = `msg=${championName}'s ${summonerSpellName} is up&lang=Justin&source=ttsmp3`;
+            httpreq.open("POST", "https://ttsmp3.com/makemp3_new.php", true);
+            httpreq.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+            httpreq.overrideMimeType("application/json");
+            httpreq.onreadystatechange = function () {
+                if (this.readyState === 4 && this.status === 200) {
+                    // bellTimer.play();
+                    let soundarray = JSON.parse(this.responseText);
+                    let summonerAudio = new Audio(soundarray["URL"]);
+                    summonerAudio.volume = 0.5;
+                    summonerAudio.play();
+                }
+            };
+            httpreq.send(championTwoSummonerOneTimer);
+    }
+
+
     async function makeRequest(url) {
         // user disconnected
         if (!window.navigator.onLine) {
@@ -42,5 +66,7 @@ define([], function () {
         makeRequest,
         getMonitorsList,
         getAppVersion,
+        makeBellSound,
+        makeSoundAfterSummonerSpellIsUp,
     }
 });
