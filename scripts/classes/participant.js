@@ -89,6 +89,36 @@ define([], function() {
         getId() {
             return this.summonerName === null ? this.cellId : this.summonerName;
         }
+        getLevel() {
+            return this.level;
+        }
+
+        getCurrentUltimateCD() {
+            let cooldowns = this.currentAbilities['R']['cooldowns'];
+            let currCooldown = cooldowns[0];
+
+            if (cooldowns.length == 4) {
+                if (this.level <= 5) {
+                    currCooldown = cooldowns[0];
+                } else if (this.level <= 10) {
+                    currCooldown = cooldowns[1];
+                } else if (this.level <= 15) {
+                    currCooldown = cooldowns[2];
+                } else {
+                    currCooldown = cooldowns[3];
+                }
+            } else {
+                if (this.level <= 10) {
+                    currCooldown = cooldowns[0];
+                } else if (this.level <= 15) {
+                    currCooldown = cooldowns[1];
+                } else {
+                    currCooldown = cooldowns[2];
+                }
+            }
+            return [currCooldown];
+        }
+
         getCellId() {
             return this.cellId;
         }

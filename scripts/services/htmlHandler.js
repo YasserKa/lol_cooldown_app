@@ -33,12 +33,47 @@ define([
                     startTimer(cooldown, $(this), timerId);
                 }
             });
+
+        $(`.ultimate-overlay`).click(function() {
+            let particId = $(this).parents('table[partic-id]').attr('partic-id');
+            let partic = game.getParticipantUsingSummonerName(particId);
+
+            let cooldown = partic.getCurrentUltimateCD();
+            let timerId = (particId).toString() + "ult";
+            console.log(partic.getCurrentUltimateCD());
+            console.log(partic.getCurrentUltimateCD()[0]);
+
+            // If it's already working
+            if (timerId in timers) {
+                stopTimer($(this), timerId, true)
+            } else {
+                startTimer(cooldown, $(this), timerId);
+            }
+        });
+
         }
 
     }
 
     function update(game) {
         _updateView(game);
+        // $(`.ultimate-overlay`).off();
+        $(`.ultimate-overlay`).click(function() {
+            let particId = $(this).parents('table[partic-id]').attr('partic-id');
+            let partic = game.getParticipantUsingSummonerName(particId);
+
+            let cooldown = partic.getCurrentUltimateCD();
+            let timerId = (particId).toString() + "ult";
+            console.log(partic.getCurrentUltimateCD());
+            console.log(partic.getCurrentUltimateCD()[0]);
+
+            // If it's already working
+            if (timerId in timers) {
+                stopTimer($(this), timerId, true)
+            } else {
+                startTimer(cooldown, $(this), timerId);
+            }
+        });
     }
 
     function _updateView(game) {
@@ -145,7 +180,7 @@ define([
                                <div class="spell-icon-container">
                                    <div class="icon-container">
                                         <img class="spell-icon" src="${participant.getSummonerSpellImage(0)}" alt="" spell-name="${participant.getSummonerSpellImage(0)}">
-                                        <div class="spell-overlay" summonerName="${participant.getChampionName()}" spell="0">
+                                        <div class="spell-overlay overlay" summonerName="${participant.getChampionName()}" spell="0">
                                           <p></p>
                                         </div>
                                    </div>
@@ -156,7 +191,7 @@ define([
                                <div class="spell-icon-container">
                                    <div class="icon-container">
                                     <img class="spell-icon" src="${participant.getSummonerSpellImage(1)}" alt="" spell-name="${participant.getSummonerSpellImage(1)}">
-                                        <div class="spell-overlay" summonerName="${participant.getChampionName()}" spell="1">
+                                        <div class="spell-overlay overlay" summonerName="${participant.getChampionName()}" spell="1">
                                           <p></p>
                                         </div>
                                     </div>
@@ -176,11 +211,17 @@ define([
                 <!-- Champ Details -->
                 <table class="abilities"><tbody>`;
         for (let [key, ability] of Object.entries(participant.getChampionAbilities())) {
+            // TODO: add condition using the setting
+            let cooldowns = JSON.parse(JSON.stringify(ability['cooldowns']));
+            if (key === "R" && ability['cooldowns'].length > 1) {
+                cooldowns = participant.getCurrentUltimateCD();
+            }
             el +=
                 `<tr>
                 <th class="p-0">
                     <div class='ability-img-container d-flex'>
-                        <img class="ability-icon" src="${ability['icon']}" alt="${ability['name']}" ability="${key}" `;
+                        <img class="ability-icon" src="${ability['icon']}" alt="${ability['name']}" ability="${key}"
+            `;
             // add description for abilities that has cooldown reduction effect
             if (ability['cdrType'] != '') {
                 el +=
@@ -188,6 +229,13 @@ define([
             } else {
                 el += `/>`
             }
+            if (key === "R") {
+                el += `
+                <div class="ultimate-overlay overlay" summonerName="${participant.getChampionName()}">
+                <p></p>
+                    </div>`;
+            }
+
             // aphelios exception
             if (ability.hasOwnProperty('icon1')) {
                 el += `<img class="ability-icon" src="${ability['icon1']}" alt="${ability['name1']}" ability="${key}"/> `;
@@ -204,13 +252,14 @@ define([
               <td class="p-0">
                   <div class="cooldowns m-0 d-flex justify-content-center" ability="${key}">`
 
-            for (let cooldown of ability['cooldowns']) {
+            for (let cooldown of cooldowns) {
                 let cooldownEl = _getNumberElement(_getParsedCooldown(cooldown));
                 el += `<p class="m-0 cooldown">
                     ${cooldownEl}
-                      </p>`;
+                      </p>
+                    `;
                 // just state one number if it's repetitive number
-                if (ability['cooldowns'].length === 1 || ability['cooldowns'][0] === ability['cooldowns'][1]) {
+                if (cooldowns.length === 1 || cooldowns[0] === cooldowns[1]) {
                     break;
                 }
             }
@@ -368,6 +417,12 @@ define([
                 break;
             case Settings.TIMER_SOUND.Speech:
                 let summonerSpellName = element.siblings().attr('spell-name');
+                console.log(summonerSpellName);
+                if (typeof summonerSpellName === 'undefined' || summonerSpellName === false) {
+                    summonerSpellName = "ultimate";
+                }
+                console.log(summonerSpellName);
+
                 let summonerName = element.attr('summonerName');
 
                 Utils.makeSoundAfterSummonerSpellIsUp(summonerName, summonerSpellName);

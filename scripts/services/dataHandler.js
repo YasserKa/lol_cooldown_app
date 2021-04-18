@@ -1,16 +1,17 @@
 define([
     "./testing.js",
     "../helpers/utils.js",
+    "../../scripts/services/launcher-service.js",
 ],
     function (
         Testing,
         Utils,
+        LauncherService,
     ) {
 
         let _champions = {};
         let _items = {};
         let _summonerSpells = {};
-        let _patchVersion = '';
         let _runesReforged = {};
         let _data = {};
 
@@ -22,7 +23,6 @@ define([
             _items = _data['items'];
             _summonerSpells = _data['spells'];
             _runesReforged = _data['runes'];
-            _patchVersion = _data['version'];
         }
 
         async function _updateDataIfNeeded() {
@@ -41,14 +41,17 @@ define([
         }
 
         async function _getLastDateUpdated() {
-            let url = 'https://www.lolcooldown.com/api/lastdateupdated';
+            let patch_version = await LauncherService.getPatchVersion();
+            let url = `https://www.lolcooldown.com/api/lastdateupdated_new?version=${patch_version}`;
             let data = await Utils.makeRequest(url);
             return data.lastDateUpdated;
         }
 
         async function _updateDataUsingServer() {
             console.info('updating data from server');
-            let url = 'https://www.lolcooldown.com/api/data';
+            let patch_version = await LauncherService.getPatchVersion();
+            let url = `https://www.lolcooldown.com/api/data_new?version=${patch_version}`;
+            // let url = 'https://www.lolcooldown.com/api/data';
             let data = await Utils.makeRequest(url);
             localStorage.setItem("data", JSON.stringify(data));
             _data = data;
@@ -114,10 +117,6 @@ define([
             return rune;
         }
 
-        function getPatchVersion() {
-            return _patchVersion;
-        }
-
         return {
             init,
             getChampionById,
@@ -128,6 +127,5 @@ define([
             getRunesNeeded,
             getSpellById,
             getSpellByName,
-            getPatchVersion,
         }
     });
