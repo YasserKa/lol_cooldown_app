@@ -48,10 +48,10 @@ define([
             let overwolfWindow = await WindowsService.getCurrentWindow();
             this._windowName = overwolfWindow.name;
 
-            // this._defaultHeight = this._settings.getSettingWindowHeight(this._windowName, window.innerHeight);
-            // this._defaultWidth = this._settings.getSettingWindowWidth(this._windowName, window.innerWidth);
-            this._defaultHeight = window.innerHeight
-            this._defaultWidth = window.innerWidth
+            this._defaultHeight = this._settings.getSettingWindowHeight(this._windowName, window.innerHeight);
+            this._defaultWidth = this._settings.getSettingWindowWidth(this._windowName, window.innerWidth);
+            // this._defaultHeight = window.innerHeight;
+            // this._defaultWidth = window.innerWidth;
 
             if (this._settingsEl !== null) {
                 this._settingsEl.addEventListener("click", async () => {
@@ -176,11 +176,11 @@ define([
             scale = monitors.displays[0].width/1920 * scale
             this._updateWindowScale(scale);
 
-            if (this._windowName == WindowNames.APP)  {
-                if (monitors.displays[0].width <= 1366 && !ingame) {
-                    scale = 1 / window.devicePixelRatio * scale
-                }
-             }
+            // if (this._windowName == WindowNames.APP)  {
+            //     if (monitors.displays[0].width <= 1366 && !ingame) {
+            //         scale = 1 / window.devicePixelRatio * scale
+            //     }
+            //  }
 
             this.updateHtmlContentScale(scale);
             if (this._adEl !== null) {
@@ -217,7 +217,8 @@ define([
 
         updateAdScale(scale) {
             // reverse the effect that zoom value is doing
-            let zoomValue = (1 + 2*(1-scale)) * 100;
+            // let zoomValue = (1 + 2*(1-scale)) * 100;
+            let zoomValue = 500;
             this._adEl.style.zoom = `${zoomValue}%`;
             this._adEl.style.transform = `scale(${scale})`;
             this._adEl.style.transformOrigin = 'left top';
@@ -228,7 +229,7 @@ define([
                 this._ad = new OwAd(this._adEl,
                     {size: {width: this._adEl.offsetWidth, height: this._adEl.offsetHeight}}
                 );
-                this._ad.addEventListener('complete', this.removeAd);
+                // this._ad.addEventListener('complete', this.removeAd);
             }
         }
 

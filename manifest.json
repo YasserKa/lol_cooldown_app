@@ -3,7 +3,7 @@
     "type": "WebApp",
     "meta": {
         "name": "LoLCooldown",
-        "version": "0.2.1",
+        "version": "0.2.2",
         "minimum-overwolf-version": "0.120.0",
         "author": "Yasser Kaddoura",
         "icon": "img/hourglass.png",
