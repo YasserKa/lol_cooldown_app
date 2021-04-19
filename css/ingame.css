@@ -163,7 +163,7 @@ div.ability-img-container {
 .info {
     position: absolute;
     left: 80%;
-    height: 1.5vh;
+    height: 2vh;
 }
 
 .cooldowns > p.cooldown {

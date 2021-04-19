@@ -22,12 +22,20 @@ define([
             this._initCooldownTime();
             // show hide cooldownreduction elements
             this._initCooldownRedDisplay();
+            // on off ult relevant Cd
+            this._initRelevantUltCd();
             // show hide cooldownreduction elements
             this._initWindowScale();
             // timer sound
             this._initTimerSound();
 
             this._updateVersion();
+
+            // updating tool-top package
+            tippy('[data-toggle="tooltip"]', {
+                appendTo: 'parent',
+                allowHTML: true,
+            });
         }
 
         _initCooldownTime() {
@@ -90,6 +98,19 @@ define([
                 el.addEventListener("click", () => {
                     let cooldownRedDisplay = $("input[name='cooldown-reduction-display']:checked").val() === 'show' ? true : false;
                     this._settings.setSetting(this._settings.SETTINGS.CD_RED_DISPLAY, cooldownRedDisplay)
+                });
+            });
+        }
+
+        _initRelevantUltCd() {
+            let settingValue = this._settings.getSetting(this._settings.SETTINGS.RELEVANT_ULT_CD) ? "on" : "off" ;
+            this._activateSettingEl(settingValue);
+            let elements = document.querySelectorAll('input[name="relevant-ult-cd"]');
+
+            Array.from(elements).forEach(el => {
+                el.addEventListener("click", () => {
+                    let relevantUltCd = $("input[name='relevant-ult-cd']:checked").val() === "on" ? true : false;
+                    this._settings.setSetting(this._settings.SETTINGS.RELEVANT_ULT_CD, relevantUltCd)
                 });
             });
         }

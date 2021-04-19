@@ -3,13 +3,11 @@ define([
    "../scripts/services/drag-service.js",
     "../scripts/services/windows-service.js",
     "../scripts/services/hotkeys-service.js",
-    "../scripts/services/ingame-service.js",
 ], function(
     WindowNames,
     DragService,
     WindowsService,
     HotkeysService,
-    InGameService,
 ) {
     class BaseView {
         constructor() {
@@ -48,10 +46,8 @@ define([
             let overwolfWindow = await WindowsService.getCurrentWindow();
             this._windowName = overwolfWindow.name;
 
-            this._defaultHeight = this._settings.getSettingWindowHeight(this._windowName, window.innerHeight);
-            this._defaultWidth = this._settings.getSettingWindowWidth(this._windowName, window.innerWidth);
-            // this._defaultHeight = window.innerHeight;
-            // this._defaultWidth = window.innerWidth;
+            this._defaultHeight = window.innerHeight;
+            this._defaultWidth = window.innerWidth;
 
             if (this._settingsEl !== null) {
                 this._settingsEl.addEventListener("click", async () => {
@@ -175,12 +171,6 @@ define([
 
             scale = monitors.displays[0].width/1920 * scale
             this._updateWindowScale(scale);
-
-            // if (this._windowName == WindowNames.APP)  {
-            //     if (monitors.displays[0].width <= 1366 && !ingame) {
-            //         scale = 1 / window.devicePixelRatio * scale
-            //     }
-            //  }
 
             this.updateHtmlContentScale(scale);
             if (this._adEl !== null) {

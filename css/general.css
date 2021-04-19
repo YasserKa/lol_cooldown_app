@@ -30,7 +30,7 @@ body {
 #changelog-tab {
     border: none;
     padding: 5px;
-    height: 300px;
+    height: 350px;
     overflow-y: scroll;
 }
 ::-webkit-scrollbar {
@@ -162,4 +162,8 @@ main {
 .focus {
     outline: none !important;
     box-shadow: none !important;
+}
+
+.info {
+    height: 5vh;
 }

@@ -4,6 +4,7 @@ define([
     const SETTINGS = {
        CD_TIME: 'cooldown_time',
         CD_RED_DISPLAY: 'cooldown_reduction_display',
+        RELEVANT_ULT_CD: 'relevant_ult_cd',
         WINDOW_SCALE: 'window_scale',
         WINDOW_WIDTH: 'window_width',
         WINDOW_HEIGHT: 'window_height',
@@ -21,6 +22,7 @@ define([
     const DEFAULT_SETTINGS = {};
     DEFAULT_SETTINGS[SETTINGS.CD_TIME] = 'minutes';
     DEFAULT_SETTINGS[SETTINGS.CD_RED_DISPLAY] = true;
+    DEFAULT_SETTINGS[SETTINGS.RELEVANT_ULT_CD] = false;
     DEFAULT_SETTINGS[SETTINGS.WINDOW_SCALE] = 1;
     DEFAULT_SETTINGS[SETTINGS.FIRST_RUN] = true;
     DEFAULT_SETTINGS[SETTINGS.RESIZE] = false;

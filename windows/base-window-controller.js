@@ -31,8 +31,13 @@ define([
             console.info('Before Window Restore');
             await this._view.init();
             let scale = this._settings.getSetting(this._settings.SETTINGS.WINDOW_SCALE)
-            this._view.updateScale(scale);
-            // this._view.updateHtmlContentScale(scale);
+
+
+            if (performance.navigation.type != performance.navigation.TYPE_RELOAD) {
+                this._view.updateScale(scale);
+            } else {
+                this._view.updateHtmlContentScale(scale);
+            }
         }
 
         doPostWindowRestore() {

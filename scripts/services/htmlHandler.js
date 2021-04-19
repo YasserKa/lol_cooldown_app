@@ -12,6 +12,7 @@ define([
     let timers = {}
 
     function initializeView(game) {
+        _relevantUltCd = Settings.getSetting(Settings.SETTINGS.RELEVANT_ULT_CD);
         $(".game-details .team").remove();
         _createGame(game);
         update(game);
@@ -34,54 +35,35 @@ define([
                 }
             });
 
-        $(`.ultimate-overlay`).click(function() {
-            let particId = $(this).parents('table[partic-id]').attr('partic-id');
-            let partic = game.getParticipantUsingSummonerName(particId);
+            $(`.ultimate-overlay`).click(function() {
+                let particId = $(this).parents('table[partic-id]').attr('partic-id');
+                let partic = game.getParticipantUsingSummonerName(particId);
 
-            let cooldown = partic.getCurrentUltimateCD();
-            let timerId = (particId).toString() + "ult";
-            console.log(partic.getCurrentUltimateCD());
-            console.log(partic.getCurrentUltimateCD()[0]);
+                let cooldown = partic.getCurrentUltimateCD();
+                let timerId = (particId).toString() + "ult";
 
-            // If it's already working
-            if (timerId in timers) {
-                stopTimer($(this), timerId, true)
-            } else {
-                startTimer(cooldown, $(this), timerId);
-            }
-        });
+                // If it's already working
+                if (timerId in timers) {
+                    stopTimer($(this), timerId, true)
+                } else {
+                    startTimer(cooldown, $(this), timerId);
+                }
+            });
 
         }
-
     }
 
     function update(game) {
         _updateView(game);
-        // $(`.ultimate-overlay`).off();
-        $(`.ultimate-overlay`).click(function() {
-            let particId = $(this).parents('table[partic-id]').attr('partic-id');
-            let partic = game.getParticipantUsingSummonerName(particId);
-
-            let cooldown = partic.getCurrentUltimateCD();
-            let timerId = (particId).toString() + "ult";
-            console.log(partic.getCurrentUltimateCD());
-            console.log(partic.getCurrentUltimateCD()[0]);
-
-            // If it's already working
-            if (timerId in timers) {
-                stopTimer($(this), timerId, true)
-            } else {
-                startTimer(cooldown, $(this), timerId);
-            }
-        });
     }
 
     function _updateView(game) {
         _timeSetting = Settings.getSetting(Settings.SETTINGS.CD_TIME);
         _displaySetting = Settings.getSetting(Settings.SETTINGS.CD_RED_DISPLAY);
+        _relevantUltCd = Settings.getSetting(Settings.SETTINGS.RELEVANT_ULT_CD);
 
-        _updateTeam(game.getBlueTeam(), 'blue');
-        _updateTeam(game.getRedTeam(), 'red');
+        _updateTeam(game.getBlueTeam(), 'blue', !game.isInGame());
+        _updateTeam(game.getRedTeam(), 'red', !game.isInGame());
 
         // updating tool-top package
         tippy('[data-toggle="tooltip"]', {
@@ -91,7 +73,7 @@ define([
 
     }
 
-    function _updateTeam(team, color) {
+    function _updateTeam(team, color, isInChampSelect) {
         for (let participant of team) {
             let firstSpellCooldownEl = _getNumberElement(
                 _getParsedCooldown(participant.getSummonerSpellCooldown(0)));
@@ -107,11 +89,16 @@ define([
                 _updateCooldownReduction(participant);
             }
 
-            // champ Abilities
-            $(`table[partic-id="${participant.getId()}"] .cooldowns-abilities`).remove();
-            if (participant.getChampionAbilities().length !== 0 &&
-                $(`table[partic-id="${participant.getId()}"] .cooldowns-abilities`).length === 0) {
-                $(`table[partic-id="${participant.getId()}"]`).append(_createAbilities(participant, color));
+            // if in champ select, remove abilities and use the updated
+            // champion's ones
+            if (isInChampSelect) {
+                $(`table[partic-id="${participant.getId()}"] .cooldowns-abilities`).remove();
+                if (participant.getChampionAbilities().length !== 0 &&
+                    $(`table[partic-id="${participant.getId()}"] .cooldowns-abilities`).length === 0) {
+                    $(`table[partic-id="${participant.getId()}"]`).append(_createAbilities(participant, color, true));
+                }
+            } else {
+                _updateAbilities(participant, color);
             }
 
             // update spells
@@ -139,7 +126,6 @@ define([
         let el = _createTeam(game.getBlueTeam(), 'blue') + _createTeam(game.getRedTeam(), 'red');
 
         $(".game-details").append(el);
-
     }
 
     function _createTeam(team, color) {
@@ -202,10 +188,41 @@ define([
                     </td>
                 </tr>
             </tbdoy>
+            `;
+        el += _createAbilities(participant, teamColor);
+
+        el +=`
         </table>`;
         return el;
     }
-    function _createAbilities(participant, teamColor) {
+
+    // in_game argument is used, so you always show the R cooldowns regardless
+    // of the show relevant ULT CD setting
+    function _updateAbilities(participant, teamColor) {
+        let x = 0;
+        for (let [key, ability] of Object.entries(participant.getChampionAbilities())) {
+            let cooldowns = JSON.parse(JSON.stringify(ability['cooldowns']));
+            if (_relevantUltCd && key === "R" && ability['cooldowns'].length > 1) {
+                cooldowns = participant.getCurrentUltimateCD();
+            }
+            let el = "";
+            for (let cooldown of cooldowns) {
+                let cooldownEl = _getNumberElement(_getParsedCooldown(cooldown));
+                el += `<p class="m-0 cooldown">
+                        ${cooldownEl}
+                          </p>
+                        `;
+                // just state one number if it's repetitive number
+                if (cooldowns.length === 1 || cooldowns[0] === cooldowns[1]) {
+                    break;
+                }
+            }
+            $($(`.team-${teamColor} .champ[partic-id="${participant.getId()}"] .abilities td div.cooldowns`)[x]).html(el);
+            x++
+        }
+
+    }
+    function _createAbilities(participant, teamColor, in_champselect = false) {
         let el =
             `<tr class="cooldowns-abilities" ><td class="row-cooldowns p-0" colspan=4>
                 <!-- Champ Details -->
@@ -213,7 +230,7 @@ define([
         for (let [key, ability] of Object.entries(participant.getChampionAbilities())) {
             // TODO: add condition using the setting
             let cooldowns = JSON.parse(JSON.stringify(ability['cooldowns']));
-            if (key === "R" && ability['cooldowns'].length > 1) {
+            if (!in_champselect && _relevantUltCd && key === "R" && ability['cooldowns'].length > 1) {
                 cooldowns = participant.getCurrentUltimateCD();
             }
             el +=
@@ -231,8 +248,16 @@ define([
             }
             if (key === "R") {
                 el += `
-                <div class="ultimate-overlay overlay" summonerName="${participant.getChampionName()}">
-                <p></p>
+                <div class="ultimate-overlay overlay" summonerName="${participant.getChampionName()}"`
+
+                // add description for abilities that has cooldown reduction effect
+                if (ability['cdrType'] != '') {
+                    el +=
+                        ` data-toggle="tooltip" data-tippy-content= "${ability['description']}">`
+                } else {
+                    el += `>`
+                }
+                el += `<p></p>
                     </div>`;
             }
 
@@ -243,7 +268,8 @@ define([
 
             el += `<div class="indication ${teamColor}"></div>`;
             if (ability['cdrType'] != '') {
-                el += `<img class="info" src="/img/info.svg" data-toggle="tooltip" data-tippy-content="This ability decreases cooldowns" />`
+                // el += `<img class="info" src="/img/info.svg" data-toggle="tooltip" data-tippy-content="This ability decreases cooldowns" />`
+                el += `<img class="info" src="/img/info.png" data-toggle="tooltip" data-tippy-content="This ability decreases cooldowns" />`
             }
 
             el +=
@@ -274,7 +300,11 @@ define([
         $(`table[partic-id="${participant.getId()}"] .cdr`).remove();
 
         if (_displaySetting) {
-            $(`table[partic-id="${participant.getId()}"]`).append(_createCdRedCell(participant));
+
+            // $(`table[partic-id="${participant.getId()}"]`).append(_createCdRedCell(participant));
+            // $(`table[partic-id="${participant.getId()}"] .spells-cdr-holder`)
+            //     .html(_createSpellCdRedCell(participant));
+            $(_createCdRedCell(participant)).insertAfter(`table[partic-id="${participant.getId()}"] .champ-header`);
             $(`table[partic-id="${participant.getId()}"] .spells-cdr-holder`)
                 .html(_createSpellCdRedCell(participant));
         }
@@ -392,8 +422,14 @@ define([
             if (--duration < 0) {
                 stopTimer(element, id);
             }
-        }, 1000);
 
+        }, 1000);
+        $(element).mousedown(function(e){
+            if (e.button !== 2 ) {
+                return false;
+            }
+            duration -= 5;
+        });
         timers[id] = intervalId;
     }
 
@@ -417,11 +453,9 @@ define([
                 break;
             case Settings.TIMER_SOUND.Speech:
                 let summonerSpellName = element.siblings().attr('spell-name');
-                console.log(summonerSpellName);
                 if (typeof summonerSpellName === 'undefined' || summonerSpellName === false) {
                     summonerSpellName = "ultimate";
                 }
-                console.log(summonerSpellName);
 
                 let summonerName = element.attr('summonerName');
 

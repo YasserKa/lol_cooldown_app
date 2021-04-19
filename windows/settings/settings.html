@@ -4,6 +4,8 @@
     <meta charset="UTF-8" />
     <script src="/lib/jquery.min.js"></script>
     <script src="/lib/bootstrap.bundle.min.js"></script>
+    <script src="/lib/popper.min.js"></script>
+    <script src="/lib/tippy-bundle.umd.min.js"></script>
     <script src="/js/common.js"></script>
     <link rel="stylesheet" href="/css/bootstrap.min.css" />
     <link rel="stylesheet" href="/css/general.css" />
@@ -81,6 +83,25 @@ ga('send', 'pageview', '/settings.html');
                 </label>
               </div>
             </div>
+           <!-- RELEVANT_ULT_CD -->
+            <div class="mt-4 text-center d-flex">
+              <p class="mb-1 mb-1 ml-5 mr-0">Relevant Ult CD</p>
+              <img class="info" src="/img/info.png" data-toggle="tooltip"
+              data-tippy-content="Show one ultimate CD only depends on level (e.g.
+              level 6: rank 1, level 11: rank 2) (In-game setting)"/>
+              <div class="ml-3 btn-group btn-group-sm btn-group-toggle d-inline" data-toggle="buttons">
+                <label class="btn boarder boarder-secondary rounded-0 btn-primary">
+                  <input type="radio" name="relevant-ult-cd" id="option-off"
+                  autocomplete="off" value="off">
+                  OFF
+                </label>
+                <label class="btn boarder boarder-secondary rounded-0 btn-primary">
+                  <input type="radio" name="relevant-ult-cd" id="option-on"
+                  autocomplete="on" value="on">
+                  ON
+                </label>
+              </div>
+            </div>
             <!-- Window Scale -->
             <div class="mt-4 text-center d-flex">
               <p class="mb-1 mb-1 ml-5 mr-0">Window Scale</p>
@@ -105,6 +126,10 @@ ga('send', 'pageview', '/settings.html');
             <!-- Timer sound -->
             <div class="mt-4 text-center d-flex">
               <p class="mb-1 mb-1 ml-5 mr-0">Timer Sound</p>
+              <img class="info" src="/img/info.png" data-toggle="tooltip"
+              data-tippy-content="Triggers a sound when a timer is done
+                                  (click on a summoner spell or an ultimate icon
+                                  to trigger the timer)" />
               <div class="ml-3 btn-group btn-group-sm btn-group-toggle d-inline" data-toggle="buttons">
                 <label class="btn boarder boarder-secondary rounded-0 btn-primary">
                   <input type="radio" name="timer-sound" id="option-none"
@@ -136,7 +161,16 @@ ga('send', 'pageview', '/settings.html');
             <div class="px-3" id="version"> </div>
           </div>
           <div class="tab-pane fade" id="changelog-tab">
-            <div class="release">
+            <div class="release ml-3 my-1">
+              <h5 class="ml-3 my-1">v0.2.4</h5>
+              Added:
+              <ul>
+                <li>Right clicking on a timer reduces it by 5 seconds</li>
+                <li>Relevant ULT CD setting</li>
+                <li>Ultimate timer</li>
+              </ul>
+            </div>
+            <div class="release ml-3 my-1">
               <h5 class="ml-3 my-1">v0.2.1</h5>
               Added:
               <ul>
