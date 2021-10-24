@@ -32,9 +32,11 @@ define([
 
             if (uiMode === this._settings.UI_MODES.BASIC && this.game.isInGame()) {
                 this.updateHeightWidthScale(0.29, 0.5);
+                this.removeAd();
                 this._updateWindowScale(scale);
             } else {
                 this.updateHeightWidthScale(1, 1);
+                this._ad.refreshAd();
                 this._updateWindowScale(scale);
             }
 
