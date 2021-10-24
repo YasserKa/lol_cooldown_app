@@ -31,12 +31,45 @@ table.champ {
     box-shadow: 0px 0px 6px #999;
 }
 
+.cdr-numbers {
+    font-size: 0.8rem;
+}
+.cdr-numbers > div {
+    display: inline;
+    margin-right: 0.5em;
+    width: 100%;
+}
+
+.cdr-numbers p {
+    display: inline;
+    margin-right: 0.5em;
+    width: 50%;
+}
+
+.cdr-numbers span:not(.item-cdr):not(.summoner-spell-cdr), .cdr-numbers small{
+     color: #8d8d8d;
+}
+
+.cdr-numbers span.item-cdr {
+    padding-right: .3em;
+}
+
+.cdr-numbers span.summoner-spell-cdr {
+    padding-right: .15em;
+}
+
 .champ-icon-container {
+    width: 40px;
+    height: 40px;
+    padding: 5px;
+}
+
+.champ-icon-container.advanced{
     width: 45px;
     height: 45px;
-    padding: 5px;
     float: left;
 }
+
 
 .icon-container {
     height: 100%;
@@ -67,22 +100,39 @@ img.champ-icon {
 }
 
 /** cdr elements **/
-.cdr p {
-    color: #8A8F94;
-}
-
 .spells-cdr-cell {
     display: inline-flex;
 }
 
-.cdr p {
-    font-size: 0.9rem;
+.active-items p {
+    font-size: 0.6rem;
 }
 
-.cdr img {
+table.advanced .active-items p {
+    font-size: 0.8rem;
+}
+
+.active-items td {
+    height: 32.2px;
+}
+
+
+.active-item-icon {
+    height: 100%;
+    width: 100%;
+    border-radius: 90px;
+}
+
+.item-overlay {
+    border-radius: 90px;
+}
+
+
+.item-icon, .rune-icon, .cloud-image{
     height: 20px;
     width: 20px;
     border-radius: 90px;
+    border: solid 0.1px #8A8F94;
 }
 
 .items {
@@ -103,10 +153,6 @@ img.champ-icon {
     width: 100px;
 }
 
-.cloud-stacks-container {
-    width: 60px;
-}
-
 .spells-cdr-value {
     margin-left: 5px;
 }
@@ -115,18 +161,28 @@ img[alt="statmodscdrscaling"] {
     background-color: black;
 }
 
+
 /** spells **/
 div.spells {
     display: flex;
     font-size: 0.7em;
-    float: right;
     text-align: center;
 }
 
+div.spells.advanced {
+    float: right;
+}
+
 .spell-icon-container {
+    height:28px;
+    width:28px;
+}
+
+.spell-icon-container.advanced {
     height:25px;
     width:25px;
 }
+
 .spells img {
     width: 100%
 }
@@ -147,11 +203,21 @@ img.ability-icon {
     width:100%;
 }
 
-div.ability-img-container {
+div.ability-img-container, .item-img-container {
     position: relative;
     top: 0;
     margin:auto;
     width: fit-content;
+}
+
+.item-img-container {
+    width: 20px;
+    height: 20px;
+}
+
+table.advanced .item-img-container {
+    width: 25px;
+    height: 25px;
 }
 
 .ability-icon {
@@ -212,6 +278,21 @@ p small:not(:empty) {
 
 .overlay > p {
     margin-top: 15%;
-    /* -ms-transform: translate(-50%, -50%); */
-    /* transform: translate(-50%, -50%); */
+}
+
+.tippy-box[data-theme~='dark'] {
+  border: 1px solid #8A8F94;
+  background-color: #172636;
+}
+ .tippy-box[data-theme~='dark'][data-placement^='top'] > .tippy-arrow::before {
+  border-top-color: #8A8F94;
+}
+.tippy-box[data-theme~='dark'][data-placement^='bottom'] > .tippy-arrow::before {
+  border-bottom-color: #8A8F94;
+}
+.tippy-box[data-theme~='dark'][data-placement^='left'] > .tippy-arrow::before {
+  border-left-color: #8A8F94;
+}
+.tippy-box[data-theme~='dark'][data-placement^='right'] > .tippy-arrow::before {
+  border-right-color: #8A8F94;
 }

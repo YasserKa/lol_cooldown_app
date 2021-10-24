@@ -26,6 +26,8 @@ define([
         constructor() {
             super(AppView);
             this._runesUpdated = false;
+            this._game_mode_initialized = false
+            this._current_parsed_data = {};
             this._participantRunes = [];
             this._mainWindow = overwolf.windows.getMainWindow();
             this._stateService = this._mainWindow.stateService;
@@ -111,8 +113,12 @@ define([
 
         async _inGameEventUpdateListener(data) {
             // attributes to parse
-            if (!data || (!data.hasOwnProperty('all_players') && !data.hasOwnProperty('events'))) {
+            if (!data || (!data.hasOwnProperty('all_players') && !data.hasOwnProperty('events')) || (this._game_mode_initialized && data.hasOwnProperty('game_data'))) {
                 return;
+            }
+
+            if (data.hasOwnProperty('game_data')) {
+                this._game_mode_initialized = true;
             }
 
             // fetch runes from server
@@ -122,6 +128,16 @@ define([
                 }
                 data.participantRunes = this._participantRunes;
             }
+
+            let clonedObj = Object.assign({}, data)
+            // delete clonedObj.creepScore;
+            let parsedDataString = JSON.stringify(clonedObj);
+
+            if (parsedDataString === this._current_parsed_data) {
+                return;
+            }
+
+            this._current_parsed_data = parsedDataString;
 
             let parsedData = Parser.parseInGameData(data);
 

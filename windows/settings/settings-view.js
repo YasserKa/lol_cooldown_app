@@ -21,9 +21,11 @@ define([
             // minute/second cooldown display
             this._initCooldownTime();
             // show hide cooldownreduction elements
-            this._initCooldownRedDisplay();
+            // this._initCooldownRedDisplay();
             // on off ult relevant Cd
             this._initRelevantUltCd();
+            // ui mode
+            this._initUIMode();
             // show hide cooldownreduction elements
             this._initWindowScale();
             // timer sound
@@ -114,6 +116,21 @@ define([
                 });
             });
         }
+
+        _initUIMode() {
+            let  settingValue = this._settings.getSetting(this._settings.SETTINGS.UI_MODE);
+            this._activateSettingEl(settingValue);
+            let elements = document.querySelectorAll('input[name="ui-mode"]');
+
+            Array.from(elements).forEach(el => {
+                el.addEventListener("click", () => {
+                    let uiMode = $("input[name='ui-mode']:checked").val();
+
+                    this._settings.setSetting(this._settings.SETTINGS.UI_MODE, uiMode)
+                });
+            });
+        }
+
 
         _activateSettingEl(settingValue) {
             let cooldownRedDisplayEl = $('input[value="' + settingValue + '"]');

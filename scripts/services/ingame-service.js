@@ -43,7 +43,7 @@ define([
     async function getLiveClientData() {
         while (true) {
             let info = await _getInGameInfo();
-            if (!info.res.hasOwnProperty('live_client_data')) {
+            if (!info.res.hasOwnProperty('game_info') || info.res.game_info.game_mode === "n/a" || !info.res.live_client_data.hasOwnProperty('game_data')) {
                 await Utils.sleep(1000);
                 return await getLiveClientData();
             } else {

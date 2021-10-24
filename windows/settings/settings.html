@@ -69,35 +69,53 @@ ga('send', 'pageview', '/settings.html');
                 </label>
               </div>
             </div>
-            <!-- CooldownReduction Elements Display -->
+            <!-- Basic/Advance modes -->
             <div class="mt-4 text-center d-flex">
-              <p class="mb-1 mb-1 ml-5 mr-0">CDr Elements Visibility</p>
+              <p class="mb-1 mb-1 ml-5 mr-0">In-Game UI Mode</p>
+              <img class="info ml-1 my-auto" src="/img/info.png" data-toggle="tooltip"
+                                                                 data-tippy-content="<b>Basic</b>:
+                                                                 show only
+                                                                 summoner
+                                                                 spells,
+                                                                 ultimates, and
+                                                                 items timers
+                                                                 <br>
+                                                                 <b>Advanced</b>:
+                                                                 In addition to
+                                                                 Basic, show
+                                                                 info about CDr
+                                                                 and abilities
+                                                                 cooldowns"/>
               <div class="ml-3 btn-group btn-group-sm btn-group-toggle d-inline" data-toggle="buttons">
                 <label class="btn boarder boarder-secondary rounded-0 btn-primary">
-                  <input type="radio" name="cooldown-reduction-display" id="option-show" autocomplete="off" value="show">
-                  Show
+                  <input type="radio" name="ui-mode" id="option-basic"
+                                                             autocomplete="off"
+                                                             value="basic">
+                  BASIC
                 </label>
                 <label class="btn boarder boarder-secondary rounded-0 btn-primary">
-                  <input type="radio" name="cooldown-reduction-display" id="option-hide" autocomplete="off" value="hide">
-                  Hide
+                  <input type="radio" name="ui-mode" id="option-advanced"
+                                                             autocomplete="on"
+                                                             value="advanced">
+                  ADVANCED
                 </label>
               </div>
             </div>
-           <!-- RELEVANT_ULT_CD -->
+            <!-- RELEVANT_ULT_CD -->
             <div class="mt-4 text-center d-flex">
               <p class="mb-1 mb-1 ml-5 mr-0">Relevant Ult CD</p>
-              <img class="info" src="/img/info.png" data-toggle="tooltip"
-              data-tippy-content="Show one ultimate CD only depends on level (e.g.
-              level 6: rank 1, level 11: rank 2) (In-game setting)"/>
+              <img class="info ml-1 my-auto" src="/img/info.png" data-toggle="tooltip"
+                                                                 data-tippy-content="Show one ultimate CD only depending on level (e.g.
+                                                                                     level 6: rank 1, level 11: rank 2) (In-game setting)"/>
               <div class="ml-3 btn-group btn-group-sm btn-group-toggle d-inline" data-toggle="buttons">
                 <label class="btn boarder boarder-secondary rounded-0 btn-primary">
                   <input type="radio" name="relevant-ult-cd" id="option-off"
-                  autocomplete="off" value="off">
+                                                             autocomplete="off" value="off">
                   OFF
                 </label>
                 <label class="btn boarder boarder-secondary rounded-0 btn-primary">
                   <input type="radio" name="relevant-ult-cd" id="option-on"
-                  autocomplete="on" value="on">
+                                                             autocomplete="on" value="on">
                   ON
                 </label>
               </div>
@@ -126,10 +144,11 @@ ga('send', 'pageview', '/settings.html');
             <!-- Timer sound -->
             <div class="mt-4 text-center d-flex">
               <p class="mb-1 mb-1 ml-5 mr-0">Timer Sound</p>
-              <img class="info" src="/img/info.png" data-toggle="tooltip"
-              data-tippy-content="Triggers a sound when a timer is done
-                                  (click on a summoner spell or an ultimate icon
-                                  to trigger the timer)" />
+              <img class="info ml-1 my-auto" src="/img/info.png" data-toggle="tooltip"
+                                                                 data-tippy-content="Triggers a sound when a timer is done
+                                                                                     (click on a summoner spell, an ultimate, or an
+                                                                                     item icon to trigger the timer). Right Click
+                                                                                     on a timer to reduce it by 5 seconds" />
               <div class="ml-3 btn-group btn-group-sm btn-group-toggle d-inline" data-toggle="buttons">
                 <label class="btn boarder boarder-secondary rounded-0 btn-primary">
                   <input type="radio" name="timer-sound" id="option-none"
@@ -161,6 +180,60 @@ ga('send', 'pageview', '/settings.html');
             <div class="px-3" id="version"> </div>
           </div>
           <div class="tab-pane fade" id="changelog-tab">
+            <div class="release ml-3 my-1">
+              <h5 class="ml-3 my-1">v1.0.0</h5>
+              New:
+              <ul>
+                <li>Window that introduces the app's features</li>
+              </ul>
+            </div>
+            <div class="release ml-3 my-1">
+              <h5 class="ml-3 my-1">v0.4.2</h5>
+              Fixed:
+              <ul>
+                <li>FiddleSticks not working in the in-game window</li>
+              </ul>
+            </div>
+            <div class="release ml-3 my-1">
+              <h5 class="ml-3 my-1">v0.4.0</h5>
+              New:
+              <ul>
+                <li>Basic mode</li>
+              </ul>
+            </div>
+            <div class="release ml-3 my-1">
+              <h5 class="ml-3 my-1">v0.3.3</h5>
+              Fixed:
+              <ul>
+                <li>Master Yi not working in the in-game window</li>
+              </ul>
+            </div>
+            <div class="release ml-3 my-1">
+              <h5 class="ml-3 my-1">v0.3.1</h5>
+              Fixed:
+              <ul>
+                <li>In-game window position</li>
+                <li>Summoner Spells not working in non-English regions</li>
+              </ul>
+            </div>
+            <div class="release ml-3 my-1">
+              <h5 class="ml-3 my-1">v0.3.0</h5>
+              Added:
+              <ul>
+                <li>Active items with timers</li>
+              </ul>
+              Updated:
+              <ul>
+                <li>Cooldown Reduction UI</li>
+              </ul>
+            </div>
+            <div class="release ml-3 my-1">
+              <h5 class="ml-3 my-1">v0.2.5</h5>
+              Fixed:
+              <ul>
+                <li>Error when in-game</li>
+              </ul>
+            </div>
             <div class="release ml-3 my-1">
               <h5 class="ml-3 my-1">v0.2.4</h5>
               Added:

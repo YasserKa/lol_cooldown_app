@@ -41,17 +41,18 @@ define([
         }
 
         async function _getLastDateUpdated() {
-            let patch_version = await LauncherService.getPatchVersion();
-            let url = `https://www.lolcooldown.com/api/lastdateupdated_new?version=${patch_version}`;
+            // let patch_version = await LauncherService.getPatchVersion();
+            // let url = `https://www.lolcooldown.com/api/lastdateupdated_new?version=${patch_version}`;
+            let url = `https://www.lolcooldown.com/api/lastdateupdated`;
             let data = await Utils.makeRequest(url);
             return data.lastDateUpdated;
         }
 
         async function _updateDataUsingServer() {
             console.info('updating data from server');
-            let patch_version = await LauncherService.getPatchVersion();
-            let url = `https://www.lolcooldown.com/api/data_new?version=${patch_version}`;
-            // let url = 'https://www.lolcooldown.com/api/data';
+            // let patch_version = await LauncherService.getPatchVersion();
+            // let url = `https://www.lolcooldown.com/api/data_new?version=${patch_version}`;
+            let url = 'https://www.lolcooldown.com/api/data';
             let data = await Utils.makeRequest(url);
             localStorage.setItem("data", JSON.stringify(data));
             _data = data;
@@ -65,8 +66,14 @@ define([
         }
 
         function getChampionByName(name) {
-            return _champions[Object.keys(_champions).find(
-                key => _champions[key]['name'] === name)];
+
+            // client API uses FiddleSticks, while the data provided uses
+            // Fiddlesticks
+            if (name === 'FiddleSticks') {
+                name = 'Fiddlesticks';
+            }
+
+            return _champions[name];
         }
 
         function getItemById(id) {
@@ -85,17 +92,17 @@ define([
         function getSpellByName(name) {
             // used mark's name is empty
             if (name === "") {
-                name = 'Mark';
+                name = 'SummonerSnowball';
             }
-            if (name === "Hexflash") {
-                name =  "Flash";
+            if (name === "SummonerFlashPerksHextechFlashtraptionV2") {
+                name =  "SummonerFlash";
             }
+
             // smite upgrades like chilling
-            if (name.includes('Smite')) {
-                name = 'Smite';
+            if (name.includes('S5')) {
+                name = 'SummonerSmite';
             }
-            return _summonerSpells[Object.keys(_summonerSpells).find(
-                key => _summonerSpells[key]['name'] === name)];
+            return _summonerSpells[name];
         }
 
         function getRunesNeeded() {

@@ -5,12 +5,13 @@ define([
        CD_TIME: 'cooldown_time',
         CD_RED_DISPLAY: 'cooldown_reduction_display',
         RELEVANT_ULT_CD: 'relevant_ult_cd',
+        UI_MODE: 'ui_mode',
         WINDOW_SCALE: 'window_scale',
         WINDOW_WIDTH: 'window_width',
         WINDOW_HEIGHT: 'window_height',
-        FIRST_RUN: 'first_run',
         RESIZE: 'resize',
         TIMER_SOUND: 'timer_sound',
+        FIRST_TIME: 'first_time',
     }
 
     const TIMER_SOUND = {
@@ -18,15 +19,20 @@ define([
         Bell : "bell",
         Speech : "speech",
     }
+    const UI_MODES = {
+        BASIC : "basic",
+        ADVANCED : "advanced",
+    }
 
     const DEFAULT_SETTINGS = {};
     DEFAULT_SETTINGS[SETTINGS.CD_TIME] = 'minutes';
     DEFAULT_SETTINGS[SETTINGS.CD_RED_DISPLAY] = true;
+    DEFAULT_SETTINGS[SETTINGS.UI_MODE] = UI_MODES.ADVANCED;
     DEFAULT_SETTINGS[SETTINGS.RELEVANT_ULT_CD] = false;
     DEFAULT_SETTINGS[SETTINGS.WINDOW_SCALE] = 1;
-    DEFAULT_SETTINGS[SETTINGS.FIRST_RUN] = true;
     DEFAULT_SETTINGS[SETTINGS.RESIZE] = false;
     DEFAULT_SETTINGS[SETTINGS.TIMER_SOUND] = TIMER_SOUND.Bell;
+    DEFAULT_SETTINGS[SETTINGS.FIRST_TIME] = true;
 
     let _settings = {};
     let _listeners = {};
@@ -105,6 +111,7 @@ define([
     return {
         SETTINGS,
         TIMER_SOUND,
+        UI_MODES,
         setSetting,
         getSetting,
         addListener,

@@ -3,7 +3,6 @@ define([
 ], function (
     WindowNames,
 ) {
-
     /**
      * obtain a window object by a name as declared in the manifest
      * this is required in order to create the window before calling other APIs
@@ -202,10 +201,10 @@ define([
                 let windowWidth = my_window['window']['width'];
 
                 let newTopPosition = 0;
-                let newLeftPosition = (width / 2 - (windowWidth / 2 * window.devicePixelRatio));
+                let newLeftPosition = (width / 2 - (windowWidth / 2));
 
                 if (!horizonalOnly)  {
-                    newTopPosition = (height / 2 - (windowHeight / 2 * window.devicePixelRatio));
+                    newTopPosition = (height / 2 - (windowHeight / 2));
                 }
 
                 overwolf.windows.changePosition(windowName, parseInt(newLeftPosition), parseInt(newTopPosition));

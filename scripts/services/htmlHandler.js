@@ -7,49 +7,67 @@ define([
 ) {
 
     let _timeSetting = '';
-    let _displaySetting = '';
+    let _isBasicuiModeSetting = false;
+    let _basicUIDone = false;
 
     let timers = {}
+    let _game = null;
 
-    function initializeView(game) {
+    function initializeView(game = null) {
+
+        if (game !== null) {
+            _game = game;
+         }
+
+        _isBasicuiModeSetting = Settings.getSetting(Settings.SETTINGS.UI_MODE) == Settings.UI_MODES.BASIC && _game !== null && _game.isInGame();
+
         _relevantUltCd = Settings.getSetting(Settings.SETTINGS.RELEVANT_ULT_CD);
         $(".game-details .team").remove();
-        _createGame(game);
-        update(game);
+        _createGame(_game);
+        update(_game);
 
-        if (game.isInGame()) {
-            // Timers
-            $(`.spell-overlay`).click(function() {
-                let particId = $(this).parents('table[partic-id]').attr('partic-id');
-                let partic = game.getParticipantUsingSummonerName(particId);
-
-                let spellId = $(this).attr('spell');
-                let cooldown = partic.getSummonerSpellCooldown(spellId);
-                let timerId = (particId).toString() + (spellId).toString()
-
-                // If it's already working
-                if (timerId in timers) {
-                    stopTimer($(this), timerId, true)
-                } else {
-                    startTimer(cooldown, $(this), timerId);
-                }
+        if (_game.isInGame()) {
+            $(`.ultimate-overlay, .spell-overlay`).click(function() {
+                _updateOverlayTimers(this);
             });
+        }
 
-            $(`.ultimate-overlay`).click(function() {
-                let particId = $(this).parents('table[partic-id]').attr('partic-id');
-                let partic = game.getParticipantUsingSummonerName(particId);
+        tippy('[data-toggle="tooltip-abilities"]', {
+            theme: 'dark',
+            appendTo: 'parent',
+            allowHTML: true,
+        });
+    }
 
-                let cooldown = partic.getCurrentUltimateCD();
-                let timerId = (particId).toString() + "ult";
+    function _updateOverlayTimers(el) {
+        let particId = $(el).parents('table[partic-id]').attr('partic-id');
+        let partic = _game.getParticipantUsingSummonerName(particId);
 
-                // If it's already working
-                if (timerId in timers) {
-                    stopTimer($(this), timerId, true)
-                } else {
-                    startTimer(cooldown, $(this), timerId);
-                }
-            });
+        let name = $(el).attr('name');
+        let type = $(el).attr('type');
+        let cooldown = 0;
 
+        switch (type) {
+            case 'summoner-spell':
+                let spellId = $(el).attr('spell');
+                cooldown = partic.getSummonerSpellCooldown(spellId);
+                break
+            case 'ultimate':
+                cooldown = partic.getCurrentUltimateCD();
+                break;
+            case 'item':
+                cooldown = Number($(el).parent().siblings().attr('cooldown'));
+                break;
+            default:
+        }
+
+        let timerId = (particId).toString() + name;
+
+        // If it's already working
+        if (timerId in timers) {
+            stopTimer($(el), timerId, true)
+        } else {
+            startTimer(cooldown, $(el), timerId);
         }
     }
 
@@ -59,14 +77,27 @@ define([
 
     function _updateView(game) {
         _timeSetting = Settings.getSetting(Settings.SETTINGS.CD_TIME);
-        _displaySetting = Settings.getSetting(Settings.SETTINGS.CD_RED_DISPLAY);
         _relevantUltCd = Settings.getSetting(Settings.SETTINGS.RELEVANT_ULT_CD);
+
+        if (_isBasicuiModeSetting && !_basicUIDone) {
+            _createGame(game);
+        }
 
         _updateTeam(game.getBlueTeam(), 'blue', !game.isInGame());
         _updateTeam(game.getRedTeam(), 'red', !game.isInGame());
 
         // updating tool-top package
+        // tippy('[data-toggle="tooltip"]', {
+        //     theme: 'dark',
+        //     appendTo: 'parent',
+        //     allowHTML: true,
+        //    showOnCreate: true,
+        // hideOnClick: false,
+        // trigger: 'click',
+        // interactive: true,
+        // });
         tippy('[data-toggle="tooltip"]', {
+            theme: 'dark',
             appendTo: 'parent',
             allowHTML: true,
         });
@@ -86,7 +117,8 @@ define([
 
             // cooldownReduction if in-game
             if (participant.isInGame()) {
-                _updateCooldownReduction(participant);
+                _updateActiveItems(participant);
+                $(`table[partic-id="${participant.getId()}"] .spells-cdr-holder`).html(_createSpellCdRedCell(participant));
             }
 
             // if in champ select, remove abilities and use the updated
@@ -125,22 +157,41 @@ define([
     function _createGame(game) {
         let el = _createTeam(game.getBlueTeam(), 'blue') + _createTeam(game.getRedTeam(), 'red');
 
+        $(".game-details").empty();
         $(".game-details").append(el);
     }
 
     function _createTeam(team, color) {
         // start team element
-        let el =
-            `<div id="team-${color}" class="team row justify-content-center mx-auto mt-2 team-${color}">`
+        let el = '';
+        if (_isBasicuiModeSetting) {
+        el +=
+            `<div id="team-${color}" class="team row justify-content-center mx-auto mt-1 team-${color}">`
+        $('.footer').hide();
+        } else {
+        el +=
+            `<div id="team-${color}" class="team row justify-content-center mx-auto mt-2 team-${color}">`;
+        $('.footer').show();
+        }
         for (let participant of team) {
-            el += _createParticipant(participant, color);
+            // TODO: setting here and not color of current player
+            if (_isBasicuiModeSetting) {
+              if (color === _game.getEnemyTeamColor()) {
+                el += _createParticipantBasic(participant, color);
+              }
+             if (_game.getEnemyTeamColor() !== "") {
+                _basicUIDone = true;
+             }
+            } else {
+                el += _createParticipant(participant, color);
+            }
         }
         // end team element
         el += `</div>`
         return el;
     }
 
-    function _createParticipant(participant, teamColor) {
+    function _createParticipantBasic(participant, teamColor) {
         let firstSpellCooldownEl = _getNumberElement(
             _getParsedCooldown(participant.getSummonerSpellCooldown(0)));
         let secondSpellCooldownEl = _getNumberElement(
@@ -149,24 +200,107 @@ define([
             `
         <table class="champ" partic-id="${participant.getId()}">
             <tbody>
+                <tr class="champ-header">
+                    <td class="cell champ p-0 text-center" colspan=4>
+                        <div class="champ-icon-container d-inline-block">
+                           <div class="icon-container">
+                            <img class="champ-icon" src="${participant.getChampionIcon()}" alt="" champ-name="${participant.getChampionName()}">
+                            </div>
+                        </div>
+                    </td>
+                        </tr>
+                        <tr>
+                    <td class="text-center">
+                        <div class="cell spells  p-0 d-inline-flex">
+                            <div class="spell-1 d-inline-block mr-1">
+                               <div class="spell-icon-container">
+                                   <div class="icon-container">
+                                        <img class="spell-icon" src="${participant.getSummonerSpellImage(0)}" alt="" spell-name="${participant.getSummonerSpellImage(0)}">
+                                        <div class="spell-overlay overlay" type="summoner-spell" name="${participant.getSummonerSpellName(0)}" summonerName="${participant.getChampionName()}" spell="0">
+                                          <p></p>
+                                        </div>
+                                   </div>
+                               </div>
+                            </div>
+                            <div class="spell-2 d-inline-block">
+                               <div class="spell-icon-container">
+                                   <div class="icon-container">
+                                    <img class="spell-icon" src="${participant.getSummonerSpellImage(1)}" alt="" spell-name="${participant.getSummonerSpellImage(1)}">
+                                        <div class="spell-overlay overlay" type="summoner-spell" name="${participant.getSummonerSpellName(1)}" summonerName="${participant.getChampionName()}" spell="1">
+                                          <p></p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </td>
+                </tr>
+                <tr>
+                    <td class="text-center">`;
+        el += createUltimateAbility(participant, teamColor);
+
+        el += `</td>
+                </tr>
+                <tr class="active-items">
+                    <td colspan="2" class="items">
+                    </td>
+                </tr>
+            </tbdoy>
+            `;
+
+        el +=`
+        </table>`;
+        return el;
+    }
+
+    function createUltimateAbility(participant, teamColor, in_champselect=false){
+        let el = '';
+        let abilities = participant.getChampionAbilities()
+        let ability = abilities['R'];
+
+        let cooldowns = JSON.parse(JSON.stringify(ability['cooldowns']));
+        if (!in_champselect && _relevantUltCd) {
+            cooldowns = participant.getCurrentUltimateCD();
+        }
+            el +=
+                `
+                    <div class='ability-img-container d-flex'>
+                        <img class="ability-icon" src="${ability['icon']}" alt="${ability['name']}" ability="R"> <div class="ultimate-overlay overlay" type="ultimate" name="ultimate"  summonerName="${participant.getChampionName()}"`
+
+                el += `<p></p>
+                    </div>`;
+        return el;
+        }
+
+
+
+    function _createParticipant(participant, teamColor) {
+        let firstSpellCooldownEl = _getNumberElement(
+            _getParsedCooldown(participant.getSummonerSpellCooldown(0)));
+        let secondSpellCooldownEl = _getNumberElement(
+            _getParsedCooldown(participant.getSummonerSpellCooldown(1)));
+        let el =
+            `
+        <table class="champ advanced" partic-id="${participant.getId()}">
+            <tbody>
                 <tr>
                     <th class="${teamColor}" colspan=4></th>
                 </tr>
                 <tr class="champ-header">
                     <td class="cell champ p-0" colspan=4>
-                        <div class="champ-icon-container d-inline-block">
+                        <div class="champ-icon-container advanced d-inline-block">
                            <div class="icon-container">
                             <img class="champ-icon" src="${participant.getChampionIcon()}" alt="" champ-name="${participant.getChampionName()}">
                             </div>
                         </div>
                         <div class="spells-cdr-holder d-inline-block">
                         </div>
-                        <div class="cell spells p-0 d-inline-flex">
+                        <div class="cell spells advanced p-0 d-inline-flex">
                             <div class="spell-1 d-inline-block">
-                               <div class="spell-icon-container">
+                               <div class="spell-icon-container advanced">
                                    <div class="icon-container">
                                         <img class="spell-icon" src="${participant.getSummonerSpellImage(0)}" alt="" spell-name="${participant.getSummonerSpellImage(0)}">
-                                        <div class="spell-overlay overlay" summonerName="${participant.getChampionName()}" spell="0">
+                                        <div class="spell-overlay overlay" type="summoner-spell" name="${participant.getSummonerSpellName(0)}" summonerName="${participant.getChampionName()}" spell="0">
                                           <p></p>
                                         </div>
                                    </div>
@@ -174,10 +308,10 @@ define([
                                 <p class="cooldown" spell="0" spell-name="${participant.getSummonerSpellName(0)}">${firstSpellCooldownEl}</p>
                             </div>
                             <div class="spell-2 d-inline-block">
-                               <div class="spell-icon-container">
+                               <div class="spell-icon-container advanced">
                                    <div class="icon-container">
                                     <img class="spell-icon" src="${participant.getSummonerSpellImage(1)}" alt="" spell-name="${participant.getSummonerSpellImage(1)}">
-                                        <div class="spell-overlay overlay" summonerName="${participant.getChampionName()}" spell="1">
+                                        <div class="spell-overlay overlay" type="summoner-spell" name="${participant.getSummonerSpellName(1)}" summonerName="${participant.getChampionName()}" spell="1">
                                           <p></p>
                                         </div>
                                     </div>
@@ -185,6 +319,10 @@ define([
                                     <p class="cooldown" spell="0" spell-name="${participant.getSummonerSpellName(1)}">${secondSpellCooldownEl}</p>
                             </div>
                         </div>
+                    </td>
+                </tr>
+                <tr class="active-items">
+                    <td colspan="2" class="items">
                     </td>
                 </tr>
             </tbdoy>
@@ -242,18 +380,18 @@ define([
             // add description for abilities that has cooldown reduction effect
             if (ability['cdrType'] != '') {
                 el +=
-                    ` data-toggle="tooltip" data-tippy-content= "${ability['description']}"/>`
+                    ` data-toggle="tooltip-abilities" data-tippy-content= "${ability['description']}"/>`
             } else {
                 el += `/>`
             }
             if (key === "R") {
                 el += `
-                <div class="ultimate-overlay overlay" summonerName="${participant.getChampionName()}"`
+                <div class="ultimate-overlay overlay" type="ultimate" name="ultimate"  summonerName="${participant.getChampionName()}"`
 
                 // add description for abilities that has cooldown reduction effect
                 if (ability['cdrType'] != '') {
                     el +=
-                        ` data-toggle="tooltip" data-tippy-content= "${ability['description']}">`
+                        ` data-toggle="tooltip-abilities" data-tippy-content= "${ability['description']}">`
                 } else {
                     el += `>`
                 }
@@ -269,7 +407,7 @@ define([
             el += `<div class="indication ${teamColor}"></div>`;
             if (ability['cdrType'] != '') {
                 // el += `<img class="info" src="/img/info.svg" data-toggle="tooltip" data-tippy-content="This ability decreases cooldowns" />`
-                el += `<img class="info" src="/img/info.png" data-toggle="tooltip" data-tippy-content="This ability decreases cooldowns" />`
+                el += `<img class="info" src="/img/info.png" data-toggle="tooltip-abilities" data-tippy-content="This ability decreases cooldowns" />`
             }
 
             el +=
@@ -296,26 +434,14 @@ define([
         return el;
     }
 
-    function _updateCooldownReduction(participant) {
-        $(`table[partic-id="${participant.getId()}"] .cdr`).remove();
-
-        if (_displaySetting) {
-
-            // $(`table[partic-id="${participant.getId()}"]`).append(_createCdRedCell(participant));
-            // $(`table[partic-id="${participant.getId()}"] .spells-cdr-holder`)
-            //     .html(_createSpellCdRedCell(participant));
-            $(_createCdRedCell(participant)).insertAfter(`table[partic-id="${participant.getId()}"] .champ-header`);
-            $(`table[partic-id="${participant.getId()}"] .spells-cdr-holder`)
-                .html(_createSpellCdRedCell(participant));
-        }
-    }
-
-    function _createSpellCdRedCell(participant) {
-        let el = '<div class="cdr spells-cdr-cell mx-auto">';
+    function _getSummonerSpellCdRedIcons(participant) {
         let cdRedSpells = participant.getSummonerSpellsCDr();
+        let el = '';
+
         if (cdRedSpells == 0) {
             return el;
         }
+
         let items = participant.getItems();
         let runes = participant.getRunes();
         let isSpellsCDrMode = participant.isSpellsCDrMode();
@@ -334,9 +460,214 @@ define([
             el += `<img class="item-icon ml-1" src="/img/howling_abyss.png" alt="" data-tippy-content="+40% Summoner Spell CDR">`;
         }
 
-        el += `<p class="spells-cdr-value d-inline">${_getNumberElement(participant.getSummonerSpellsCDr())}</p>`;
-        el += '</div>';
+        return el
+    }
 
+    function _getBasicAbilitiesCdRedIcons(participant) {
+        let runes = participant.getRunes();
+        let items = participant.getCDRedItems();
+
+        let el = '';
+
+        // normal abilities runes
+        let index = 0;
+        for (let [key, rune] of Object.entries(runes)) {
+            if (key === 'UltimateHunter' || key === 'IngeniousHunter'
+                || key === 'AttackSpeed' || key === 'LegendAlacrity' ||
+                key === 'CosmicInsight') {
+                continue;
+            }
+            el += `<img class="rune-icon ml-1"`;
+            el += `src="${rune.image}" alt="${rune.name}">`
+
+
+            index++;
+        }
+
+        // items
+        let el_items = "";
+        for (let [index, item] of Object.entries(items)) {
+            el_items += `<img class="item-icon ml-1"`;
+            el_items += `src="${item.icon}" alt="${item.name}">`;
+        }
+
+        if (el !== "") {
+            if (el_items !== "") {
+                el += `<br> ${el_items}`;
+            }
+        }
+        else  {
+            if (el_items !== "" ) {
+                el += `${el_items}`;
+            }
+        }
+
+
+
+        return el;
+    }
+
+    function _getUltCdRedIcons(participant) {
+        let runes = participant.getRunes();
+
+        let cloudStacks = participant.getCloudStacks();
+        // in clash & aram there's no cloud drake
+        let isSpellsCDrMode = participant.isSpellsCDrMode();
+
+        let el = _getBasicAbilitiesCdRedIcons(participant);
+
+        if (el !== "" && (runes.hasOwnProperty('UltimateHunter') || !isSpellsCDrMode && cloudStacks !== 0)) {
+            el += "<br>";
+        }
+
+        if (runes.hasOwnProperty('UltimateHunter')) {
+            let rune = runes.UltimateHunter;
+            el += `<div class="d-inline-flex mr-2 mt-1">
+                <p class="kill-count-value mr-1"> ${participant.getUniqueKillsCount()}</p>
+                <img class="rune-icon" src="${rune.image}" alt="${rune.name}">
+                </div>`
+        }
+
+        if (!isSpellsCDrMode && cloudStacks !== 0) {
+            el += `<div class="d-inline-flex mt-1">
+                <p class="cloud-stacks-value mr-1">${cloudStacks}</p><img class="cloud-image buff" src="/img/cloud_buff.png" alt="cloud_buff"></div>`
+        }
+
+        return el;
+    }
+
+    function _getItemsCdRedIcons(participant) {
+        let runes = participant.getRunes();
+        let el = "";
+
+        if (runes.hasOwnProperty('CosmicInsight')) {
+            let rune = runes.CosmicInsight;
+            el += `<img class="rune-icon ml-1"`;
+            el += `src="${rune.image}" alt="${rune.name}">`
+        }
+
+        if (runes.hasOwnProperty('IngeniousHunter')) {
+            if (el !== "") {
+                el += "<br>";
+            }
+            let rune = runes.IngeniousHunter;
+            el += `<div class="d-inline-flex mr-2 mt-1">
+                <p class="kill-count-value mr-1"> ${participant.getUniqueKillsCount()}</p>
+                <img class="rune-icon" src="${rune.image}" alt="${rune.name}">
+                </div>`
+        }
+
+        return el;
+    }
+
+    function _parseCDrIcons(icons) {
+        if (icons === "") {
+            return "";
+        }
+        icons = "<br>" + icons;
+        return icons.replace(/"/g, '&quot;');
+    }
+
+    function _updateActiveItems(participant) {
+        let items_el = $(`table[partic-id="${participant.getId()}"] .active-items td`);
+
+        let avaiableItems = items_el.children().toArray().map((child) => {return $(child).attr('name')});
+
+        let items = participant.getItems();
+        let itemsWithActiveCD = items.filter(item => item.cooldown > 0);
+        let itemsCdRed = participant.getItemsCDr();
+        let itemsWithAbilitiesCdRed = participant.getItemsWithAbilitiesCDr();
+
+
+        // if the item is sold, remove it
+        items_el.children().toArray().map((child) => {
+            let is_sold = true;
+            let name = $(child).attr('name');
+            for (let [index, item] of Object.entries(itemsWithActiveCD)) {
+                if (item.name === name) {
+                    is_sold = false
+                    break
+                }
+            }
+            if (is_sold) {
+                $(child).remove();
+            }
+        });
+
+
+        for (let [index, item] of Object.entries(itemsWithActiveCD)) {
+            let name = item.name;
+
+            let cooldown = item.cooldown;
+
+            if ( ["Ironspike Whip", "Goredrinker", "Stridebreaker", "Ceaseless Hunger", "Dreamshatter"].indexOf(name) >= 0) {
+                cooldown = cooldown - cooldown * itemsWithAbilitiesCdRed / 100;
+            } else {
+                cooldown = cooldown - cooldown * itemsCdRed / 100;
+            }
+
+            let cooldownEl = _getNumberElement(_getParsedCooldown(cooldown));
+
+            if (avaiableItems.indexOf(name) >= 0) {
+                items_el.children(`[name="${name}"]`).children('p').remove();
+                // don't display cooldown for items for basic mode
+                if (_isBasicuiModeSetting) {
+                    items_el.children(`[name="${name}"]`).append(`<p cooldown="${cooldown}" class="d-none ml-1">${cooldownEl}</p></div>`);
+                } else {
+                    items_el.children(`[name="${name}"]`).append(`<p cooldown="${cooldown}" class="ml-1">${cooldownEl}</p></div>`);
+                }
+                continue;
+            }
+            let el = "";
+            el += `<div class="ml-2 text-center d-inline-flex" name="${name}">`
+
+            // overlay
+            el += `<div class="item-img-container d-flex">`;
+            el +=`<img class="active-item-icon  my-auto mr-1" src="${item.icon}" alt="${name}">`;
+            el +=`<div class="item-overlay overlay" type="item" cooldown="${cooldown}" name="${name}" summonerName="${participant.getChampionName()}">`;
+            el += `<p></p>`;
+            el +=`</div>`;
+            el +=`</div>`;
+
+            if (_isBasicuiModeSetting) {
+            el += `<p cooldown="${cooldown}" class="ml-1 d-none">${cooldownEl}</p></div>`;
+            } else {
+            el += `<p cooldown="${cooldown}" class="ml-1">${cooldownEl}</p></div>`;
+            }
+            items_el.append(el);
+
+            $(`table[partic-id="${participant.getId()}"] .item-overlay[name="${name}"]`).click(function() {
+                _updateOverlayTimers(this);
+            });
+        }
+
+    }
+
+    function _createSpellCdRedCell(participant) {
+        el = `<div class="pl-3 cdr-numbers mx-auto">`
+
+        let summonerSpellCdRedIcons = _parseCDrIcons(_getSummonerSpellCdRedIcons(participant));
+        let summonerSpellCdRed = _getNumberElement(Math.round(participant.getSummonerSpellsCDr() * 2) / 2);
+
+        let basicAbilitiesCdRedIcons = _parseCDrIcons(_getBasicAbilitiesCdRedIcons(participant));
+        let basicAbilitiesCdRed = _getNumberElement(Math.round(participant.getAbilitiesCDr() * 2) / 2);
+
+        let ultCdRedIcons = _parseCDrIcons(_getUltCdRedIcons(participant));
+        let ultCdRed = _getNumberElement(Math.round(participant.getUltimateCDr() * 2) / 2);
+
+        let itemsCdRedIcons = _parseCDrIcons(_getItemsCdRedIcons(participant));
+        let itemsCdRed = _getNumberElement(Math.round(participant.getItemsCDr() * 2) / 2);
+
+        el += `
+                <div class="d-flex">
+                <p data-toggle="tooltip" data-tippy-content= "Items CDr ${itemsCdRedIcons}"><span class="item-cdr">I </span> ${itemsCdRed}</p>
+                <p data-toggle="tooltip" data-tippy-content= "Summoner Spells CDr ${summonerSpellCdRedIcons}"><span class="summoner-spell-cdr">S </span> ${summonerSpellCdRed}</p>
+                </div>
+                <div class="d-flex">
+                <p data-toggle="tooltip" data-tippy-content= "Basic abilities CDr ${basicAbilitiesCdRedIcons}">B ${basicAbilitiesCdRed}</p>
+                <p data-toggle="tooltip" data-tippy-content="Ultimate CDr ${ultCdRedIcons}">U ${ultCdRed}</p>
+                `
+        el += `</div>`
         return el;
     }
 
@@ -391,7 +722,7 @@ define([
         if (runes.hasOwnProperty('UltimateHunter')) {
             let rune = runes.UltimateHunter;
             el += `<p class="kill-count-value"> ${participant.getUniqueKillsCount()}</p>
-                   <img class="rune-icon ml-1" src="${rune.image}" alt="${rune.name}" data-toggle="tooltip" data-tippy-content="${rune.description}">`
+                <img class="rune-icon ml-1" src="${rune.image}" alt="${rune.name}" data-toggle="tooltip" data-tippy-content="${rune.description}">`
         }
         el += '</div></td>'
 
@@ -454,7 +785,12 @@ define([
             case Settings.TIMER_SOUND.Speech:
                 let summonerSpellName = element.siblings().attr('spell-name');
                 if (typeof summonerSpellName === 'undefined' || summonerSpellName === false) {
-                    summonerSpellName = "ultimate";
+                    let name = element.attr('name');
+                    if (typeof name === 'undefined' || name === false) {
+                        summonerSpellName = "ultimate";
+                    } else {
+                        summonerSpellName = name;
+                    }
                 }
 
                 let summonerName = element.attr('summonerName');

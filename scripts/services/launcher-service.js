@@ -32,6 +32,7 @@ define([
 
     async function getPatchVersion() {
         let launcherInfo = await _getLauncherInfo();
+        // TODO: error when in_GAME
         let v = launcherInfo.res.game_info.game_version
         version_without_minor = v.substring(0, v.indexOf(".", 1 + v.indexOf(".")));
         return version_without_minor;

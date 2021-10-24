@@ -47,13 +47,21 @@ define([
     }
 
     let dataHandler = overwolf.windows.getMainWindow().dataHandler;
+    let _enemyTeamColor = ''
 
     function parseInGameData(data) {
         let parsedData = {
             'redTeam': [],
             'blueTeam': [],
             'events': [],
+            'enemyTeamColor': '',
         };
+
+        active_player_name = '';
+
+        if (data.hasOwnProperty('active_player')) {
+            active_player_name = JSON.parse(data['active_player'])['summonerName'];
+        }
 
         if (data.hasOwnProperty('all_players')) {
             let allPlayers = JSON.parse(data['all_players']);
@@ -62,6 +70,13 @@ define([
             if (data.hasOwnProperty('participantRunes')) {
                 for (let player in allPlayers) {
                     let summonerName = allPlayers[player]['summonerName'];
+
+                    // get enemy color it for basic ui mode
+                    if (active_player_name !== '' && active_player_name === summonerName) {
+                        _enemyTeamColor = allPlayers[player]['team'] === 'CHAOS' ? 'blue' : 'red';
+                    }
+                    parsedData['enemyTeamColor'] = _enemyTeamColor;
+
                     let runes = [];
                     if (data['participantRunes'].hasOwnProperty(summonerName)) {
                         runes = data['participantRunes'][summonerName]['perkIds'];
@@ -92,6 +107,7 @@ define([
         // deal with images
         if (EXCEPTION_DATA.hasOwnProperty(champData['name'])) {
             champData = _array_replace_recursive(champData, EXCEPTION_DATA[champData['name']]);
+
         }
         return champData;
     }
@@ -167,9 +183,11 @@ define([
         let blueTeam = [];
         let redTeam = [];
 
+
         for (let participant of participantsData) {
-            // participant['championName'] = 'Neeko';
-            let champData = dataHandler.getChampionByName(participant['championName']);
+
+            let champData = dataHandler.getChampionByName(participant['rawChampionName'].split('_')[3]);
+
             champData = typeof champData === 'undefined' ? DEFAULT_CHAMP_DATA : champData;
 
             champData = _getUpdatedChampData(champData);
@@ -179,8 +197,8 @@ define([
             let spell2 = undefined;
 
             if (Object.keys(summonerSpells).length > 0) {
-                spell1 = dataHandler.getSpellByName(summonerSpells.summonerSpellOne.displayName);
-                spell2 = dataHandler.getSpellByName(summonerSpells.summonerSpellTwo.displayName);
+                spell1 = dataHandler.getSpellByName(summonerSpells.summonerSpellOne.rawDisplayName.split("_")[2]);
+                spell2 = dataHandler.getSpellByName(summonerSpells.summonerSpellTwo.rawDisplayName.split("_")[2]);
             }
 
             spell1 = typeof spell1 === 'undefined' ? DEFAULT_SPELL_DATA : spell1;

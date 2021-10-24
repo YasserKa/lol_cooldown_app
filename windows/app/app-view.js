@@ -19,9 +19,25 @@ define([
 
             this.displayAd();
             // update view when settings are updated
-            this._settings.addListener('app_view', (settings) => {
-                HtmlHandler.update(this.game);
+            this._settings.addListener('app_view', () => {
+                HtmlHandler.initializeView(this.game);
+                this._resizeWindow();
             });
+        }
+
+        // 550 180
+        _resizeWindow() {
+            let uiMode = this._settings.getSetting(this._settings.SETTINGS.UI_MODE)
+            let scale = this._settings.getSetting(this._settings.SETTINGS.WINDOW_SCALE)
+
+            if (uiMode === this._settings.UI_MODES.BASIC && this.game.isInGame()) {
+                this.updateHeightWidthScale(0.29, 0.5);
+                this._updateWindowScale(scale);
+            } else {
+                this.updateHeightWidthScale(1, 1);
+                this._updateWindowScale(scale);
+            }
+
         }
 
         updateInChampSelect(data) {
@@ -53,6 +69,7 @@ define([
         _initGame(data) {
             this.game = new Game(data);
             HtmlHandler.initializeView(this.game);
+            this._resizeWindow();
         }
 
         _update(data) {

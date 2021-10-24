@@ -4,6 +4,11 @@
     height:100%;
     padding: 0px;
 }
+.window-control-example {
+    width: 25px;
+    height: 25px;
+    background: #151F28;
+}
 
 * {
     user-select: none;
@@ -30,7 +35,13 @@ body {
 #changelog-tab {
     border: none;
     padding: 5px;
-    height: 350px;
+    height: 300px;
+    overflow-y: scroll;
+}
+
+#first-time-user-experience {
+    border: none;
+    height: 550px;
     overflow-y: scroll;
 }
 ::-webkit-scrollbar {
@@ -88,6 +99,11 @@ textarea.form-control {
     background-color: #202B43;
     color: #fff;
 }
+
+/* .ftue{ */
+/*     background-color: #303947; */
+/*     color: #fff; */
+/* } */
 .form-control:focus {
     background-color: #202B43;
     color: #fff;
@@ -111,6 +127,10 @@ textarea.form-control {
 /* settings */
 #version {
     font-size: 0.85rem;
+}
+
+#consider-subscribing {
+    font-size: 0.65rem;
 }
 
 /* scrollbar */

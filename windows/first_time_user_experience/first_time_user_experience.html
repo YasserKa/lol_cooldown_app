@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <script src="/lib/jquery.min.js"></script>
+    <script src="/lib/bootstrap.bundle.min.js"></script>
+    <script src="/js/common.js"></script>
+    <link rel="stylesheet" href="/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="/css/general.css" />
+    <link rel="stylesheet" href="/css/header.css" />
+    <link rel="stylesheet" href="/css/darkTheme.css" />
+    <title>FTUE</title>
+  </head>
+  <body class="dark">
+    <!-- Google Analytics -->
+    <script>
+      (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+        (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+          m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+      })(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
+
+ga('create', 'UA-175532598-1', 'auto');
+ga('send', 'pageview');
+ // Removes failing protocol check. @see: http://stackoverflow.com/a/22152353/1958200
+ga('set', 'checkProtocolTask', function(){});
+ga('require', 'displayfeatures');
+ga('send', 'pageview', '/feedback.html');
+    </script>
+
+    <div class="container-fluid">
+      <!-- Header -->
+      <header class="app-header">
+        <img class="logo" src="/img/hourglass.png" alt="" />
+        <h1>LoLCooldown</h1>
+        <div class="window-controls-group">
+          <button class="icon window-control window-control-close" id="exit">
+            <svg>
+              <use xlink:href="/img/header_icons.svg#window-control_close" />
+            </svg>
+          </button>
+        </div>
+      </header>
+      <!-- Main -->
+      <main id="first-time-user-experience">
+        <!-- Cooldown Display -->
+        <div class="px-5 text-center">
+        <div class="ftue py-2">
+          <h5 class="mb-1">Welcome to LoLCooldown!</h5>
+          <p>This is a brief tour to showcase what LoLCooldown can do.</p>
+          <p>If you want to access this window later, press
+            <svg class="window-control-example">
+             <use xlink:href="/img/header_icons.svg#window-control_support" />
+            </svg>
+            in the header of the first window.
+          </p>
+          <br>
+       <ul>
+         <li><p><b>In-Game & Champ-Select Cooldowns:</b> The cooldowns of summoner
+          spells & champion abilities will be displayed during champ-select & a
+          live game for both teams. Cooldowns for active items are displayed as
+          well upon purchase. Cooldown Reduction is put in mind while
+          calculating the cooldowns (items, runes, and cloud drake)
+           </p>
+          <br>
+          <figure>
+            <img src="/img/in_game.jpg" alt="in-game" style="width:30%">
+          </figure>
+          <p>
+          <b>I, S, B, and U</b> show the <b>I</b>tems, Summoner <b>S</b>pells,
+              <b>B</b>asic abilities, and <b>U</b>ltimate ability Cooldown
+              reduction respectively. Hover over them to see the items used to
+              inflence them
+ </p>
+              <br>
+
+                <figure>
+                  <img src="/img/basic_ultimate.jpg" alt="pop information"
+                  style="width:70%">
+                </figure>
+              <br>
+        </li>
+              <li><b>Abilities that decreases cooldowns:</b> An icon <img
+                class="info" src="/img/info.png" /> will appear next to an ability to signify that the ability decreases cooldown (eg. Ezreal Q, Annie Q). Hovering over the ability to get more details.
+                <figure>
+                  <img src="/img/description.jpg" alt="pop information" style="width:50%">
+                </figure>
+              </li>
+              <li><b>Summoner Spell, Ultimate , Active item timer:</b> Press on a
+                summoner spell, an ultimate, or an active item to start a timer. The
+                ultimate time is chosen dependant on the champion's level assuming
+                that the player will prioritize ranking up the ultimate (e.g. lvl 6:
+                rank 1, lvl 11: rank 2). When it's done, you will be notified by an
+                alert (if you wanted). Check Settings for the available
+                options.
+                You can right click on a timer to reduce it by 5 seconds.
+                <figure>
+                  <img src="/img/timers.gif" alt="pop information" style="width:40%">
+                </figure>
+              </li>
+
+              <li>
+ <p>
+                <b>Basic and Advanced modes:</b> What have you seen thus far
+                is the advanced mode; if you are only interested in
+                using the timers, then you can switch to basic mode in the
+                settings to show the timers for the enemy team in-game.
+                </p>
+                <br>
+                <figure>
+                  <img src="/img/basic_mode.jpg" alt="pop information"
+                  style="width:70%">
+                </figure>
+              </li>
+      </ul>
+      <br>
+      <p>That's all!</p>
+          <p>Do you want to participate in forming the app? Join us at <a class="discord-link" href="#">discord</a> to vote for potential features and to propose new ones as well!
+To support the devs and go through an Ad free experience, consider <a
+  id="subscribe-link" href="#">subscribing</a>.
+Note that the devs will not put any feature behind a pay wall.
+          </p>
+        </div>
+
+          <div class="ml-3 p-0">
+            <button id="close-window" type="button" class="btn rounded-0 btn-primary">Close</button>
+          </div>
+        </div>
+      </main>
+      <script src="/lib/require.js"></script>
+      <script>
+        require(["first_time_user_experience-controller"], function (FeedbackController) {
+          console.info(`[INIT] feedback module loaded`);
+          const feedbackController = new FeedbackController();
+          feedbackController.run();
+        }, function (error) {
+          console.info(`[INIT] failed to load feedback module ${error}`);
+        });
+      </script>
+  </body>
+</html>

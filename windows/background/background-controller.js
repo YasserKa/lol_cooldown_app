@@ -19,11 +19,16 @@ define([
 ) {
     class BackgroundController {
 
+
         static async run() {
             // saving stateService instance for app-controller
             window.stateService = StateService;
             window.settings = Settings;
             window.dataHandler = DataHandler;
+            this.updateIsSubscribedStatus();
+
+            overwolf.profile.subscriptions.onSubscriptionChanged.removeListener(this.updateIsSubscribedStatus);
+            overwolf.profile.subscriptions.onSubscriptionChanged.addListener(this.updateIsSubscribedStatus);
 
             this._registerHotkeys();
 
@@ -39,6 +44,27 @@ define([
 
             overwolf.windows.onStateChanged.addListener(this._onWindowStateChanged);
         }
+
+        static async updateIsSubscribedStatus() {
+            window.isSubscribed = await this.isSubscribed();
+        }
+
+        static async isSubscribed() {
+            let myPlanID = 72;
+            let activePlan = await this.getActivePlans();
+            return activePlan.success && activePlan.plans != null && activePlan.plans[0]['planId'] === myPlanID && activePlan.plans[0]['state'] === "active";
+        }
+
+    static async getActivePlans() {
+        return new Promise((resolve, reject) => {
+            overwolf.profile.subscriptions.getDetailedActivePlans((response) => {
+                if (response.success) {
+                    return resolve(response);
+                }
+                reject(response);
+            });
+        });
+    }
 
         // on client state change (idle/in-champselect/in-game)
         static async _onStateChanged(state) {

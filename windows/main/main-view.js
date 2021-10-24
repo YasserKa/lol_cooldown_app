@@ -13,6 +13,23 @@ define([
     class MainView extends BaseView {
         constructor() {
             super();
+
+            this._considerSubscribing = document.getElementById("consider-subscribing");
+
+            this._subscriberLink = document.getElementById("subscribe-link");
+            this._subscriberLink.addEventListener("click", () => {
+                this.openStore()
+            });
+
+            if (!this._isSubscribed) {
+                this._considerSubscribing.setAttribute('style', 'display:block !important');
+            }
+        }
+
+        openStore() {
+            overwolf.utils.openStore({
+                page:overwolf.utils.enums.eStorePage.SubscriptionPage
+            });
         }
 
         async setWindowPosition() {

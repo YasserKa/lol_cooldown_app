@@ -13,12 +13,16 @@ define([
             // sorted teams' participants
             this._redTeam = data['redTeam'].map(participant => new Participant(participant)).sort(this._sortTeam);
             this._blueTeam = data['blueTeam'].map(participant => new Participant(participant)).sort(this._sortTeam);
+            this._enemyTeamColor = data['enemyTeamColor'];
         }
 
         update(data) {
             this._updateEvents(data['events']);
             this._updateTeam(data['redTeam'], this._redTeam);
             this._updateTeam(data['blueTeam'], this._blueTeam);
+            if (data.hasOwnProperty('enemyTeamColor')) {
+                this._enemyTeamColor = data['enemyTeamColor'];
+            }
         }
 
         isInGame() {
@@ -34,6 +38,10 @@ define([
 
         getRedTeam() {
             return this._redTeam;
+        }
+
+        getEnemyTeamColor() {
+            return this._enemyTeamColor;
         }
 
         getParticipantUsingSummonerName(summonerName) {

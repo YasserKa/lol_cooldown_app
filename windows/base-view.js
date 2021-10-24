@@ -28,6 +28,7 @@ define([
 
             this._mainWindow = overwolf.windows.getMainWindow();
             this._settings = this._mainWindow.settings;
+            this._isSubscribed = this._mainWindow.isSubscribed;
             this._ad = null;
 
             this.displayAd = this.displayAd.bind(this);
@@ -48,6 +49,10 @@ define([
 
             this._defaultHeight = window.innerHeight;
             this._defaultWidth = window.innerWidth;
+
+            this._heightScale = 1;
+            this._widthScale = 1;
+
 
             if (this._settingsEl !== null) {
                 this._settingsEl.addEventListener("click", async () => {
@@ -107,10 +112,9 @@ define([
             });
 
             if (this._gameInfo !== null) {
-                    this._gameInfo.addEventListener('click', () => {
-                        overwolf.utils.openUrlInDefaultBrowser(
-                            "https://www.lolcooldown.com/app");
-                    });
+                this._gameInfo.addEventListener('click', () => {
+                    WindowsService.restore(WindowNames.FIRST_TIME_USER_EXPERIENCE);
+                });
             }
 
             // enable dragging on this window
@@ -178,9 +182,14 @@ define([
             }
         }
 
+        updateHeightWidthScale(heightScale, widthScale) {
+            this._heightScale = heightScale;
+            this._widthScale = widthScale;
+        }
+
         _updateWindowScale(scale) {
-            let newHeight = parseInt(this._defaultHeight * scale);
-            let newWidth = parseInt(this._defaultWidth * scale);
+            let newHeight = parseInt(this._defaultHeight * this._heightScale * scale);
+            let newWidth = parseInt(this._defaultWidth * this._widthScale * scale);
 
             let windowObjectParams = {
                 "window_id": this._windowName,
@@ -215,11 +224,13 @@ define([
         }
 
         displayAd() {
+            if (this._isSubscribed) {
+                return;
+            }
             if (this._adEl !== null && OwAd) {
                 this._ad = new OwAd(this._adEl,
                     {size: {width: this._adEl.offsetWidth, height: this._adEl.offsetHeight}}
                 );
-                // this._ad.addEventListener('complete', this.removeAd);
             }
         }
 

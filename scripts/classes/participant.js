@@ -24,6 +24,8 @@ define([], function() {
             this.abilityHaste = 0;
             this.abilityPower = 0;
             this.summonerSpellHaste = 0;
+            this.itemsCdRed = 0;
+            this.itemsWithAbilitiesCdRed = 0;
             this.ultCdRed = 0;
             this.spellsCdRed = 0;
             this.cloudDrakeStacks = 0;
@@ -175,6 +177,14 @@ define([], function() {
             return this.ultCdRed;
         }
 
+        getItemsCDr() {
+            return this.itemsCdRed;
+        }
+
+        getItemsWithAbilitiesCDr() {
+            return this.itemsWithAbilitiesCdRed;
+        }
+
         getSummonerSpellsCDr() {
             return this.spellsCdRed;
         }
@@ -273,6 +283,19 @@ define([], function() {
 
             this.spellsCdRed = this._getCooldownReduction(this.summonerSpellHaste);
             this.spellsCdRed = Number(this.spellsCdRed.toFixed(2));
+
+            // items CDred
+            let itemsHaste = 0;
+            if (this._hasRune(RUNES_ENUM.CosmicInsight))
+                itemsHaste += 10;
+            if (this._hasRune(RUNES_ENUM.IngeniousHunter)) {
+                itemsHaste += 10 + new Set(this.kills).size * 5;
+            }
+
+            this.itemsCdRed = this._getCooldownReduction(itemsHaste);
+            this.itemsCdRed = Number(this.itemsCdRed.toFixed(2));
+
+            this.itemsWithAbilitiesCdRed = this._getCooldownReduction(itemsHaste+this.abilityHaste);
         }
 
         _updateAbilitiesCd() {
