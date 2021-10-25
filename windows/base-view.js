@@ -250,7 +250,8 @@ define([
 
         // define the event handler
         onWindowStateChanged(state) {
-            if (state.window_name === WindowNames.SETTINGS || state.window_name === WindowNames.FEEDBACK) {
+            if (state.window_name === WindowNames.SETTINGS || state.window_name === WindowNames.FEEDBACK ||
+ state.window_name === WindowNames.FIRST_TIME_USER_EXPERIENCE) {
                 return;
             }
             if (this._ad === null) {
