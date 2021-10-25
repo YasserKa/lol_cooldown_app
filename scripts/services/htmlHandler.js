@@ -26,11 +26,11 @@ define([
         _createGame(_game);
         update(_game);
 
-        if (_game.isInGame()) {
-            $(`.ultimate-overlay, .spell-overlay`).click(function() {
-                _updateOverlayTimers(this);
-            });
-        }
+        // if (_game.isInGame()) {
+        //     $(`.ultimate-overlay, .spell-overlay`).click(function() {
+        //         _updateOverlayTimers(this);
+        //     });
+        // }
 
         tippy('[data-toggle="tooltip-abilities"]', {
             theme: 'dark',
@@ -159,6 +159,12 @@ define([
 
         $(".game-details").empty();
         $(".game-details").append(el);
+
+        if (game.isInGame()) {
+            $(`.ultimate-overlay, .spell-overlay`).click(function() {
+                _updateOverlayTimers(this);
+            });
+        }
     }
 
     function _createTeam(team, color) {
