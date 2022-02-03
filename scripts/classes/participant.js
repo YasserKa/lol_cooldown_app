@@ -255,12 +255,14 @@ define([], function() {
                 }
             }
 
+            // CloudStacks
+            this.abilityHaste += this.cloudDrakeStacks * 6;
+
             this.cdRed = this._getCooldownReduction(this.abilityHaste)
             this.cdRed = Number(this.cdRed.toFixed(2));
 
             // Ultimate Cooldown reduction addition from runes & dragon stacks
-            // CloudStacks
-            let ultHaste = this.cloudDrakeStacks * 12;
+            let ultHaste = 0
             if (this._hasRune(RUNES_ENUM.UltimateHunter)) {
                 ultHaste += 6 + new Set(this.kills).size * 5;
             }

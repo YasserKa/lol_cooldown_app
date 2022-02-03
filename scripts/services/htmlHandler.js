@@ -472,6 +472,9 @@ define([
     function _getBasicAbilitiesCdRedIcons(participant) {
         let runes = participant.getRunes();
         let items = participant.getCDRedItems();
+        let cloudStacks = participant.getCloudStacks();
+        // in clash & aram there's no cloud drake
+        let isSpellsCDrMode = participant.isSpellsCDrMode();
 
         let el = '';
 
@@ -508,6 +511,14 @@ define([
             }
         }
 
+        // in clash & aram there's no cloud drake
+        if (!isSpellsCDrMode && cloudStacks !== 0) {
+            if (el !== "") {
+                el += "<br>"
+            }
+            el += `<div class="d-inline-flex mt-1">
+                <p class="cloud-stacks-value mr-1">${cloudStacks}</p><img class="cloud-image buff" src="/img/cloud_buff.png" alt="cloud_buff"></div>`
+        }
 
 
         return el;
@@ -517,12 +528,10 @@ define([
         let runes = participant.getRunes();
 
         let cloudStacks = participant.getCloudStacks();
-        // in clash & aram there's no cloud drake
-        let isSpellsCDrMode = participant.isSpellsCDrMode();
 
         let el = _getBasicAbilitiesCdRedIcons(participant);
 
-        if (el !== "" && (runes.hasOwnProperty('UltimateHunter') || !isSpellsCDrMode && cloudStacks !== 0)) {
+        if (el !== "" && (runes.hasOwnProperty('UltimateHunter'))) {
             el += "<br>";
         }
 
@@ -532,11 +541,6 @@ define([
                 <p class="kill-count-value mr-1"> ${participant.getUniqueKillsCount()}</p>
                 <img class="rune-icon" src="${rune.image}" alt="${rune.name}">
                 </div>`
-        }
-
-        if (!isSpellsCDrMode && cloudStacks !== 0) {
-            el += `<div class="d-inline-flex mt-1">
-                <p class="cloud-stacks-value mr-1">${cloudStacks}</p><img class="cloud-image buff" src="/img/cloud_buff.png" alt="cloud_buff"></div>`
         }
 
         return el;

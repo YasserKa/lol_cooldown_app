@@ -248,7 +248,7 @@ define([
                     'VictimName': event_['VictimName'],
                 });
             }
-            if (event_['EventName'] === 'DragonKill' && event_['DragonType'] === 'Air') {
+            if (event_['EventName'] === 'DragonKill' && event_['DragonType'] === 'Hextech') {
                 parsedEvents.push({
                     'EventName': 'DragonKill',
                     'KillerName': event_['KillerName'],
