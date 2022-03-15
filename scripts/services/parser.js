@@ -86,8 +86,10 @@ define([
             }
 
             if (data.hasOwnProperty('game_data')) {
+                gameData = JSON.parse(data.game_data)
                 for (let player in allPlayers) {
-                    allPlayers[player]['gameMode'] = JSON.parse(data.game_data).gameMode;
+                    allPlayers[player]['gameMode'] =  gameData.gameMode;
+                    allPlayers[player]['gameTime'] = parseFloat(gameData.gameTime) / 60;
                 }
             }
             let allPlayersParsed = _parseInGameAllPlayersData(allPlayers);
@@ -222,6 +224,7 @@ define([
                 'runes': _parseParticipantRunes(participant.runesReforged),
                 'items': items,
                 'gameMode': participant.gameMode,
+                'gameTime': participant.gameTime,
             };
 
             if (participant['team'])

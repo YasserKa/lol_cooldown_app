@@ -15,7 +15,8 @@ define([], function() {
         "Night Harvester",
         "Liandry's Anguish",
         "Goredrinker",
-        "Duskblade of Draktharr"];
+        "Duskblade of Draktharr"
+    ];
 
     class Participant {
         constructor(data) {
@@ -34,7 +35,8 @@ define([], function() {
             this.currentAbilities = JSON.parse(JSON.stringify(this.originalAbilities));
             this.originalSpells = data['spells'];
             this.currentSpells = JSON.parse(JSON.stringify(this.originalSpells));
-            this.gameMode = data.gameMode
+            this.gameMode = data.gameMode;
+            this.gameTime = data.gameTime;
             this.creepScore = data.creepScore;
 
             this.position = data['position'];
@@ -50,10 +52,12 @@ define([], function() {
             this.position = data['position'];
             this.level = data['level'];
             this.items = data['items'];
-
             this.creepScore = data.creepScore;
             if (data.hasOwnProperty('gameMode') && typeof data.gameMode !== 'undefined') {
-                this.gameMode = data.gameMode
+                this.gameMode = data.gameMode;
+            }
+            if (data.hasOwnProperty('gameTime') && typeof data.gameTime !== 'undefined') {
+                this.gameTime = data.gameTime;
             }
 
             if (this.champion['name'] !== data['champion']['name']) {
@@ -236,12 +240,6 @@ define([], function() {
                 }
             }
 
-            for (let item of this.items) {
-                if (item.name == "Cosmic Drive" && this.abilityPower >= 160) {
-                    this.abilityHaste += 20;
-                }
-            }
-
             if (this._hasRune(RUNES_ENUM.CooldownReduction)) {
                 this.abilityHaste += 8;
             }
@@ -391,12 +389,7 @@ define([], function() {
 
                 // use recharge time instead of cooldown
                 if (this.originalSpells[key]['name'] == 'Smite') {
-                    cooldown = 90
-                }
-                // exception: Teleport has 2 numbers 420-240
-                if (this.originalSpells[key]['name'] == 'Teleport') {
-                    // formula from https://leagueoflegends.fandom.com/wiki/Teleport
-                    cooldown = 430.588 - 10.588 * this.level;
+                    cooldown = 90;
                 }
 
                 let newCd = cooldown - (cooldown * (this.spellsCdRed) / 100)

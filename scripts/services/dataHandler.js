@@ -97,6 +97,11 @@ define([
             if (name === "SummonerFlashPerksHextechFlashtraptionV2") {
                 name =  "SummonerFlash";
             }
+            // Unleased teleport
+            if (name === "S12") {
+                name = "SummonerTeleport";
+                _summonerSpells[name]['cooldown'] = 240;
+            }
 
             // smite upgrades like chilling
             if (name.includes('S5')) {

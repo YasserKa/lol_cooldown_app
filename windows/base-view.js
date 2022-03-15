@@ -173,7 +173,8 @@ define([
 
             let monitors = await WindowsService.getMonitorsList();
 
-            scale = monitors.displays[0].width/1920 * scale
+            // console.log(monitors.displays[0])
+            scale = scale
             this._updateWindowScale(scale);
 
             this.updateHtmlContentScale(scale);
